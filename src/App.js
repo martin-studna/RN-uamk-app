@@ -6,6 +6,7 @@ import * as firebase from 'firebase'
 import colors from './colors.js'
 import DrawerNavigator from './navigation/DrawerNavigator'
 import AuthNavigator from './navigation/AuthNavigator'
+import AppStackNavigator from './navigation/AppStackNavigator'
 
 // Initialize Firebase
 //firebase.initializeApp(firebaseConfig);
@@ -15,8 +16,8 @@ export default createAppContainer(
   createSwitchNavigator(
     {
       Loading: LoadingScreen,
-      App: DrawerNavigator,
-      Auth: AuthNavigator
+      App: AppStackNavigator,
+      Auth: AuthNavigator,
     },
     {
       initialRouteName: "Loading"

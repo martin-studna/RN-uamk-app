@@ -1,46 +1,41 @@
-import React from "react";
+import React, { setState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import * as firebase from 'firebase'
 
 
-export default class RegisterScreen extends React.Component {
+const RegisterScreen = (props) => {
 
-    state = {
-        name: '',
-        email: '',
-        password: '',
-        errorMessage: null
-    }
 
-    componentDidMount() {
-    }
+    const [name, setName] = setState('')
+    const [email, setEmail] = setState('')
+    const [password, setPassword] = setState('')
+    const [errorMessage, setErrorMessage] = setState(null)
 
     handleSignUp = () => {
 
         firebase
             .auth()
-            .createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .createUserWithEmailAndPassword(email, password)
             .then(userCredentials => {
                 return userCredentials.user.updateProfile({
-                    displayName: this.state.name
+                    displayName: name
                 })
             })
-            .catch(error => this.setState({errorMessage: error.message}))
+            .catch(error => setErrorMessage(error.message))
 
     }
     
     
-    render () {
         return (
             <View style={styles.container}>
                 <Text style={styles.greeting}>{'Hello! \n Sign up to get started.'}</Text>
 
                 <View style={styles.errorMessage}>
                     {
-                        this.state.errorMessage && 
+                        errorMessage && 
                     <Text style={styles.error}>
-                        {this.state.errorMessage}
+                        {errorMessage}
                     </Text>
                     }
                 </View>
@@ -50,8 +45,8 @@ export default class RegisterScreen extends React.Component {
                         <Text style={styles.inputTitle}>Full Name</Text>
                         <TextInput 
                             style={styles.input} 
-                            onChangeText={name => this.setState({ name }) }
-                            value={this.state.name}
+                            onChangeText={name => setName(name) }
+                            value={name}
                             autoCapitalize="none"></TextInput>
                     </View>
 
@@ -59,8 +54,8 @@ export default class RegisterScreen extends React.Component {
                         <Text style={styles.inputTitle}>Email Address</Text>
                         <TextInput 
                             style={styles.input} 
-                            onChangeText={email => this.setState({ email }) }
-                            value={this.state.email}
+                            onChangeText={email => setEmail(email) }
+                            value={email}
                             autoCapitalize="none"></TextInput>
                     </View>
 
@@ -70,18 +65,18 @@ export default class RegisterScreen extends React.Component {
                         style={styles.input}
                         secureTextEntry 
                         autoCapitalize="none"
-                        onChangeText={password => this.setState({ password })}
-                        value={this.state.password}></TextInput>
+                        onChangeText={password => setPassword(password)}
+                        value={password}></TextInput>
                     </View>
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={this.handleSignUp}>
+                <TouchableOpacity style={styles.button} onPress={handleSignUp}>
                     <Text style={{color: '#fff', fontWeight: '500'}}>Sign Up</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
                     style={{alignSelf: 'center', marginTop: 32}}
-                    onPress={() => this.props.navigation.navigate('Login')}
+                    onPress={() => props.navigation.navigate('Login')}
                     >
                     <Text style={{color: '#414959', fontSize: 13}}>
                         New to SocialApp? <Text style={{color: '#E9446A', fontWeight: '500'}}>Login</Text>
@@ -89,7 +84,7 @@ export default class RegisterScreen extends React.Component {
                 </TouchableOpacity>
             </View>
         )
-    }
+    
     
     
 }
@@ -141,4 +136,6 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     }
 })
+
+export default RegisterScreen;
 

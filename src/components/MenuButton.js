@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import colors from '../colors';
 
 export default class MenuButton extends React.Component {
   render() {
     return(
       <Ionicons
         name="md-menu"
-        color="#000000"
+        color={colors.uamkBlue}
         size={32}
         style={styles.menuIcon}
         onPress={() => this.props.navigation.toggleDrawer()}
@@ -19,6 +20,6 @@ export default class MenuButton extends React.Component {
 const styles = StyleSheet.create({
   menuIcon: {
 
-
+    
   }
 })

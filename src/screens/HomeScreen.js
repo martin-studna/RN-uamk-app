@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,18 +6,112 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors.js";
 import MenuButton from "../components/MenuButton.js";
+import Fire from "../Fire.js";
+import moment from 'moment'
 
-const posts = [];
+const HomeScreen = (props) => {
 
-export default class HomeScreen extends React.Component {
-  renderPost = (post) => {
+  let onEndReachedCallDuringMomentum = false
+
+  const [email, setEmail] = useState('')
+  const [displayName, setDisplayName] = useState('')
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [isMoreLoading, setIsMoreLoading] = useState(false)
+  const [lastDoc, setLastDoc] = useState(null)
+  const [posts, setPosts] = useState([])
+
+  const postsRef = Fire.shared.getPostsRef()
+
+  useEffect(() => {
+    const user = firebase.auth().currentUser
+
+    setEmail(user.email)
+    setDisplayName(user.displayName)
+
+    getPosts()
+  }, []);
+
+  getPosts = async () => {
+    setIsLoading(true)
+
+    const snapshot = await postsRef.orderBy('timestamp').limit(3).get()
+
+    if (!snapshot.empty) {
+      let newPosts = []
+
+      setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+
+      for (let i = 0; i < snapshot.docs.length; i++) {
+        newPosts.push(snapshot.docs[i].data())
+      }
+
+      setPosts(newPosts)
+    } else {
+      setLastDoc(null)
+    }
+
+    setIsLoading(false)
+  }
+
+  getMore = async () => {
+    if (lastDoc) {
+      setIsMoreLoading(true)
+
+      setTimeout(async() => {
+        let snapshot = await postsRef.orderBy('timestamp').startAfter(lastDoc.data().uid).limit(3).get()
+        
+        if (!snapshot.empty) {
+          let newPosts = posts
+
+          setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+
+          for (let i = 0; i < snapshot.docs.length; i++) {
+            newPosts.push(snapshot.docs[i].data());
+          }
+
+          setPosts(newPosts)
+          if (snapshot.docs.length < 3) setLastDoc(null)
+        } else {
+          setLastDoc(null)    
+        }
+
+        setIsMoreLoading(false)
+      }, 1000);
+    }
+
+    onEndReachedCallDuringMomentum = false
+  }
+
+  onRefresh = () => {
+    setTimeout(() => {
+      getPosts();
+    }, 1000);
+  }
+
+  renderFooter = () => {
+    if (!isMoreLoading) return true
+
     return (
-      <View>
+      <ActivityIndicator
+        size="large"
+        color={'#D83E64'}
+        style={{ marginBottom: 10 }} 
+      />
+    )
+  }
+
+  renderPost = (post) => {
+
+    return (
+      <View style={styles.postContainer}>
         <View style={{ flex: 1 }}>
           <View
             style={{
@@ -33,60 +127,64 @@ export default class HomeScreen extends React.Component {
               </Text>
             </View>
 
-            <Ionicons name="ios-more" size={24} color="#73788B" />
+            <Ionicons style={styles.more} name="ios-more" size={24} color="#73788B" />
           </View>
 
           <Text style={styles.post}>{post.text}</Text>
 
           <Image
-            source={post.image}
+            source={{ uri: post.image}}
             style={styles.postImage}
-            resizeMode="cover"
+            resizeMode='cover'
           />
 
           <View style={{ flexDirection: "row" }}>
-            <Ionicons
-              name="ios-heart-empty"
-              size={24}
-              color="#73788B"
-              style={{ marginRight: 16 }}
-            />
-            <Ionicons name="ios-chatboxes" size={24} color="#73788B" />
+          
           </View>
         </View>
       </View>
     );
   };
 
-  componentDidMount() {
-    const { email, displayName } = firebase.auth().currentUser;
+  
 
-    this.setState({ email, displayName });
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <MenuButton navigation={this.props.navigation} style={styles.menu} />
-          <Text style={styles.headerTitle}>Zíráním nepomůžeš</Text>
-        </View>
-        <ImageBackground
-          style={styles.backgroundImage}
-          source={require("../assets/backgroundimage_zoom.png")}
-        >
-          <FlatList
-            style={styles.feed}
-            data={posts}
-            renderItem={({ item }) => this.renderPost(item)}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-          />
-        </ImageBackground>
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <MenuButton navigation={props.navigation} style={styles.menu} />
+        <Text style={styles.headerTitle}>ZÍRÁNÍM NEPOMŮŽEŠ</Text>
       </View>
-    );
-  }
-}
+      <ImageBackground
+        style={styles.backgroundImage}
+        source={require("../assets/backgroundimage_zoom.png")}
+      >
+        <FlatList
+          style={styles.feed}
+          data={posts}
+          renderItem={({ item }) => renderPost(item)}
+          key={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          ListFooterComponent={renderFooter}
+          refreshControl={
+              <RefreshControl 
+                 refreshing={isLoading}
+                 onRefresh={onRefresh}
+              />
+          }
+          initialNumToRender={3}
+          onEndReachedThreshold={0.1}
+          onMomentumScrollBegin={() => {onEndReachedCallDuringMomentum = false;}}
+          onEndReached={() => {
+            if (!onEndReachedCallDuringMomentum && !isMoreLoading) {
+              getMore()
+            }
+          }}
+        />
+      </ImageBackground>
+    </View>
+  );
+
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -96,6 +194,7 @@ const styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
     height: "100%",
+    flex: 1
   },
   menu: {
     marginLeft: 42,
@@ -117,8 +216,8 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: colors.uamkBlue,
-    fontSize: 20,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "bold",
     marginLeft: 16,
   },
   feed: {
@@ -142,15 +241,32 @@ const styles = StyleSheet.create({
     color: "#C4C6CE",
     marginTop: 4,
   },
+  postContainer: {
+    backgroundColor: 'white',
+    marginTop: 5,
+    marginBottom: 5,
+    borderRadius: 22,
+
+  },
   post: {
-    marginTop: 16,
+    marginLeft: 16,
+    marginRight: 16,
     fontSize: 14,
     color: "#838899",
   },
+  timestamp: {
+    marginTop: 16,
+    marginLeft: 16,
+    marginBottom: 16
+  },
+  more: {
+    marginRight: 16,
+  },
   postImage: {
-    width: undefined,
+    width: '100%',
     height: 150,
-    borderRadius: 5,
     marginVertical: 16,
   },
 });
+
+export default HomeScreen;

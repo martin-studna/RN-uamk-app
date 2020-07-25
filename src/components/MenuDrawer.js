@@ -30,7 +30,7 @@ export default class MenuDrawer extends React.Component {
 					<View style={styles.topLinks}>
 						<View style={styles.profile}>
 							<View style={styles.imgView}>
-								<Image style={styles.img} source={require('../assets/profile.png')} />
+								<Image style={styles.img} source={require('../assets/profile_image.png')} />
 							</View>
 							<View style={styles.profileText}>
 								<Text style={styles.name}>Name</Text>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 	},
 	link: {
 		flex: 1,
-		fontSize: 20,
+		fontSize: 15,
 		padding: 6,
 		paddingLeft: 14,
 		margin: 5,

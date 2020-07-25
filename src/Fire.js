@@ -12,7 +12,7 @@ class Fire {
 
     return new Promise((res, rej) => {
       this.firestore
-        .collection("post")
+        .collection("posts")
         .add(Object.assign({}, {
           text,
           uid: this.uid,
@@ -56,6 +56,10 @@ class Fire {
       );
     });
   };
+
+  getPostsRef = () => {
+    return this.firestore.collection('posts')
+  }
 
   get firestore() {
     return firebase.firestore();
