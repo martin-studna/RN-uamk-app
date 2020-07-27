@@ -30,10 +30,10 @@ export default class MenuDrawer extends React.Component {
 					<View style={styles.topLinks}>
 						<View style={styles.profile}>
 							<View style={styles.imgView}>
-								<Image style={styles.img} source={require('../assets/profile_image.png')} />
+								<Image style={styles.img} source={require('../assets/zirani_logo_circle.png')} />
 							</View>
 							<View style={styles.profileText}>
-								<Text style={styles.name}>Name</Text>
+								<Text style={styles.name}>Zíráním nepomůžeš</Text>
 							</View>
 						</View>
 					</View>
@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
 	name: {
 		fontSize: 20,
 		paddingBottom: 5,
-		color: 'white',
+		color: colors.primary,
+
 		textAlign: 'left',
 	},
 	imgView: {
@@ -84,10 +85,9 @@ const styles = StyleSheet.create({
 		paddingRight: 20,
 	},
 	img: {
-		height: 70,
-		width: 70,
+		height: 60,
+		width: 60,
     borderRadius: 50,
-    backgroundColor: 'white'
 	},
 	topLinks:{
 		height: 160,
