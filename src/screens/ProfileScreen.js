@@ -1,18 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import colors from "../colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Fire from '../Fire'
+import firebase from 'firebase'
 
 const ProfileScreen = (props) => {
+
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    Fire.shared
+      .getUserByIdAsync(firebase.auth().currentUser.uid)
+      .then(user => setUser(user.data()))
+      .catch(err => console.error(err))
+  }, [])
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Username</Text>
+        <Text style={styles.headerTitle}>{user && user.username ? user.username : ''}</Text>
       </View>
 
       <View style={styles.profileContainer}>
         <Image 
-          source={require('../assets/profile_image.png')}
+          source={user && user.image ? { uri: user.image } : require("../assets/profile_image.png")}
           style={styles.profileImage}
           />
         <View style={styles.profileDescription}>

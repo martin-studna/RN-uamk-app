@@ -7,9 +7,8 @@ class Fire {
     firebase.initializeApp(firebaseConfig);
   }
 
-  addPost = async ({ text, localUri }) => {
-
-    const remoteUri = localUri ? await this.uploadPhotoAsync(localUri) : null
+  addPostAsync = async ({ text, localUri }) => {
+    const remoteUri = localUri ? await this.uploadPhotoAsync(localUri) : null;
 
     return new Promise((res, rej) => {
       this.firestore
@@ -18,7 +17,7 @@ class Fire {
           text,
           uid: this.uid,
           timestamp: this.timestamp,
-          image: remoteUri
+          image: remoteUri,
         })
         .then((ref) => {
           res(ref);
@@ -29,10 +28,20 @@ class Fire {
     });
   };
 
-  addUser = async ({ uid, fullname, username, mail, password, image, points, cardId, cardActivationCode }) => {
+  addUserAsync = async ({
+    uid,
+    fullname,
+    username,
+    mail,
+    password,
+    image,
+    points,
+    cardId,
+    cardActivationCode,
+  }) => {
     return new Promise((res, rej) => {
       this.firestore
-        .collection('users')
+        .collection("users")
         .doc(uid)
         .set({
           fullname,
@@ -42,34 +51,44 @@ class Fire {
           image,
           points,
           cardId,
-          cardActivationCode
+          cardActivationCode,
         })
-        .then(ref => {
-          res(ref)
+        .then((ref) => {
+          res(ref);
         })
-        .catch(err => {
-          rej(err)
-        })
-    })
-  }
+        .catch((err) => {
+          rej(err);
+        });
+    });
+  };
 
-  getUserById = async (id) => {
-
+  getUserByIdAsync = async (id) => {
     return new Promise((res, rej) => {
       this.firestore
-        .collection('users')
+        .collection("users")
         .doc(id)
         .get()
-        .then(user => {
-          res(user)
+        .then((user) => {
+          res(user);
         })
-        .catch(err => {
-          rej(err)
-        })
-    })
-  }
+        .catch((err) => {
+          rej(err);
+        });
+    });
+  };
 
-  uploadPhotoAsync = async uri => {
+  updateUserByIdAsync = async (id, fields) => {
+    return new Promise((res, rej) => {
+      this.firestore
+        .collection("users")
+        .doc(id)
+        .update(fields)
+        .then((ref) => res(ref))
+        .catch((err) => rej(err));
+    });
+  };
+
+  uploadPhotoAsync = async (uri) => {
     console.log(this.uid);
     const path = `photos/${this.uid}/${Date.now()}.jpg`;
 
@@ -79,10 +98,7 @@ class Fire {
       const response = await fetch(uri);
       const file = await response.blob();
 
-      let upload = firebase
-        .storage()
-        .ref(path)
-        .put(file);
+      let upload = firebase.storage().ref(path).put(file);
 
       upload.on(
         "state_changed",
@@ -99,26 +115,25 @@ class Fire {
   };
 
   getPostsRef = () => {
-    return this.firestore.collection('posts')
-  }
+    return this.firestore.collection("posts");
+  };
 
   getUsersRef = () => {
-    return this.firestore.collection('users')
-  }
+    return this.firestore.collection("users");
+  };
 
   get firestore() {
     return firebase.firestore();
   }
 
   get uid() {
-    return (firebase.auth().currentUser || {}).uid
+    return (firebase.auth().currentUser || {}).uid;
   }
 
   get timestamp() {
-    return Date.now()
+    return Date.now();
   }
 }
 
-
-Fire.shared = new Fire()
+Fire.shared = new Fire();
 export default Fire;

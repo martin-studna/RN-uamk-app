@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import colors from "../colors";
 
-const MenuScreen = (props) => {
+const MapScreen = (props) => {
   return (
     <View style={styles.container}>
+      <Text>Map Screen</Text>
     </View>
   );
 };
@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: colors.shadowBackground
+    justifyContent: "center",
   },
 });
 
-export default MenuScreen;
+export default MapScreen;

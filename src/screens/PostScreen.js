@@ -29,7 +29,7 @@ const PostScreen = (props) => {
 
   handlePost = () => {
     Fire.shared
-      .addPost({ text: text.trim(), localUri: image })
+      .addPostAsync({ text: text.trim(), localUri: image })
       .then((ref) => {
         setText("");
         setImage(null);

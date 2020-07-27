@@ -6,18 +6,17 @@ import firebase from "firebase";
 import Fire from "../Fire";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
-
-
+import { Ionicons } from "@expo/vector-icons";
 
 const ProfileSettingsScreen = (props) => {
   const [username, setUsername] = useState("");
   const [fullname, setFullname] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     getPhotoPermission();
 
-    Fire.shared.getUserById(firebase.auth().currentUser.uid).then((user) => {
+    Fire.shared.getUserByIdAsync(firebase.auth().currentUser.uid).then((user) => {
       setFullname(user.data().fullname);
       setUsername(user.data().username);
       setImage(user.data().image);
@@ -56,10 +55,41 @@ const ProfileSettingsScreen = (props) => {
     }
   };
 
+  const updateProfile = async () => {
+    
+    let uri = null
+
+    if (image !== null)
+      uri = await Fire.shared.uploadPhotoAsync(image)
+
+    const updates = {
+      image: uri,
+      username,
+      fullname
+    }
+    
+    Fire.shared
+      .updateUserByIdAsync(
+        firebase.auth().currentUser.uid, updates)
+        .then(res => {
+          console.log(res)
+          props.navigation.goBack()
+        })
+        .catch(err => console.error(err))
+  }
+
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <Ionicons name="md-close" size={32} color={colors.uamkBlue} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => updateProfile()}>
+          <Ionicons name="md-checkmark" size={32} color={colors.uamkBlue} />
+        </TouchableOpacity>
+      </View>
       <Image
-        source={image ? {uri: image} : require("../assets/profile_image.png")}
+        source={image ? { uri: image } : require("../assets/profile_image.png")}
         style={styles.image}
       />
       <TouchableOpacity style={styles.changeImage} onPress={() => pickImage()}>
@@ -69,11 +99,17 @@ const ProfileSettingsScreen = (props) => {
           Změnit
         </Text>
       </TouchableOpacity>
-      <TextInput placeholder="Celé jméno" style={styles.editFullname}>
-        {fullname}
+      <TextInput 
+        placeholder="Celé jméno" 
+        onChangeText={fullname => setFullname(fullname)}
+        value={fullname}
+        style={styles.editFullname}>
       </TextInput>
-      <TextInput placeholder="Jméno" style={styles.editUsername}>
-        {username}
+      <TextInput 
+        placeholder="Uživatelské jméno"
+        value={username}
+        onChangeText={username => setUsername(username)} 
+        style={styles.editUsername}>
       </TextInput>
       <View style={{ flex: 1 }}></View>
       <View style={styles.logoutContainer}>
@@ -136,6 +172,17 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  header: {
+    height: 80,
+    width: "100%",
+    backgroundColor: colors.primary,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: 'flex-end',
+    paddingBottom: 10,
+    paddingHorizontal: 15
   },
 });
 

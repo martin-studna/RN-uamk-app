@@ -16,7 +16,7 @@ const RegisterScreen = (props) => {
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(cred => {
-        return Fire.shared.addUser({
+        return Fire.shared.addUserAsync({
             uid: cred.user.uid,
             fullname: '',
             username: name,

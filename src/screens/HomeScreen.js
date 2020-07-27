@@ -187,8 +187,13 @@ const HomeScreen = (props) => {
         />
       </ImageBackground>
       <View style={styles.menuButtonContainer}>
-        <TouchableOpacity style={styles.menuButton} onPress={() => props.navigation.navigate('Menu')}>
-            <Ionicons name='md-apps' size={23} color="#fff" />
+        <TouchableOpacity style={styles.fabButton} onPress={() => props.navigation.navigate('Menu')}>
+            <Ionicons name='md-apps' size={23} color={colors.primary} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.mapButtonContainer}>
+        <TouchableOpacity style={styles.fabButton} onPress={() => props.navigation.navigate('Map')}>
+            <Ionicons name='md-map' size={23} color={colors.primary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -286,7 +291,17 @@ const styles = StyleSheet.create({
     
     borderRadius: 50,
   },
-  menuButton: {
+  mapButtonContainer: {
+    width: 55,
+    height: 55,
+    backgroundColor: colors.uamkBlue,
+    position: "absolute",
+    right: 10,
+    top: 50,
+    zIndex: 10,
+    borderRadius: 50,
+  },
+  fabButton: {
     width: '100%',
     height: '100%',
     display: "flex",

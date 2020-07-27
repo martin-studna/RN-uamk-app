@@ -7,6 +7,7 @@ import DescriptionScreen from '../screens/DescriptionScreen'
 import DrawerNavigator from './DrawerNavigator';
 import ProfileSettingsScreen from '../screens/ProfileSettingsScreen';
 import MenuScreen from '../screens/MenuScreen';
+import MapScreen from '../screens/MapScreen'
 
 
 
@@ -23,6 +24,9 @@ const appStackNavigator = createStackNavigator(
 		},
 		Menu: {
 			screen: MenuScreen
+		},
+		Map: {
+			screen: MapScreen
 		}
 	},
 	{
