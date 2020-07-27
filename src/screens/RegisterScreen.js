@@ -1,141 +1,169 @@
-import React, { setState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, ImageBackground, Image } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import * as firebase from 'firebase'
-
+import * as firebase from "firebase";
+import Fire from "../Fire.js";
+import colors from "../colors";
 
 const RegisterScreen = (props) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
+  const handleSignUp = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(cred => {
+        return Fire.shared.addUser({
+            uid: cred.user.uid,
+            fullname: '',
+            username: name,
+            mail: email,
+            password,
+            image: null,
+            points: 0,
+            cardId: null,
+            cardActivationCode: null
+        })
+      })
+      .catch((error) => setErrorMessage(error.message));
+  };
 
-    const [name, setName] = setState('')
-    const [email, setEmail] = setState('')
-    const [password, setPassword] = setState('')
-    const [errorMessage, setErrorMessage] = setState(null)
+  return (
+    <ImageBackground
+      style={styles.container}
+      source={require("../assets/backgroundimage_zoom.png")}
+    >
+      <View style={styles.errorMessage}>
+        {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+      </View>
 
-    handleSignUp = () => {
+      <Image
+        source={require("../assets/zirani_logo_circle.png")}
+        style={styles.logo}
+      />
 
-        firebase
-            .auth()
-            .createUserWithEmailAndPassword(email, password)
-            .then(userCredentials => {
-                return userCredentials.user.updateProfile({
-                    displayName: name
-                })
-            })
-            .catch(error => setErrorMessage(error.message))
+      <View style={styles.form}>
+        <View>
+          <TextInput
+            style={styles.input}
+            onChangeText={(name) => setName(name)}
+            value={name}
+            placeholder="Uživatelské jméno..."
+            autoCapitalize="none"
+          ></TextInput>
+        </View>
 
-    }
-    
-    
-        return (
-            <View style={styles.container}>
-                <Text style={styles.greeting}>{'Hello! \n Sign up to get started.'}</Text>
+        <View style={{ marginTop: 10 }}>
+          <TextInput
+            style={styles.input}
+            onChangeText={(email) => setEmail(email)}
+            value={email}
+            placeholder="Email..."
+            autoCapitalize="none"
+          ></TextInput>
+        </View>
 
-                <View style={styles.errorMessage}>
-                    {
-                        errorMessage && 
-                    <Text style={styles.error}>
-                        {errorMessage}
-                    </Text>
-                    }
-                </View>
+        <View style={{ marginTop: 10 }}>
+          <TextInput
+            style={styles.input}
+            secureTextEntry
+            autoCapitalize="none"
+            placeholder="Heslo..."
+            onChangeText={(password) => setPassword(password)}
+            value={password}
+          ></TextInput>
+        </View>
+      </View>
 
-                <View style={styles.form}>
-                    <View>
-                        <Text style={styles.inputTitle}>Full Name</Text>
-                        <TextInput 
-                            style={styles.input} 
-                            onChangeText={name => setName(name) }
-                            value={name}
-                            autoCapitalize="none"></TextInput>
-                    </View>
+      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+        <Text style={{ fontWeight: "bold", fontSize: 16 }}>Registrovat se</Text>
+      </TouchableOpacity>
 
-                    <View style={{marginTop: 32}}>
-                        <Text style={styles.inputTitle}>Email Address</Text>
-                        <TextInput 
-                            style={styles.input} 
-                            onChangeText={email => setEmail(email) }
-                            value={email}
-                            autoCapitalize="none"></TextInput>
-                    </View>
+      <View style={{ flex: 1 }}></View>
 
-                    <View style={{marginTop: 32}}>
-                        <Text style={styles.inputTitle}>Password</Text>
-                        <TextInput 
-                        style={styles.input}
-                        secureTextEntry 
-                        autoCapitalize="none"
-                        onChangeText={password => setPassword(password)}
-                        value={password}></TextInput>
-                    </View>
-                </View>
-
-                <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                    <Text style={{color: '#fff', fontWeight: '500'}}>Sign Up</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                    style={{alignSelf: 'center', marginTop: 32}}
-                    onPress={() => props.navigation.navigate('Login')}
-                    >
-                    <Text style={{color: '#414959', fontSize: 13}}>
-                        New to SocialApp? <Text style={{color: '#E9446A', fontWeight: '500'}}>Login</Text>
-                    </Text>
-                </TouchableOpacity>
-            </View>
-        )
-    
-    
-    
-}
+      <TouchableOpacity
+        style={styles.registerButton}
+        onPress={() => props.navigation.navigate("Login")}>
+        <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16  }}>Už máte účet? Přihlásit se</Text>
+      </TouchableOpacity>
+    </ImageBackground>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    greeting: {
-        marginTop: 32,
-        fontSize: 18,
-        fontWeight: "400",
-        textAlign: "center"
-    },
-    errorMessage: {
-        height: 72,
-        alignItems: "center",
-        justifyContent: "center",
-        marginHorizontal: 30
-    },
-    error: {
-        color: '#E9446A',
-        fontSize: 13,
-        fontWeight: '600',
-        textAlign: 'center'  
-    },
-    form: {
-        marginBottom: 48,
-        marginHorizontal: 30
-    },
-    inputTitle: {
-        color: "#8A8F9E",
-        fontSize: 10,
-        textTransform: "uppercase"
-    },
-    input: {
-        borderBottomColor: '#8A8F9E',
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        height: 40,
-        fontSize: 15,
-        color: "#8A8F9E"
-    },
-    button: {
-        marginHorizontal: 30,
-        backgroundColor: '#E9446A',
-        borderRadius: 4,
-        height: 52,
-        alignItems: "center",
-        justifyContent: "center"
-    }
-})
+  container: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+  },
+  greeting: {
+    marginTop: 32,
+    fontSize: 18,
+    fontWeight: "400",
+    textAlign: "center",
+  },
+  errorMessage: {
+    height: 72,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 30,
+  },
+  error: {
+    color: "#E9446A",
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  logo: {
+    marginTop: 50,
+    width: 120,
+    height: 120,
+  },
+  form: {
+    marginTop: 40,
+    marginBottom: 20,
+    marginHorizontal: 40,
+    paddingHorizontal: 20,
+    width: "100%",
+  },
+  inputTitle: {
+    color: "#8A8F9E",
+    fontSize: 10,
+    textTransform: "uppercase",
+  },
+  input: {
+    borderBottomColor: "#8A8F9E",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    height: 45,
+    fontSize: 15,
+    padding: 10,
+    paddingLeft: 20,
+
+    backgroundColor: "white",
+    borderRadius: 13,
+  },
+  button: {
+    marginHorizontal: 30,
+    backgroundColor: "white",
+    borderRadius: 30,
+    width: 300,
+    height: 46,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  registerButton: {
+    backgroundColor: colors.primaryDark,
+    height: 46,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 300,
+    borderRadius: 30,
+    marginBottom: 15,
+  },
+});
 
 export default RegisterScreen;
-

@@ -8,7 +8,11 @@ import RegisterScreen from '../screens/RegisterScreen'
 
 const AuthStack = createStackNavigator({
   Login: LoginScreen,
-  Register: RegisterScreen
+  Register: RegisterScreen,
+  
+},
+{
+  headerMode: 'none',
 })
 
 

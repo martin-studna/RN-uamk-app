@@ -8,9 +8,6 @@ import Fire from "../Fire.js";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../colors";
 
-const firebase = require("firebase");
-require("firebase/firestore");
-
 const PostScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
@@ -71,7 +68,6 @@ const PostScreen = (props) => {
         </View>
         <Text style={styles.title}>Nahlásit nehodu</Text>
       </View>
-
       <View style={styles.difficultyContainer}>
         <TouchableOpacity style={styles.difficultyRectangle} onPress={() => setDifficulty('easy')}>
           <View style={styles.carCircle}>
@@ -82,7 +78,9 @@ const PostScreen = (props) => {
           </View>
           <Text style={styles.difficultyText}>Malá</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.difficultyRectangle} onPress={() => setDifficulty('medium')}>
+        <TouchableOpacity style={styles.difficultyRectangle} onPress={() => {
+          setDifficulty('medium')
+          }}>
           <View style={styles.carCircle}>
             <Image
               style={styles.imageCarCrash}
@@ -101,7 +99,6 @@ const PostScreen = (props) => {
           <Text style={styles.difficultyText}>Velká</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.bottomContainer}>
         <TouchableOpacity style={styles.cameraContainer}>
           <Ionicons name="md-camera" size={32} color="white" />

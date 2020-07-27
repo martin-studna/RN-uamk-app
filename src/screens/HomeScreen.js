@@ -8,68 +8,73 @@ import {
   ImageBackground,
   ActivityIndicator,
   RefreshControl,
+  Icon
 } from "react-native";
 import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors.js";
 import MenuButton from "../components/MenuButton.js";
 import Fire from "../Fire.js";
-import moment from 'moment'
+import moment from "moment";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const HomeScreen = (props) => {
+  let onEndReachedCallDuringMomentum = false;
 
-  let onEndReachedCallDuringMomentum = false
+  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
-  const [email, setEmail] = useState('')
-  const [displayName, setDisplayName] = useState('')
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMoreLoading, setIsMoreLoading] = useState(false);
+  const [lastDoc, setLastDoc] = useState(null);
+  const [posts, setPosts] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [isMoreLoading, setIsMoreLoading] = useState(false)
-  const [lastDoc, setLastDoc] = useState(null)
-  const [posts, setPosts] = useState([])
-
-  const postsRef = Fire.shared.getPostsRef()
+  const postsRef = Fire.shared.getPostsRef();
 
   useEffect(() => {
-    const user = firebase.auth().currentUser
+    const user = firebase.auth().currentUser;
 
-    setEmail(user.email)
-    setDisplayName(user.displayName)
+    setEmail(user.email);
+    setDisplayName(user.displayName);
 
-    getPosts()
+    getPosts();
   }, []);
 
-  getPosts = async () => {
-    setIsLoading(true)
+  const getPosts = async () => {
+    setIsLoading(true);
 
-    const snapshot = await postsRef.orderBy('timestamp').limit(3).get()
+    const snapshot = await postsRef.orderBy("timestamp").limit(3).get();
 
     if (!snapshot.empty) {
-      let newPosts = []
+      let newPosts = [];
 
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
       for (let i = 0; i < snapshot.docs.length; i++) {
-        newPosts.push(snapshot.docs[i].data())
+        newPosts.push(snapshot.docs[i].data());
       }
 
-      setPosts(newPosts)
+      setPosts(newPosts);
     } else {
-      setLastDoc(null)
+      setLastDoc(null);
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
-  getMore = async () => {
+  const getMore = async () => {
     if (lastDoc) {
-      setIsMoreLoading(true)
+      setIsMoreLoading(true);
 
-      setTimeout(async() => {
-        let snapshot = await postsRef.orderBy('timestamp').startAfter(lastDoc.data().uid).limit(3).get()
-        
+      setTimeout(async () => {
+        let snapshot = await postsRef
+          .orderBy("timestamp")
+          .startAfter(lastDoc.data().uid)
+          .limit(3)
+          .get();
+
         if (!snapshot.empty) {
-          let newPosts = posts
+          let newPosts = posts;
 
           setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
@@ -77,39 +82,38 @@ const HomeScreen = (props) => {
             newPosts.push(snapshot.docs[i].data());
           }
 
-          setPosts(newPosts)
-          if (snapshot.docs.length < 3) setLastDoc(null)
+          setPosts(newPosts);
+          if (snapshot.docs.length < 3) setLastDoc(null);
         } else {
-          setLastDoc(null)    
+          setLastDoc(null);
         }
 
-        setIsMoreLoading(false)
+        setIsMoreLoading(false);
       }, 1000);
     }
 
-    onEndReachedCallDuringMomentum = false
-  }
+    onEndReachedCallDuringMomentum = false;
+  };
 
-  onRefresh = () => {
+  const onRefresh = () => {
     setTimeout(() => {
       getPosts();
     }, 1000);
-  }
+  };
 
-  renderFooter = () => {
-    if (!isMoreLoading) return true
+  const renderFooter = () => {
+    if (!isMoreLoading) return true;
 
     return (
       <ActivityIndicator
         size="large"
-        color={'#D83E64'}
-        style={{ marginBottom: 10 }} 
+        color={"#D83E64"}
+        style={{ marginBottom: 10 }}
       />
-    )
-  }
+    );
+  };
 
-  renderPost = (post) => {
-
+  const renderPost = (post) => {
     return (
       <View style={styles.postContainer}>
         <View style={{ flex: 1 }}>
@@ -127,26 +131,28 @@ const HomeScreen = (props) => {
               </Text>
             </View>
 
-            <Ionicons style={styles.more} name="ios-more" size={24} color="#73788B" />
+            <Ionicons
+              style={styles.more}
+              name="ios-more"
+              size={24}
+              color="#73788B"
+            />
           </View>
 
           <Text style={styles.post}>{post.text}</Text>
 
           <Image
-            source={{ uri: post.image}}
+            source={{ uri: post.image }}
             style={styles.postImage}
-            resizeMode='cover'
+            resizeMode="cover"
           />
 
-          <View style={{ flexDirection: "row" }}>
-          
-          </View>
+          <View style={{ flexDirection: "row" }}></View>
         </View>
+        
       </View>
     );
   };
-
-  
 
   return (
     <View style={styles.container}>
@@ -166,24 +172,27 @@ const HomeScreen = (props) => {
           showsVerticalScrollIndicator={false}
           ListFooterComponent={renderFooter}
           refreshControl={
-              <RefreshControl 
-                 refreshing={isLoading}
-                 onRefresh={onRefresh}
-              />
+            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
           }
           initialNumToRender={3}
           onEndReachedThreshold={0.1}
-          onMomentumScrollBegin={() => {onEndReachedCallDuringMomentum = false;}}
+          onMomentumScrollBegin={() => {
+            onEndReachedCallDuringMomentum = false;
+          }}
           onEndReached={() => {
             if (!onEndReachedCallDuringMomentum && !isMoreLoading) {
-              getMore()
+              getMore();
             }
           }}
         />
       </ImageBackground>
+      <View style={styles.menuButtonContainer}>
+        <TouchableOpacity style={styles.menuButton} onPress={() => props.navigation.navigate('Menu')}>
+            <Ionicons name='md-apps' size={23} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
-
 };
 
 const styles = StyleSheet.create({
@@ -194,7 +203,7 @@ const styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
     height: "100%",
-    flex: 1
+    flex: 1,
   },
   menu: {
     marginLeft: 42,
@@ -242,11 +251,10 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   postContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginTop: 5,
     marginBottom: 5,
     borderRadius: 22,
-
   },
   post: {
     marginLeft: 16,
@@ -257,16 +265,34 @@ const styles = StyleSheet.create({
   timestamp: {
     marginTop: 16,
     marginLeft: 16,
-    marginBottom: 16
+    marginBottom: 16,
   },
   more: {
     marginRight: 16,
   },
   postImage: {
-    width: '100%',
+    width: "100%",
     height: 150,
     marginVertical: 16,
   },
+  menuButtonContainer: {
+    width: 55,
+    height: 55,
+    backgroundColor: colors.uamkBlue,
+    position: "absolute",
+    right: 10,
+    bottom: 20,
+    zIndex: 10,
+    
+    borderRadius: 50,
+  },
+  menuButton: {
+    width: '100%',
+    height: '100%',
+    display: "flex",
+    justifyContent: 'center',
+    alignItems: "center",
+  }
 });
 
 export default HomeScreen;

@@ -6,6 +6,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import DescriptionScreen from '../screens/DescriptionScreen'
 import DrawerNavigator from './DrawerNavigator';
 import ProfileSettingsScreen from '../screens/ProfileSettingsScreen';
+import MenuScreen from '../screens/MenuScreen';
 
 
 
@@ -19,7 +20,10 @@ const appStackNavigator = createStackNavigator(
     },
     Description: {
       screen: DescriptionScreen
-    }
+		},
+		Menu: {
+			screen: MenuScreen
+		}
 	},
 	{
 		headerMode: 'none',

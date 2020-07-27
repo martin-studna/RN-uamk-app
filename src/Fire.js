@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import firebaseConfig from "./config.js";
+import { add } from "react-native-reanimated";
 
 class Fire {
   constructor() {
@@ -13,12 +14,12 @@ class Fire {
     return new Promise((res, rej) => {
       this.firestore
         .collection("posts")
-        .add(Object.assign({}, {
+        .add({
           text,
           uid: this.uid,
           timestamp: this.timestamp,
           image: remoteUri
-        }))
+        })
         .then((ref) => {
           res(ref);
         })
@@ -27,6 +28,46 @@ class Fire {
         });
     });
   };
+
+  addUser = async ({ uid, fullname, username, mail, password, image, points, cardId, cardActivationCode }) => {
+    return new Promise((res, rej) => {
+      this.firestore
+        .collection('users')
+        .doc(uid)
+        .set({
+          fullname,
+          username,
+          mail,
+          password,
+          image,
+          points,
+          cardId,
+          cardActivationCode
+        })
+        .then(ref => {
+          res(ref)
+        })
+        .catch(err => {
+          rej(err)
+        })
+    })
+  }
+
+  getUserById = async (id) => {
+
+    return new Promise((res, rej) => {
+      this.firestore
+        .collection('users')
+        .doc(id)
+        .get()
+        .then(user => {
+          res(user)
+        })
+        .catch(err => {
+          rej(err)
+        })
+    })
+  }
 
   uploadPhotoAsync = async uri => {
     console.log(this.uid);
@@ -59,6 +100,10 @@ class Fire {
 
   getPostsRef = () => {
     return this.firestore.collection('posts')
+  }
+
+  getUsersRef = () => {
+    return this.firestore.collection('users')
   }
 
   get firestore() {
