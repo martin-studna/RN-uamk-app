@@ -16,7 +16,7 @@ const MenuScreen = (props) => {
       </View>
       <View style={styles.menu}>
         <View style={styles.row}>
-          <View style={styles.element}>
+          <TouchableOpacity style={styles.element} onPress={() => props.navigation.navigate(('TrafficJam'))}>
             <View style={styles.circle}>
               <Image
                 style={styles.logo}
@@ -24,8 +24,8 @@ const MenuScreen = (props) => {
               />
             </View>
             <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center'}}>Kolona</Text>
-          </View>
-          <View style={styles.element}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.element} onPress={() => props.navigation.navigate('Danger')}>
             <View style={styles.circle}>
               <Image
                 style={styles.logo}
@@ -33,8 +33,8 @@ const MenuScreen = (props) => {
               />
             </View>
             <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center'}}>Nebezpečí</Text>
-          </View>
-          <View style={styles.element}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.element} onPress={() => props.navigation.navigate('TrafficClosure')}>
             <View style={styles.circle}>
               <Image
                 style={styles.logo}
@@ -42,7 +42,7 @@ const MenuScreen = (props) => {
               />
             </View>
             <Text style={{ fontWeight: 'bold', color: '#fff', width: '50%', textAlign: 'center'}}>Dopravní uzavírka</Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <View>
           

@@ -7,6 +7,20 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.rnuamkapp",
+      "config": {
+          "googleMaps": {
+              "apiKey": "AIzaSyDXXWY9udhqHLU3CvNgrWEdpoGhPayRe88"
+          }
+      }
+    },
+    "ios": {
+        "bundleIdentifier": "org.name.RNuamkapp",
+        "config": {
+            "googleMapsApiKey": "AIzaSyDXXWY9udhqHLU3CvNgrWEdpoGhPayRe88"
+        }
+    }
   }
 }

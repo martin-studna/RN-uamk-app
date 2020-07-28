@@ -7,7 +7,10 @@ import DescriptionScreen from '../screens/DescriptionScreen'
 import DrawerNavigator from './DrawerNavigator';
 import ProfileSettingsScreen from '../screens/ProfileSettingsScreen';
 import MenuScreen from '../screens/MenuScreen';
-import MapScreen from '../screens/MapScreen'
+import MapScreen from '../screens/MapScreen';
+import DangerScreen from '../screens/DangerScreen'
+import TrafficJamScreen from '../screens/TrafficJamScreen'
+import TrafficClosureScreen from '../screens/TrafficClosureScreen'
 
 
 
@@ -27,6 +30,15 @@ const appStackNavigator = createStackNavigator(
 		},
 		Map: {
 			screen: MapScreen
+		},
+		TrafficClosure: {
+			screen: TrafficClosureScreen
+		},
+		TrafficJam: {
+			screen: TrafficJamScreen
+		},
+		Danger: {
+			screen: DangerScreen
 		}
 	},
 	{

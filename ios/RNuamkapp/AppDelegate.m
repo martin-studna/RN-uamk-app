@@ -36,10 +36,15 @@ static void InitializeFlipper(UIApplication *application) {
 
 @end
 
+#import <GoogleMaps/GoogleMaps.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
+  [GMSServices provideAPIKey:@"AIzaSyDXXWY9udhqHLU3CvNgrWEdpoGhPayRe88"];
+
 #if DEBUG
   InitializeFlipper(application);
 #endif

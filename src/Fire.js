@@ -1,6 +1,5 @@
 import firebase from "firebase";
 import firebaseConfig from "./config.js";
-import { add } from "react-native-reanimated";
 
 class Fire {
   constructor() {
