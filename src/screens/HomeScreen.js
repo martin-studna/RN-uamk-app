@@ -8,15 +8,14 @@ import {
   ImageBackground,
   ActivityIndicator,
   RefreshControl,
-  Icon
 } from "react-native";
 import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors.js";
 import MenuButton from "../components/MenuButton.js";
 import Fire from "../Fire.js";
-import moment from "moment";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Post from "../components/Post.js";
 
 const HomeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -115,42 +114,14 @@ const HomeScreen = (props) => {
 
   const renderPost = (post) => {
     return (
-      <View style={styles.postContainer}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <View>
-              <Text style={styles.name}>{post.name}</Text>
-              <Text style={styles.timestamp}>
-                {moment(post.timestamp).fromNow()}
-              </Text>
-            </View>
-
-            <Ionicons
-              style={styles.more}
-              name="ios-more"
-              size={24}
-              color="#73788B"
-            />
-          </View>
-
-          <Text style={styles.post}>{post.text}</Text>
-
-          <Image
-            source={{ uri: post.image }}
-            style={styles.postImage}
-            resizeMode="cover"
-          />
-
-          <View style={{ flexDirection: "row" }}></View>
-        </View>
-        
-      </View>
+      <Post
+        timestamp={post.timestamp}
+        text={post.text}
+        image={post.image}
+        difficulty={post.difficulty}
+        type={post.type}
+        publisher={post.publisher}
+      />
     );
   };
 
@@ -187,13 +158,19 @@ const HomeScreen = (props) => {
         />
       </ImageBackground>
       <View style={styles.menuButtonContainer}>
-        <TouchableOpacity style={styles.fabButton} onPress={() => props.navigation.navigate('Menu')}>
-            <Ionicons name='md-apps' size={23} color={colors.primary} />
+        <TouchableOpacity
+          style={styles.fabButton}
+          onPress={() => props.navigation.navigate("Menu")}
+        >
+          <Ionicons name="md-apps" size={23} color={colors.primary} />
         </TouchableOpacity>
       </View>
       <View style={styles.mapButtonContainer}>
-        <TouchableOpacity style={styles.fabButton} onPress={() => props.navigation.navigate('Map')}>
-            <Ionicons name='md-map' size={23} color={colors.primary} />
+        <TouchableOpacity
+          style={styles.fabButton}
+          onPress={() => props.navigation.navigate("Map")}
+        >
+          <Ionicons name="md-map" size={23} color={colors.primary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -255,31 +232,6 @@ const styles = StyleSheet.create({
     color: "#C4C6CE",
     marginTop: 4,
   },
-  postContainer: {
-    backgroundColor: "white",
-    marginTop: 5,
-    marginBottom: 5,
-    borderRadius: 22,
-  },
-  post: {
-    marginLeft: 16,
-    marginRight: 16,
-    fontSize: 14,
-    color: "#838899",
-  },
-  timestamp: {
-    marginTop: 16,
-    marginLeft: 16,
-    marginBottom: 16,
-  },
-  more: {
-    marginRight: 16,
-  },
-  postImage: {
-    width: "100%",
-    height: 150,
-    marginVertical: 16,
-  },
   menuButtonContainer: {
     width: 55,
     height: 55,
@@ -288,7 +240,7 @@ const styles = StyleSheet.create({
     right: 10,
     bottom: 20,
     zIndex: 10,
-    
+
     borderRadius: 50,
   },
   mapButtonContainer: {
@@ -302,12 +254,12 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   fabButton: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     display: "flex",
-    justifyContent: 'center',
+    justifyContent: "center",
     alignItems: "center",
-  }
+  },
 });
 
 export default HomeScreen;

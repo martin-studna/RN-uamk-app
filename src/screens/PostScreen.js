@@ -11,10 +11,11 @@ import colors from "../colors";
 const PostScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
-  const [difficulty, setDifficulty] = useState(null)
+  const [difficulty, setDifficulty] = useState(null);
 
   useEffect(() => {
     getPhotoPermission();
+
   }, []);
 
   getPhotoPermission = async () => {
@@ -55,7 +56,13 @@ const PostScreen = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.exitContainer}>
-        <TouchableOpacity style={styles.exit} onPress={() => props.navigation.navigate('Home')} >
+        <TouchableOpacity
+          style={styles.exit}
+          onPress={() => {
+              setDifficulty(null)
+              props.navigation.goBack()
+            }}
+        >
           <Ionicons name="md-close" size={30} color={colors.shadowBackground} />
         </TouchableOpacity>
       </View>
@@ -69,7 +76,16 @@ const PostScreen = (props) => {
         <Text style={styles.title}>Nahlásit nehodu</Text>
       </View>
       <View style={styles.difficultyContainer}>
-        <TouchableOpacity style={styles.difficultyRectangle} onPress={() => setDifficulty('easy')}>
+        <TouchableOpacity
+          style={[
+            styles.difficultyRectangle,
+            {
+              backgroundColor:
+                difficulty === "easy" ? colors.smallDifficulty : "transparent",
+            },
+          ]}
+          onPress={() => setDifficulty("easy")}
+        >
           <View style={styles.carCircle}>
             <Image
               style={styles.imageCarCrash}
@@ -78,9 +94,20 @@ const PostScreen = (props) => {
           </View>
           <Text style={styles.difficultyText}>Malá</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.difficultyRectangle} onPress={() => {
-          setDifficulty('medium')
-          }}>
+        <TouchableOpacity
+          style={[
+            styles.difficultyRectangle,
+            {
+              backgroundColor:
+                difficulty === "medium"
+                  ? colors.mediumDifficulty
+                  : "transparent",
+            },
+          ]}
+          onPress={() => {
+            setDifficulty("medium");
+          }}
+        >
           <View style={styles.carCircle}>
             <Image
               style={styles.imageCarCrash}
@@ -89,7 +116,16 @@ const PostScreen = (props) => {
           </View>
           <Text style={styles.difficultyText}>Střední</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.difficultyRectangle} onPress={() => setDifficulty('hard')}>
+        <TouchableOpacity
+          style={[
+            styles.difficultyRectangle,
+            {
+              backgroundColor:
+                difficulty === "hard" ? colors.bigDifficulty : "transparent",
+            },
+          ]}
+          onPress={() => setDifficulty("hard")}
+        >
           <View style={styles.carCircle}>
             <Image
               style={styles.imageCarCrash}
@@ -105,7 +141,10 @@ const PostScreen = (props) => {
           <Text style={{ color: "white", marginTop: 5 }}>Přidat fotku</Text>
         </TouchableOpacity>
         <View style={styles.line}></View>
-        <TouchableOpacity style={styles.comment} onPress={() => props.navigation.navigate('Description')}>
+        <TouchableOpacity
+          style={styles.comment}
+          onPress={() => props.navigation.navigate("Description")}
+        >
           <Ionicons name="md-text" size={32} color="white" />
           <Text
             style={{
@@ -113,7 +152,8 @@ const PostScreen = (props) => {
               fontWeight: "600",
               fontSize: 18,
               marginLeft: 20,
-            }}>
+            }}
+          >
             Přidat popis
           </Text>
         </TouchableOpacity>
@@ -121,7 +161,7 @@ const PostScreen = (props) => {
       <View style={styles.bottomPart}>
         <View style={styles.sendButtonContainer}>
           <TouchableOpacity style={styles.sendButton}>
-            <Ionicons name='md-arrow-up' size={30} />
+            <Ionicons name="md-arrow-up" size={30} />
           </TouchableOpacity>
         </View>
         <View style={styles.bottomBar}></View>
@@ -264,36 +304,36 @@ const styles = StyleSheet.create({
     color: "white",
   },
   bottomPart: {
-    display: 'flex',
+    display: "flex",
     flex: 1,
-    justifyContent: 'flex-end',
-    width: '100%',
+    justifyContent: "flex-end",
+    width: "100%",
   },
   bottomBar: {
-    width: '100%',
-    height: '40%',
-    backgroundColor: colors.primary
+    width: "100%",
+    height: "40%",
+    backgroundColor: colors.primary,
   },
   sendButtonContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: "absolute",
+    alignSelf: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     bottom: 30,
     zIndex: 10,
     width: 56,
     height: 56,
     borderRadius: 50,
-    backgroundColor: '#E6201B'
+    backgroundColor: "#E6201B",
   },
   sendButton: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default PostScreen;

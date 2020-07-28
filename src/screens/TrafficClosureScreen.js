@@ -69,7 +69,15 @@ const TrafficClosureScreen = (props) => {
         <Text style={styles.title}>Nahlásit nehodu</Text>
       </View>
       <View style={styles.difficultyContainer}>
-        <TouchableOpacity style={styles.difficultyRectangle} onPress={() => setDifficulty('easy')}>
+        <TouchableOpacity style={[
+            styles.difficultyRectangle,
+            {
+              backgroundColor:
+                difficulty === "easy"
+                  ? colors.smallDifficulty
+                  : "transparent",
+            },
+          ]} onPress={() => setDifficulty('easy')}>
           <View style={[styles.carCircle, {backgroundColor: colors.smallDifficulty}]}>
             <Image
               style={styles.imageCarCrash}
@@ -78,7 +86,15 @@ const TrafficClosureScreen = (props) => {
           </View>
           <Text style={styles.difficultyText}>Malá</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.difficultyRectangle} onPress={() => {
+        <TouchableOpacity style={[
+            styles.difficultyRectangle,
+            {
+              backgroundColor:
+                difficulty === "medium"
+                  ? colors.mediumDifficulty
+                  : "transparent",
+            },
+          ]} onPress={() => {
           setDifficulty('medium')
           }}>
           <View style={[styles.carCircle, {backgroundColor: colors.mediumDifficulty}]}>
@@ -89,7 +105,15 @@ const TrafficClosureScreen = (props) => {
           </View>
           <Text style={styles.difficultyText}>Střední</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.difficultyRectangle} onPress={() => setDifficulty('hard')}>
+        <TouchableOpacity style={[
+            styles.difficultyRectangle,
+            {
+              backgroundColor:
+                difficulty === "hard"
+                  ? colors.bigDifficulty
+                  : "transparent",
+            },
+          ]} onPress={() => setDifficulty('hard')}>
           <View style={[styles.carCircle, {backgroundColor: colors.bigDifficulty}]}>
             <Image
               style={styles.imageCarCrash}

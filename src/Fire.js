@@ -6,16 +6,19 @@ class Fire {
     firebase.initializeApp(firebaseConfig);
   }
 
-  addPostAsync = async ({ text, localUri }) => {
+  addPostAsync = async ({ difficulty, type, location, text, localUri }) => {
     const remoteUri = localUri ? await this.uploadPhotoAsync(localUri) : null;
 
     return new Promise((res, rej) => {
       this.firestore
         .collection("posts")
         .add({
-          text,
-          uid: this.uid,
+          publisher: this.uid,
           timestamp: this.timestamp,
+          difficulty,
+          type,
+          location,
+          text,
           image: remoteUri,
         })
         .then((ref) => {
