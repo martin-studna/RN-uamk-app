@@ -96,6 +96,8 @@ target 'RNuamkapp' do
   add_flipper_pods!
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
   post_install do |installer|
     flipper_post_install(installer)
   end
