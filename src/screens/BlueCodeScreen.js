@@ -39,7 +39,7 @@ const BlueCodeScreen = (props) => {
     const snapshot = await youtube.get(
       `/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=20`);
 
-    console.log(snapshot)
+    console.log('YOUTUBE DATA: ' ,snapshot)
 
     if (snapshot.data.items.length !== 0) {
       let newVideos = [];
@@ -52,7 +52,7 @@ const BlueCodeScreen = (props) => {
         newVideos.push(newVideo);
       }
 
-      console.log("new videos: ", newVideos);
+      console.log("BLUE CODE VIDEOS: ", newVideos);
 
       setVideos(newVideos);
     } else {

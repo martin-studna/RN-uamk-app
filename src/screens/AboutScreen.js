@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Linking } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors";
@@ -15,11 +15,12 @@ const AboutScreen = (props) => {
       </View>
       <View style={styles.content}>
         <Text style={styles.paragraph}>
-          Autorem projektu <Text style={{fontWeight: "bold"}}>Zíráním nepomůžeš</Text> je Ústřední automotoklub České
-          republiky z. s. Důvodem jeho vzniku je především neuspokojivá situace
-          na českých silnicích a dálnicích. Zejména velmi rychle se zvyšující
-          počet a závažnost následků dopravních nehod způsobených nevěnováním se
-          řízení.
+          Autorem projektu{" "}
+          <Text style={{ fontWeight: "bold" }}>Zíráním nepomůžeš</Text> je
+          Ústřední automotoklub České republiky z. s. Důvodem jeho vzniku je
+          především neuspokojivá situace na českých silnicích a dálnicích.
+          Zejména velmi rychle se zvyšující počet a závažnost následků
+          dopravních nehod způsobených nevěnováním se řízení.
         </Text>
         <Text style={styles.paragraph}>
           Cílem projektu je snížení počtu a následků těchto nehod. Tím projekt
@@ -41,10 +42,29 @@ const AboutScreen = (props) => {
       </View>
 
       <View style={styles.imagesContainer}>
-        <Image source={require('../assets/uamk_logo.png')} style={styles.uamkLogo} />
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://www.uamk.cz")}
+        >
+          <Image
+            source={require("../assets/uamk_logo.png")}
+            style={styles.uamkLogo}
+          />
+        </TouchableOpacity>
         <View style={styles.imageColumn}>
-          <Image source={require('../assets/prima.png')} style={styles.primaLogo}/>
-          <Image source={require('../assets/modry_kod_img.png')} style={styles.bluecodeLogo}/>
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://www.iprima.cz/")}
+          >
+            <Image
+              source={require("../assets/prima.png")}
+              style={styles.primaLogo}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => Linking.openURL('https://prima.iprima.cz/porady/modry-kod')}>
+            <Image
+              source={require("../assets/modry_kod_img.png")}
+              style={styles.bluecodeLogo}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -75,36 +95,36 @@ const styles = StyleSheet.create({
   },
   content: {
     margin: 10,
-    marginTop: 30
+    marginTop: 30,
   },
   paragraph: {
-    marginBottom: 9
+    marginBottom: 9,
   },
   uamkLogo: {
     width: 120,
     height: 120,
-    marginRight: 30
+    marginRight: 30,
   },
   primaLogo: {
     width: 100,
     height: 40,
-    resizeMode: 'stretch',
+    resizeMode: "stretch",
   },
   bluecodeLogo: {
     marginTop: 30,
     height: 40,
     width: 110,
-    resizeMode: 'stretch',
+    resizeMode: "stretch",
   },
   imagesContainer: {
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   imageColumn: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default AboutScreen;

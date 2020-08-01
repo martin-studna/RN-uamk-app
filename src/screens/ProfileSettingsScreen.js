@@ -72,7 +72,7 @@ const ProfileSettingsScreen = (props) => {
       .updateUserByIdAsync(
         firebase.auth().currentUser.uid, updates)
         .then(res => {
-          console.log(res)
+          console.log('UPDATE USER: ', res.data())
           props.navigation.goBack()
         })
         .catch(err => console.error(err))

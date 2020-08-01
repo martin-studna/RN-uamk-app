@@ -15,7 +15,7 @@ import colors from "../colors.js";
 import MenuButton from "../components/MenuButton.js";
 import Fire from "../Fire.js";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Post from "../components/Post.js";
+import PostCard from "../components/PostCard.js";
 
 const HomeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -114,13 +114,13 @@ const HomeScreen = (props) => {
 
   const renderPost = (post) => {
     return (
-      <Post
+      <PostCard
         timestamp={post.timestamp}
         text={post.text}
         image={post.image}
         difficulty={post.difficulty}
         type={post.type}
-        publisher={post.publisher}
+        publisher={post.uid}
       />
     );
   };

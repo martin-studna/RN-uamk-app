@@ -1,9 +1,9 @@
 import React from "react";
-import { View, Image, StyleSheet, Text } from "react-native";
+import { View, Image, StyleSheet, Text, TouchableOpacity, Linking } from "react-native";
 
-const VideoCard = (props) => {
+const VideoCard = props => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={() => Linking.openURL(`https://m.youtube.com/watch?v=${props.videoId}`) }>
       <View style={styles.header}>
         <Image source={require('../assets/prima.png')} style={{resizeMode: 'stretch', width: 50, height: 25}}/>
         <Image source={require('../assets/book.png')} style={{resizeMode: 'stretch', width: 45, height: 45}}/>
@@ -16,7 +16,7 @@ const VideoCard = (props) => {
         />
         <Text style={{color: 'grey', width: 200, marginLeft: 10}}>{props.description}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

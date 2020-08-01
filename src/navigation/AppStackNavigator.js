@@ -11,6 +11,7 @@ import MapScreen from '../screens/MapScreen';
 import DangerScreen from '../screens/DangerScreen'
 import TrafficJamScreen from '../screens/TrafficJamScreen'
 import TrafficClosureScreen from '../screens/TrafficClosureScreen'
+import UserScreen from '../screens/UserScreen';
 
 
 
@@ -39,6 +40,9 @@ const appStackNavigator = createStackNavigator(
 		},
 		Danger: {
 			screen: DangerScreen
+		},
+		User: {
+			screen: UserScreen
 		}
 	},
 	{
