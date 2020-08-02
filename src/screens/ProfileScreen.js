@@ -63,7 +63,7 @@ const ProfileScreen = (props) => {
         </View>
       </View>
       <Text style={styles.points}>Body: {user?.points}</Text>
-      {loading ? (
+      { loading ? (
         <View style={{backgroundColor: 'rgba(255,255,255)', zIndex: 10, position: 'absolute', height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator size='large'/>
         </View>

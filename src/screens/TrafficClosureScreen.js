@@ -55,12 +55,12 @@ const TrafficClosureScreen = (props) => {
   };
 
   const onClickAddImage = () => {
-    const BUTTONS = ["Take Photo", "Choose Photo Library", "Cancel"];
+    const BUTTONS = ["Vyfotit", "Vybrat z galerie", "Zrušit"];
     ActionSheet.show(
       {
         options: BUTTONS,
         cancelButtonIndex: 2,
-        title: "Select a Photo",
+        title: "Fotka",
       },
       (buttonIndex) => {
         switch (buttonIndex) {
@@ -99,7 +99,7 @@ const TrafficClosureScreen = (props) => {
               source={require("../assets/traffic_closure_icon.png")}
             />
           </View>
-          <Text style={styles.title}>Nahlásit nehodu</Text>
+          <Text style={styles.title}>Dopravní uzavírka</Text>
         </View>
         <View style={styles.difficultyContainer}>
           <TouchableOpacity

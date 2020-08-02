@@ -53,12 +53,12 @@ const TrafficJamScreen = (props) => {
   };
 
   const onClickAddImage = () => {
-    const BUTTONS = ["Take Photo", "Choose Photo Library", "Cancel"];
+    const BUTTONS = ["Vyfotit", "Vybrat z galerie", "Zrušit"];
     ActionSheet.show(
       {
         options: BUTTONS,
         cancelButtonIndex: 2,
-        title: "Select a Photo",
+        title: "Fotka",
       },
       (buttonIndex) => {
         switch (buttonIndex) {
@@ -97,7 +97,7 @@ const TrafficJamScreen = (props) => {
               source={require("../assets/traffic_jam_icon.png")}
             />
           </View>
-          <Text style={styles.title}>Nahlásit nehodu</Text>
+          <Text style={styles.title}>Dopravní kolona</Text>
         </View>
         <View style={styles.difficultyContainer}>
           <TouchableOpacity

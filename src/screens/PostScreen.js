@@ -57,7 +57,7 @@ const PostScreen = (props) => {
   };
 
   const onClickAddImage = () => {
-    const BUTTONS = ["Take Photo", "Choose Photo Library", "Cancel"];
+    const BUTTONS = ["Vyfotit", "Vybrat z galerie", "Zrušit"];
     ActionSheet.show(
       {
         options: BUTTONS,
