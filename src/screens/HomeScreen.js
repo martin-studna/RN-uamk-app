@@ -16,6 +16,9 @@ import MenuButton from "../components/MenuButton.js";
 import Fire from "../Fire.js";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import PostCard from "../components/PostCard.js";
+import * as Permissions from 'expo-permissions'
+import * as Location from 'expo-location'
+
 
 const HomeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -27,6 +30,8 @@ const HomeScreen = (props) => {
   const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [lastDoc, setLastDoc] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [location, setLocation] = useState(null)
 
   const postsRef = Fire.shared.getPostsRef();
 
@@ -37,7 +42,21 @@ const HomeScreen = (props) => {
     setDisplayName(user.displayName);
 
     getPosts();
+    getLocation()
   }, []);
+
+  getLocation = async () => {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION)
+
+    if (status !== 'granted') {
+      console.log('PERMISSION NOT GRANTED!');
+      setErrorMessage('PERMISSION NOT GRANTED')
+    }
+
+    const userLocation = await Location.getCurrentPositionAsync();
+    console.log(userLocation)
+    setLocation(userLocation)
+  }
 
   const getPosts = async () => {
     setIsLoading(true);

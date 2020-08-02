@@ -20,7 +20,7 @@ const ProfileSettingsScreen = (props) => {
       setFullname(user.data().fullname);
       setUsername(user.data().username);
       setImage(user.data().image);
-    });
+    }, []);
 
     firebase.auth().onAuthStateChanged((user) => {
       props.navigation.navigate(user ? "App" : "Auth");
@@ -72,8 +72,7 @@ const ProfileSettingsScreen = (props) => {
       .updateUserByIdAsync(
         firebase.auth().currentUser.uid, updates)
         .then(res => {
-          console.log('UPDATE USER: ', res.data())
-          props.navigation.goBack()
+         props.navigation.goBack()
         })
         .catch(err => console.error(err))
   }

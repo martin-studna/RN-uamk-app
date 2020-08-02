@@ -6,13 +6,48 @@ import Fire from "../Fire";
 
 const UserScreen = (props) => {
   const [user, setUser] = useState(null);
+  const [followStatus, setFollowStatus] = useState('Odebírat')
 
   useEffect(() => {
+
+    console.log('did mount')
+
     Fire.shared
       .getUserByIdAsync(props.navigation.state.params.uid)
-      .then((user) => setUser(user.data()))
+      .then((user) => {
+        setUser(user.data())
+
+        Fire.shared
+          .getFollowingByUserIdAsync(props.navigation.state.params.uid)
+          .then(res => {
+            
+
+            if (res.data()) {
+              setFollowStatus('Odebírám')
+            }
+          })
+      }, [])
       .catch((err) => console.error(err));
+
+    
   }, []);
+
+  const followButtonAction = () => {
+
+    console.log('follow')
+
+    if (followStatus === 'Odebírat') 
+    {
+      Fire.shared
+        .followUserByIdAsync(props.navigation.state.params.uid)
+        .then(() => setFollowStatus('Odebírám'))
+    }
+    else {
+      Fire.shared
+        .unfollowUserByIdAsync(props.navigation.state.params.uid)
+        .then(() => setFollowStatus('Odebírat'))
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -46,8 +81,8 @@ const UserScreen = (props) => {
             </View>
           </View>
           <View style={styles.profileButtonContainer}>
-            <TouchableOpacity style={styles.profileButton}>
-              <Text style={styles.profileButtonText}>Odebírat</Text>
+            <TouchableOpacity style={styles.profileButton} onPress={() => followButtonAction()}>
+              <Text style={styles.profileButtonText}>{followStatus}</Text>
             </TouchableOpacity>
           </View>
         </View>

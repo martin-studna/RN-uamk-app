@@ -9,6 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import UserCard from "../components/UserCard.js";
 import colors from "../colors.js";
 import Fire from "../Fire.js";
+import firebase from 'firebase'
 
 const SearchScreen = props => {
 
@@ -19,7 +20,7 @@ const SearchScreen = props => {
   const usersRef = Fire.shared.getUsersRef();
 
   useEffect(() => {
-    getUsers();
+      getUsers();
   }, []);
 
   const getUsers = async () => {
@@ -37,6 +38,8 @@ const SearchScreen = props => {
       if (!snapshot.empty) {
 
         for (let i = 0; i < snapshot.docs.length; i++) {
+          if (snapshot.docs[i].id === firebase.auth().currentUser.uid)
+            continue
           newUsers.push({ id: snapshot.docs[i].id, ...snapshot.docs[i].data() });
         }
       }

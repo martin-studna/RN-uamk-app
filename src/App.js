@@ -1,4 +1,5 @@
 import React from 'react'
+import { YellowBox } from 'react-native'
 import firebaseConfig from './config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import LoadingScreen from './screens/LoadingScreen'
@@ -8,19 +9,9 @@ import DrawerNavigator from './navigation/DrawerNavigator'
 import AuthNavigator from './navigation/AuthNavigator'
 import AppStackNavigator from './navigation/AppStackNavigator'
 
-import { YellowBox } from 'react-native';
-import _ from 'lodash';
+console.disableYellowBox = true;
 
 YellowBox.ignoreWarnings(['Setting a timer']);
-const _console = _.clone(console);
-console.warn = message => {
-  if (message.indexOf('Setting a timer') <= -1) {
-    _console.warn(message);
-  }
-};
-
-// Initialize Firebase
-//firebase.initializeApp(firebaseConfig);
 
 
 export default createAppContainer(

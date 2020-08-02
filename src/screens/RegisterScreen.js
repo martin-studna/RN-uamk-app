@@ -18,14 +18,9 @@ const RegisterScreen = (props) => {
       .then(cred => {
         return Fire.shared.addUserAsync({
             uid: cred.user.uid,
-            fullname: '',
             username: name,
             mail: email,
             password,
-            image: null,
-            points: 0,
-            cardId: null,
-            cardActivationCode: null
         })
       })
       .catch((error) => setErrorMessage(error.message));

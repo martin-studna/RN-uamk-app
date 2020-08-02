@@ -4,15 +4,23 @@ import colors from "../colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Fire from '../Fire'
 import firebase from 'firebase'
+import { ActivityIndicator } from "react-native-paper";
 
 const ProfileScreen = (props) => {
 
   const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     Fire.shared
       .getUserByIdAsync(firebase.auth().currentUser.uid)
-      .then(user => setUser(user.data()))
+      .then(user => {
+        setUser(user.data())
+        setTimeout(() => {
+          
+          setLoading(false)
+        }, 100);
+      })
       .catch(err => console.error(err))
   }, [])
 
@@ -43,12 +51,23 @@ const ProfileScreen = (props) => {
             </View>
           </View>
           <View style={styles.profileButtonContainer}>
-            <TouchableOpacity style={styles.profileButton} onPress={() => props.navigation.navigate('ProfileSettings') }>
+            <TouchableOpacity style={styles.profileButton} onPress={() => 
+              props.navigation.navigate('ProfileSettings', {
+                onGoBack: () => {
+                  console.log('Returning')
+                }
+              }) }>
               <Text style={styles.profileButtonText}>Upravit profil</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
+      <Text style={styles.points}>Body: {user?.points}</Text>
+      {loading ? (
+        <View style={{backgroundColor: 'rgba(255,255,255)', zIndex: 10, position: 'absolute', height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size='large'/>
+        </View>
+        ) : null}
     </View>
   );
 };
@@ -132,6 +151,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     paddingVertical: 7,
     paddingHorizontal: 15
+  },
+  points: {
+    marginTop: 30,
+    fontWeight: 'bold',
+    color: colors.uamkBlue,
+    fontSize: 18
   }
 });
 

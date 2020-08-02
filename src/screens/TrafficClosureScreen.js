@@ -5,19 +5,20 @@ import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import Fire from "../Fire.js";
+import { ActionSheet, Root } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../colors";
 
 const TrafficClosureScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
-  const [difficulty, setDifficulty] = useState(null)
+  const [difficulty, setDifficulty] = useState(null);
 
   useEffect(() => {
     getPhotoPermission();
   }, []);
 
-  getPhotoPermission = async () => {
+  const getPhotoPermission = async () => {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
@@ -27,12 +28,13 @@ const TrafficClosureScreen = (props) => {
     }
   };
 
-  handlePost = () => {
+  const handlePost = () => {
     Fire.shared
       .addPostAsync({ text: text.trim(), localUri: image })
       .then((ref) => {
         setText("");
         setImage(null);
+        setDifficulty(null);
         props.navigation.goBack();
       })
       .catch((err) => {
@@ -40,117 +42,178 @@ const TrafficClosureScreen = (props) => {
       });
   };
 
-  pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-
+  const choosePhotoFromLibrary = async () => {
+    let result = await Camera.shared.choosePhotoFromLibraryAsync();
     if (!result.cancelled) {
       setImage(result.uri);
     }
   };
 
+  const takePhotoFromCamera = async () => {
+    const result = await Camera.shared.takePhotoFromCameraAsync();
+    if (!result.cancelled) setImage(result.uri);
+  };
+
+  const onClickAddImage = () => {
+    const BUTTONS = ["Take Photo", "Choose Photo Library", "Cancel"];
+    ActionSheet.show(
+      {
+        options: BUTTONS,
+        cancelButtonIndex: 2,
+        title: "Select a Photo",
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            takePhotoFromCamera();
+            break;
+          case 1:
+            choosePhotoFromLibrary();
+            break;
+          default:
+            break;
+        }
+      }
+    );
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.exitContainer}>
-        <TouchableOpacity style={styles.exit} onPress={() => props.navigation.goBack()} >
-          <Ionicons name="md-close" size={30} color={colors.shadowBackground} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.titleContainer}>
-        <View style={styles.imageContainer}>
-          <Image
-            style={styles.imageTitle}
-            source={require("../assets/traffic_closure_icon.png")}
-          />
-        </View>
-        <Text style={styles.title}>Nahlásit nehodu</Text>
-      </View>
-      <View style={styles.difficultyContainer}>
-        <TouchableOpacity style={[
-            styles.difficultyRectangle,
-            {
-              backgroundColor:
-                difficulty === "easy"
-                  ? colors.smallDifficulty
-                  : "transparent",
-            },
-          ]} onPress={() => setDifficulty('easy')}>
-          <View style={[styles.carCircle, {backgroundColor: colors.smallDifficulty}]}>
-            <Image
-              style={styles.imageCarCrash}
-              source={require("../assets/traffic_closure_icon.png")}
+    <Root>
+      <View style={styles.container}>
+        <View style={styles.exitContainer}>
+          <TouchableOpacity
+            style={styles.exit}
+            onPress={() => props.navigation.goBack()}
+          >
+            <Ionicons
+              name="md-close"
+              size={30}
+              color={colors.shadowBackground}
             />
-          </View>
-          <Text style={styles.difficultyText}>Malá</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[
-            styles.difficultyRectangle,
-            {
-              backgroundColor:
-                difficulty === "medium"
-                  ? colors.mediumDifficulty
-                  : "transparent",
-            },
-          ]} onPress={() => {
-          setDifficulty('medium')
-          }}>
-          <View style={[styles.carCircle, {backgroundColor: colors.mediumDifficulty}]}>
-            <Image
-              style={styles.imageCarCrash}
-              source={require("../assets/traffic_closure_icon.png")}
-            />
-          </View>
-          <Text style={styles.difficultyText}>Střední</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[
-            styles.difficultyRectangle,
-            {
-              backgroundColor:
-                difficulty === "hard"
-                  ? colors.bigDifficulty
-                  : "transparent",
-            },
-          ]} onPress={() => setDifficulty('hard')}>
-          <View style={[styles.carCircle, {backgroundColor: colors.bigDifficulty}]}>
-            <Image
-              style={styles.imageCarCrash}
-              source={require("../assets/traffic_closure_icon.png")}
-            />
-          </View>
-          <Text style={styles.difficultyText}>Velká</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity style={styles.cameraContainer}>
-          <Ionicons name="md-camera" size={32} color="white" />
-          <Text style={{ color: "white", marginTop: 5 }}>Přidat fotku</Text>
-        </TouchableOpacity>
-        <View style={styles.line}></View>
-        <TouchableOpacity style={styles.comment} onPress={() => props.navigation.navigate('Description')}>
-          <Ionicons name="md-text" size={32} color="white" />
-          <Text
-            style={{
-              color: "white",
-              fontWeight: "600",
-              fontSize: 18,
-              marginLeft: 20,
-            }}>
-            Přidat popis
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.bottomPart}>
-        <View style={styles.sendButtonContainer}>
-          <TouchableOpacity style={styles.sendButton}>
-            <Ionicons name='md-arrow-up' size={30} />
           </TouchableOpacity>
         </View>
-        <View style={styles.bottomBar}></View>
+        <View style={styles.titleContainer}>
+          <View style={styles.imageContainer}>
+            <Image
+              style={styles.imageTitle}
+              source={require("../assets/traffic_closure_icon.png")}
+            />
+          </View>
+          <Text style={styles.title}>Nahlásit nehodu</Text>
+        </View>
+        <View style={styles.difficultyContainer}>
+          <TouchableOpacity
+            style={[
+              styles.difficultyRectangle,
+              {
+                backgroundColor:
+                  difficulty === "easy"
+                    ? colors.smallDifficulty
+                    : "transparent",
+              },
+            ]}
+            onPress={() => setDifficulty("easy")}
+          >
+            <View
+              style={[
+                styles.carCircle,
+                { backgroundColor: colors.smallDifficulty },
+              ]}
+            >
+              <Image
+                style={styles.imageCarCrash}
+                source={require("../assets/traffic_closure_icon.png")}
+              />
+            </View>
+            <Text style={styles.difficultyText}>Malá</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.difficultyRectangle,
+              {
+                backgroundColor:
+                  difficulty === "medium"
+                    ? colors.mediumDifficulty
+                    : "transparent",
+              },
+            ]}
+            onPress={() => {
+              setDifficulty("medium");
+            }}
+          >
+            <View
+              style={[
+                styles.carCircle,
+                { backgroundColor: colors.mediumDifficulty },
+              ]}
+            >
+              <Image
+                style={styles.imageCarCrash}
+                source={require("../assets/traffic_closure_icon.png")}
+              />
+            </View>
+            <Text style={styles.difficultyText}>Střední</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.difficultyRectangle,
+              {
+                backgroundColor:
+                  difficulty === "hard" ? colors.bigDifficulty : "transparent",
+              },
+            ]}
+            onPress={() => setDifficulty("hard")}
+          >
+            <View
+              style={[
+                styles.carCircle,
+                { backgroundColor: colors.bigDifficulty },
+              ]}
+            >
+              <Image
+                style={styles.imageCarCrash}
+                source={require("../assets/traffic_closure_icon.png")}
+              />
+            </View>
+            <Text style={styles.difficultyText}>Velká</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.bottomContainer}>
+          <TouchableOpacity
+            style={styles.cameraContainer}
+            onPress={() => onClickAddImage()}
+          >
+            <Ionicons name="md-camera" size={32} color="white" />
+            <Text style={{ color: "white", marginTop: 5 }}>Přidat fotku</Text>
+          </TouchableOpacity>
+          <View style={styles.line}></View>
+          <TouchableOpacity
+            style={styles.comment}
+            onPress={() => props.navigation.navigate("Description")}
+          >
+            <Ionicons name="md-text" size={32} color="white" />
+            <Text
+              style={{
+                color: "white",
+                fontWeight: "600",
+                fontSize: 18,
+                marginLeft: 20,
+              }}
+            >
+              Přidat popis
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.bottomPart}>
+          <View style={styles.sendButtonContainer}>
+            <TouchableOpacity style={styles.sendButton}>
+              <Ionicons name="md-arrow-up" size={30} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.bottomBar}></View>
+        </View>
       </View>
-    </View>
+    </Root>
   );
 };
 
@@ -250,7 +313,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 50,
     borderWidth: 2.5,
-    borderColor: '#fff',
+    borderColor: "#fff",
     padding: 12,
   },
   imageCarCrash: {
@@ -290,36 +353,36 @@ const styles = StyleSheet.create({
     color: "white",
   },
   bottomPart: {
-    display: 'flex',
+    display: "flex",
     flex: 1,
-    justifyContent: 'flex-end',
-    width: '100%',
+    justifyContent: "flex-end",
+    width: "100%",
   },
   bottomBar: {
-    width: '100%',
-    height: '40%',
-    backgroundColor: colors.primary
+    width: "100%",
+    height: "40%",
+    backgroundColor: colors.primary,
   },
   sendButtonContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: "absolute",
+    alignSelf: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     bottom: 30,
     zIndex: 10,
     width: 56,
     height: 56,
     borderRadius: 50,
-    backgroundColor: '#E6201B'
+    backgroundColor: "#E6201B",
   },
   sendButton: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default TrafficClosureScreen;

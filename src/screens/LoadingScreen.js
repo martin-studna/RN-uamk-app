@@ -1,11 +1,24 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, ImageBackground, Image } from "react-native";
 import * as firebase from "firebase";
+import AsyncStorage from '@react-native-community/async-storage';
 
 const LoadingScreen = (props) => {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      props.navigation.navigate(user ? "App" : "Auth");
+
+      AsyncStorage.getItem('aboutFirst').then(shown => {
+
+        if (!shown) {
+          if (user)
+            AsyncStorage.setItem('aboutFirst', 'true').then(() => props.navigation.navigate('AboutFirst')) 
+        }
+        else {
+          props.navigation.navigate(user ? "App" : "Auth");
+        }
+
+      })
+
     });
   }, []);
 

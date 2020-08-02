@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import MenuDrawer from '../components/MenuDrawer';
+import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import DescriptionScreen from '../screens/DescriptionScreen'
 import DrawerNavigator from './DrawerNavigator';
@@ -12,7 +11,7 @@ import DangerScreen from '../screens/DangerScreen'
 import TrafficJamScreen from '../screens/TrafficJamScreen'
 import TrafficClosureScreen from '../screens/TrafficClosureScreen'
 import UserScreen from '../screens/UserScreen';
-
+import AboutFirstScreen from '../screens/AboutFirstScreen'
 
 
 const appStackNavigator = createStackNavigator(
@@ -43,6 +42,9 @@ const appStackNavigator = createStackNavigator(
 		},
 		User: {
 			screen: UserScreen
+		},
+		AboutFirst: {
+			screen: AboutFirstScreen
 		}
 	},
 	{
