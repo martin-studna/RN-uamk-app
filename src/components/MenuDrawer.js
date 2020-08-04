@@ -52,7 +52,7 @@ export default class MenuDrawer extends React.Component {
             {this.navLink("CardActivation", "Aktivovat kartu")}
             <TouchableOpacity
               style={{ height: 50 }}
-              onPress={() => Linking.openURL('https://nezirej.cz/help').catch(err => console.error("Couldn't load page", err))}
+              onPress={() => Linking.openURL('https://ziranimnepomuzes.cz/').catch(err => console.error("Couldn't load page", err))}
             >
               <Text style={styles.link}>Pomoc</Text>
             </TouchableOpacity>

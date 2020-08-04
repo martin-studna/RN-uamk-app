@@ -13,6 +13,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import VideoCard from "../components/VideoCard";
+import { NavigationEvents } from "react-navigation";
 
 const BlueCodeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -28,10 +29,6 @@ const BlueCodeScreen = (props) => {
   const youtube = axios.create({
     baseURL: "https://www.googleapis.com/youtube/v3",
   });
-
-  useEffect(() => {
-    getVideos();
-  }, []);
 
   const getVideos = async () => {
     setIsLoading(true);
@@ -126,6 +123,11 @@ const BlueCodeScreen = (props) => {
 
   return (
     <View style={styles.container}>
+    <NavigationEvents 
+      onWillFocus={() => {
+        getVideos()
+      }}
+    />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Ionicons name="md-arrow-back" size={32} color={colors.uamkBlue} />

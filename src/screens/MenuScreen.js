@@ -2,10 +2,19 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import colors from "../colors";
 import { Ionicons } from "@expo/vector-icons";
+import { NavigationEvents } from "react-navigation";
+import Global from '../global'
 
 const MenuScreen = (props) => {
   return (
     <View style={styles.container}>
+    <NavigationEvents 
+      onWillFocus={() => {
+        Global.postDescription = null
+        Global.postImage = null
+        Global.postDifficulty = null
+      }}
+    />
       <View style={styles.exitContainer}>
         <TouchableOpacity
           style={styles.exit}

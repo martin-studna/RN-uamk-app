@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  Image,
   ImageBackground,
   ActivityIndicator,
   RefreshControl,
@@ -19,6 +18,7 @@ import PostCard from "../components/PostCard.js";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import { NavigationEvents } from "react-navigation";
+import Global from "../global.js";
 
 const HomeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -34,6 +34,7 @@ const HomeScreen = (props) => {
   const [location, setLocation] = useState(null);
 
   const postsRef = Fire.shared.getPostsRef();
+
 
   useEffect(() => {
     const user = firebase.auth().currentUser;
@@ -61,14 +62,19 @@ const HomeScreen = (props) => {
   const getPosts = async () => {
     setIsLoading(true);
 
-    const snapshot = await postsRef.orderBy("timestamp", "desc").limit(3).get();
+    const snapshot = await postsRef.orderBy("timestamp", "desc").limit(5).get();
 
     if (!snapshot.empty) {
       let newPosts = [];
 
+      console.log(snapshot.docs[snapshot.docs.length - 1].data())
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
       for (let i = 0; i < snapshot.docs.length; i++) {
+
+        if(!snapshot.docs[i].data().text)
+          continue;
+
         newPosts.push(snapshot.docs[i].data());
       }
 
@@ -82,13 +88,14 @@ const HomeScreen = (props) => {
 
   const getMore = async () => {
     if (lastDoc) {
+      console.log(lastDoc.data())
       setIsMoreLoading(true);
 
       setTimeout(async () => {
         let snapshot = await postsRef
-          .orderBy("timestamp")
-          .startAfter(lastDoc.data().uid)
-          .limit(3)
+          .orderBy("timestamp", 'desc')
+          .startAfter(lastDoc.data().timestamp)
+          .limit(5)
           .get();
 
         if (!snapshot.empty) {
@@ -97,11 +104,15 @@ const HomeScreen = (props) => {
           setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
           for (let i = 0; i < snapshot.docs.length; i++) {
+
+            if(!snapshot.docs[i].data().text)
+              continue;
+
             newPosts.push(snapshot.docs[i].data());
           }
 
           setPosts(newPosts);
-          if (snapshot.docs.length < 3) setLastDoc(null);
+          if (snapshot.docs.length < 5) setLastDoc(null);
         } else {
           setLastDoc(null);
         }
@@ -148,6 +159,9 @@ const HomeScreen = (props) => {
     <View style={styles.container}>
       <NavigationEvents
         onWillFocus={() => {
+          Global.postDescription = null
+          Global.postImage = null
+          Global.postDifficulty = null
           getPosts();
         }}
       />
@@ -169,7 +183,7 @@ const HomeScreen = (props) => {
           refreshControl={
             <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
           }
-          initialNumToRender={3}
+          initialNumToRender={5}
           onEndReachedThreshold={0.1}
           onMomentumScrollBegin={() => {
             onEndReachedCallDuringMomentum = false;

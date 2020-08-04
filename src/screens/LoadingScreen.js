@@ -12,6 +12,9 @@ const LoadingScreen = (props) => {
         if (!shown) {
           if (user)
             AsyncStorage.setItem('aboutFirst', 'true').then(() => props.navigation.navigate('AboutFirst')) 
+          else
+            props.navigation.navigate(user ? "App" : "Auth");
+            
         }
         else {
           props.navigation.navigate(user ? "App" : "Auth");

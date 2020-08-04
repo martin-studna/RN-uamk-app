@@ -24,7 +24,6 @@ class Fire {
   addPostAsync = async ({ difficulty, type, text, localUri }) => {
     const remoteUri = localUri ? await this.uploadPhotoAsync(localUri) : null;
     const location = await this.getLocationAsync()
-    console.log('location: ', location)
 
     return new Promise((res, rej) => {
       this.firestore

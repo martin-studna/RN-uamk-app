@@ -6,6 +6,7 @@ import * as Permissions from "expo-permissions";
 import Fire from "../Fire.js";
 import { ActionSheet, Root } from "native-base";
 import colors from "../colors";
+import Global from '../global'
 
 const DangerScreen = (props) => {
   const [text, setText] = useState("");
@@ -15,7 +16,7 @@ const DangerScreen = (props) => {
   const handlePost = () => {
     Fire.shared
       .addPostAsync({
-        text: text,
+        text: Global.postDescription,
         localUri: image,
         difficulty: difficulty,
         type: "danger",
@@ -24,7 +25,7 @@ const DangerScreen = (props) => {
         setText("");
         setImage(null);
         setDifficulty(null);
-        props.navigation.goBack();
+        props.navigation.navigate('Home');
       })
       .catch((err) => {
         console.error(err);
@@ -195,7 +196,7 @@ const DangerScreen = (props) => {
         </View>
         <View style={styles.bottomPart}>
           <View style={styles.sendButtonContainer}>
-            <TouchableOpacity style={styles.sendButton}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => handlePost()}>
               <Ionicons name="md-arrow-up" size={30} />
             </TouchableOpacity>
           </View>

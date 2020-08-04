@@ -8,6 +8,7 @@ import Fire from "../Fire.js";
 import { ActionSheet, Root } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../colors";
+import Global from '../global'
 
 const TrafficClosureScreen = (props) => {
   const [text, setText] = useState("");
@@ -17,7 +18,7 @@ const TrafficClosureScreen = (props) => {
   const handlePost = () => {
     Fire.shared
       .addPostAsync({
-        text: text,
+        text: Global.postDescription,
         localUri: image,
         difficulty: difficulty,
         type: "traffic_closure",
@@ -26,7 +27,7 @@ const TrafficClosureScreen = (props) => {
         setText("");
         setImage(null);
         setDifficulty(null);
-        props.navigation.goBack();
+        props.navigation.navigate('Home');
       })
       .catch((err) => {
         console.error(err);

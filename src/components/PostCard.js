@@ -19,7 +19,7 @@ const PostCard = (props) => {
     const currentDate = new Date();
     const passedTime = (currentDate.getTime() - timestamp) / 1000;
 
-    if (passedTime < 60) return `${Math.floor(passedTime)} sekund`;
+    if (passedTime < 60) return 'Právě teď';
     if (passedTime / 60 < 60) return `${Math.floor(passedTime / 60)} min`;
     if (passedTime / (60 * 60) < 24)
       return `${Math.floor(passedTime / (60 * 60))} hod`;

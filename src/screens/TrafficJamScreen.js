@@ -18,7 +18,7 @@ const TrafficJamScreen = (props) => {
   const handlePost = () => {
     Fire.shared
       .addPostAsync({
-        text: text,
+        text: Global.postDescription,
         localUri: image,
         difficulty: difficulty,
         type: "traffic_jam",
@@ -27,7 +27,7 @@ const TrafficJamScreen = (props) => {
         setText("");
         setImage(null);
         setDifficulty(null);
-        props.navigation.goBack();
+        props.navigation.navigate('Home');
       })
       .catch((err) => {
         console.error(err);

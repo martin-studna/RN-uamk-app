@@ -15,10 +15,11 @@ const PostScreen = (props) => {
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
 
+
   const handlePost = () => {
     Fire.shared
       .addPostAsync({
-        text: text,
+        text: Global.postDescription,
         localUri: image,
         difficulty: difficulty,
         type: "car_accident",

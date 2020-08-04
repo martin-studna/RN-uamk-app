@@ -14,8 +14,6 @@ const ProfileSettingsScreen = (props) => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    getPhotoPermission();
-
     Fire.shared.getUserByIdAsync(firebase.auth().currentUser.uid).then((user) => {
       setFullname(user.data().fullname);
       setUsername(user.data().username);
