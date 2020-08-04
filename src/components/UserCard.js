@@ -1,27 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import { useFocusEffect } from '@react-navigation/native';
 import colors from "../colors";
 import Fire from "../Fire";
 import firebase from "firebase";
+import { NavigationEvents } from "react-navigation";
 
 const UserCard = (props) => {
   const [followStatus, setFollowStatus] = useState("Odebírat");
-  const mounted = useRef();
 
-  useEffect(() => {
-
-    // Fire.shared.getFollowingByUserIdAsync(props.id).then((res) => {
-    //   if (res.data()) {
-    //     setFollowStatus("Odebírám");
-    //   } else setFollowStatus("Odebírat");
-    // });
-
-  },[]);
+  // const getStatus = () => {
+  //   console.log("get status");
+  //   Fire.shared.getFollowingByUserIdAsync(props.id).then((res) => {
+  //     if (res.data()) {
+  //       setFollowStatus("Odebírám");
+  //     } else setFollowStatus("Odebírat");
+  //   });
+  // };
 
   const followButtonAction = () => {
-    console.log("follow");
-
     if (followStatus === "Odebírat") {
       Fire.shared
         .followUserByIdAsync(props.id)
@@ -36,9 +32,7 @@ const UserCard = (props) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() =>
-        props.navigation.navigate("User", {uid: props.id})
-      }
+      onPress={() => props.navigation.navigate("User", { uid: props.id })}
     >
       <View style={{ display: "flex", flexDirection: "row" }}>
         <Image
@@ -51,8 +45,8 @@ const UserCard = (props) => {
         />
         <Text style={styles.username}>{props.username}</Text>
       </View>
-      {/* <View style={{ flex: 1 }}></View>
-      <TouchableOpacity
+      <View style={{ flex: 1 }}></View>
+      {/* <TouchableOpacity
         style={styles.followButton}
         onPress={() => followButtonAction()}
       >

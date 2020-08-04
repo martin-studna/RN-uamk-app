@@ -1,34 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { NavigationEvents } from 'react-navigation'
 import colors from "../colors";
 
-export default class NotificationsScreen extends React.Component {
+const NotificationsScreen = (props) => {
 
-  constructor(props) {
-    super (props)
-
-  }
-  
-  componentWillUpdate() {
-    
-    console.log('notifications')
-  }
-
-  componentDidMount() {
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Upozornění</Text>
-        </View>
+  return (
+    <View style={styles.container}>
+    <NavigationEvents
+          onWillFocus={payload => {
+            console.log("will focus");
+          }}
+        />
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Upozornění</Text>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
@@ -49,4 +40,6 @@ const styles = {
     fontWeight: "bold",
     color: colors.uamkBlue,
   },
-}
+});
+
+export default NotificationsScreen;

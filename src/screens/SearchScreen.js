@@ -10,6 +10,7 @@ import UserCard from "../components/UserCard.js";
 import colors from "../colors.js";
 import Fire from "../Fire.js";
 import firebase from 'firebase'
+import { NavigationEvents } from "react-navigation";
 
 const SearchScreen = props => {
 
@@ -18,10 +19,6 @@ const SearchScreen = props => {
   const [search, setSearch] = useState("");
 
   const usersRef = Fire.shared.getUsersRef();
-
-  useEffect(() => {
-      getUsers();
-  }, []);
 
   const getUsers = async () => {
     setIsLoading(true);
@@ -66,6 +63,11 @@ const SearchScreen = props => {
 
   return (
     <View style={styles.container}>
+    <NavigationEvents 
+      onWillFocus={() => {
+        getUsers()
+      }}
+    />
       <View style={styles.header}>
         <Ionicons name="md-search" size={32} />
         <TextInput

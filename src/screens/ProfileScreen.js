@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Fire from '../Fire'
 import firebase from 'firebase'
 import { ActivityIndicator } from "react-native-paper";
+import { NavigationEvents} from 'react-navigation'
 
 const ProfileScreen = (props) => {
 
@@ -12,20 +13,29 @@ const ProfileScreen = (props) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    
+  }, [])
+
+  const getData = () => {
+    setLoading(true)
     Fire.shared
       .getUserByIdAsync(firebase.auth().currentUser.uid)
       .then(user => {
         setUser(user.data())
         setTimeout(() => {
-          
           setLoading(false)
         }, 100);
       })
       .catch(err => console.error(err))
-  }, [])
+  }
 
   return (
     <View style={styles.container}>
+    <NavigationEvents 
+      onWillFocus={() => {
+        getData()
+      }}
+    />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{user && user.username ? user.username : ''}</Text>
       </View>
@@ -64,7 +74,7 @@ const ProfileScreen = (props) => {
       </View>
       <Text style={styles.points}>Body: {user?.points}</Text>
       { loading ? (
-        <View style={{backgroundColor: 'rgba(255,255,255)', zIndex: 10, position: 'absolute', height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{backgroundColor: 'rgb(255,255,255)', zIndex: 10, position: 'absolute', height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator size='large'/>
         </View>
         ) : null}

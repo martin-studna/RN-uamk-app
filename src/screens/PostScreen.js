@@ -9,7 +9,8 @@ import Fire from "../Fire.js";
 import colors from "../colors";
 import Global from "../global";
 import { ActionSheet, Root } from "native-base";
-import Camera from '../Camera'
+import Camera from "../Camera";
+import { NavigationEvents } from "react-navigation";
 
 const PostScreen = (props) => {
   const [text, setText] = useState("");
@@ -21,12 +22,10 @@ const PostScreen = (props) => {
   }, []);
 
   const getPhotoPermission = async () => {
-    if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-      if (status != "granted") {
-        alert("We need permission to access your camera roll");
-      }
+    if (status != "granted") {
+      alert("We need permission to access your camera roll");
     }
   };
 
@@ -45,14 +44,14 @@ const PostScreen = (props) => {
   };
 
   const choosePhotoFromLibrary = async () => {
-    let result = await Camera.shared.choosePhotoFromLibraryAsync()
+    let result = await Camera.shared.choosePhotoFromLibraryAsync();
     if (!result.cancelled) {
       setImage(result.uri);
     }
   };
 
   const takePhotoFromCamera = async () => {
-    const result = await Camera.shared.takePhotoFromCameraAsync()
+    const result = await Camera.shared.takePhotoFromCameraAsync();
     if (!result.cancelled) setImage(result.uri);
   };
 
@@ -67,10 +66,10 @@ const PostScreen = (props) => {
       (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-            takePhotoFromCamera()
+            takePhotoFromCamera();
             break;
           case 1:
-            choosePhotoFromLibrary()
+            choosePhotoFromLibrary();
             break;
           default:
             break;
@@ -82,6 +81,9 @@ const PostScreen = (props) => {
   return (
     <Root>
       <View style={styles.container}>
+        <NavigationEvents onWillFocus={() => {
+          setDifficulty(null)
+        }} />
         <View style={styles.exitContainer}>
           <TouchableOpacity
             style={styles.exit}
@@ -171,7 +173,10 @@ const PostScreen = (props) => {
           </TouchableOpacity>
         </View>
         <View style={styles.bottomContainer}>
-          <TouchableOpacity style={styles.cameraContainer} onPress={() => onClickAddImage()}>
+          <TouchableOpacity
+            style={styles.cameraContainer}
+            onPress={() => onClickAddImage()}
+          >
             <Ionicons name="md-camera" size={32} color="white" />
             <Text style={{ color: "white", marginTop: 5 }}>Přidat fotku</Text>
           </TouchableOpacity>
