@@ -1,12 +1,21 @@
-import React from "react";
+import React, {useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import colors from '../colors'
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import Global from '../global'
 
 const DescriptionScreen = (props) => {
+
+  const [description, setDescription] = useState('');
+
   return (
     <View style={styles.container}>
-      <TextInput style={styles.textInput} multiline>
+      <TextInput 
+        style={styles.textInput} 
+        multiline
+        value={description}
+        onChangeText={text => setDescription(text) }
+        >
       </TextInput>
       <View style={styles.buttonsContainer}>
       <View style={styles.exitButtonContainer}>
@@ -18,7 +27,10 @@ const DescriptionScreen = (props) => {
 
       </View>
       <View style={styles.confirmButtonContainer}>
-        <TouchableOpacity style={styles.confirmButton}>
+        <TouchableOpacity style={styles.confirmButton} disabled={description === ''} onPress={() => {
+          Global.postDescription = description
+          props.navigation.goBack()
+        }}>
           <Text>ULOŽIT</Text>
         </TouchableOpacity>
       </View>
@@ -37,11 +49,13 @@ const styles = StyleSheet.create({
   },
   textInput: {
     backgroundColor: 'white',
-    padding: 10,
+    padding: 20,
     marginTop: 40,
+    fontSize: 18,
     borderRadius: 30,
     width: '100%',
-    height: '70%'
+    height: '70%',
+    textAlignVertical: 'top'
   },
   buttonsContainer: {
     display: "flex",

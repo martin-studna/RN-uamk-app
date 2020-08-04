@@ -1,13 +1,30 @@
 import firebase from "firebase";
 import firebaseConfig from "./config.js";
+import * as Permissions from 'expo-permissions'
+import * as Location from 'expo-location'
 
 class Fire {
   constructor() {
     firebase.initializeApp(firebaseConfig);
   }
 
-  addPostAsync = async ({ difficulty, type, location, text, localUri }) => {
+
+  getLocationAsync = async () => {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION)
+
+    if (status !== 'granted') {
+      console.log('PERMISSION NOT GRANTED!');
+      return null
+    }
+
+    return Location.getCurrentPositionAsync();
+    
+  }
+
+  addPostAsync = async ({ difficulty, type, text, localUri }) => {
     const remoteUri = localUri ? await this.uploadPhotoAsync(localUri) : null;
+    const location = await this.getLocationAsync()
+    console.log('location: ', location)
 
     return new Promise((res, rej) => {
       this.firestore
@@ -17,7 +34,10 @@ class Fire {
           timestamp: this.timestamp,
           difficulty,
           type,
-          location,
+          location: { 
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude
+          },
           text,
           image: remoteUri,
         })
@@ -182,6 +202,10 @@ class Fire {
 
   get timestamp() {
     return Date.now();
+  }
+
+  set location(location) {
+    this.location = location
   }
 }
 

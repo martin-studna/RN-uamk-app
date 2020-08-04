@@ -16,9 +16,9 @@ import MenuButton from "../components/MenuButton.js";
 import Fire from "../Fire.js";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import PostCard from "../components/PostCard.js";
-import * as Permissions from 'expo-permissions'
-import * as Location from 'expo-location'
-
+import * as Permissions from "expo-permissions";
+import * as Location from "expo-location";
+import { NavigationEvents } from "react-navigation";
 
 const HomeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -30,8 +30,8 @@ const HomeScreen = (props) => {
   const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [lastDoc, setLastDoc] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [location, setLocation] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [location, setLocation] = useState(null);
 
   const postsRef = Fire.shared.getPostsRef();
 
@@ -41,27 +41,27 @@ const HomeScreen = (props) => {
     setEmail(user.email);
     setDisplayName(user.displayName);
 
-    getPosts();
-    getLocation()
+    //getPosts();
+    getLocation();
   }, []);
 
   getLocation = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION)
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
-    if (status !== 'granted') {
-      console.log('PERMISSION NOT GRANTED!');
-      setErrorMessage('PERMISSION NOT GRANTED')
+    if (status !== "granted") {
+      console.log("PERMISSION NOT GRANTED!");
+      setErrorMessage("PERMISSION NOT GRANTED");
     }
 
     const userLocation = await Location.getCurrentPositionAsync();
-    console.log(userLocation)
-    setLocation(userLocation)
-  }
+    console.log(userLocation);
+    setLocation(userLocation);
+  };
 
   const getPosts = async () => {
     setIsLoading(true);
 
-    const snapshot = await postsRef.orderBy("timestamp").limit(3).get();
+    const snapshot = await postsRef.orderBy("timestamp", "desc").limit(3).get();
 
     if (!snapshot.empty) {
       let newPosts = [];
@@ -139,13 +139,18 @@ const HomeScreen = (props) => {
         image={post.image}
         difficulty={post.difficulty}
         type={post.type}
-        publisher={post.uid}
+        publisher={post.publisher}
       />
     );
   };
 
   return (
     <View style={styles.container}>
+      <NavigationEvents
+        onWillFocus={() => {
+          getPosts();
+        }}
+      />
       <View style={styles.header}>
         <MenuButton navigation={props.navigation} style={styles.menu} />
         <Text style={styles.headerTitle}>ZÍRÁNÍM NEPOMŮŽEŠ</Text>

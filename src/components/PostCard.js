@@ -4,23 +4,16 @@ import colors from "../colors";
 import Fire from "../Fire";
 
 const PostCard = (props) => {
+  const [publisher, setPublisher] = useState("");
+  const [publisherImage, setPublisherImage] = useState(null);
 
-  const [publisher, setPublisher] = useState('')
-  const [publisherImage, setPublisherImage] = useState(null)
-  
   useEffect(() => {
-
-    console.log(props.publisher)
-
-    Fire.shared
-      .getUserByIdAsync(props.publisher)
-      .then(res => {
-        console.log('GET POST USER DATA: ' , res.data())
-        setPublisher(res.data().username)
-        setPublisherImage(res.data().image)
-      })
-  }, [])
-
+    Fire.shared.getUserByIdAsync(props.publisher).then((res) => {
+      console.log("GET POST USER DATA: ", res.data());
+      setPublisher(res.data().username);
+      setPublisherImage(res.data().image);
+    });
+  }, []);
 
   const getDate = (timestamp) => {
     const currentDate = new Date();
@@ -32,6 +25,42 @@ const PostCard = (props) => {
       return `${Math.floor(passedTime / (60 * 60))} hod`;
 
     return `${Math.floor(passedTime / (60 * 60 * 24))} d`;
+  };
+
+  const setTypeImage = () => {
+    switch (props.type) {
+      case "car_accident":
+        return require("../assets/car_accident_icon.png");
+        break;
+      case "traffic_jam":
+        return require("../assets/traffic_jam_icon.png");
+        break;
+      case "traffic_closure":
+        return require("../assets/traffic_closure_icon.png");
+        break;
+      case "danger":
+        return require("../assets/danger_icon.png");
+        break;
+      default:
+        return require("../assets/car_accident_icon.png");
+        break;
+    }
+  };
+
+  const setDifficultyImage = () => {
+    switch (props.difficulty) {
+      case "easy":
+        return require('../assets/semafory_green.png')
+        break;
+      case "medium":
+        return require('../assets/semafory_orange.png')
+        break;
+      case "hard":
+        return require('../assets/semafory_red.png')
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -46,29 +75,37 @@ const PostCard = (props) => {
           <View style={{ margin: 20, flexDirection: "row" }}>
             <View>
               <Image
-                source={publisherImage ? {uri: publisherImage} : require("../assets/profile_image.png")}
+                source={
+                  publisherImage
+                    ? { uri: publisherImage }
+                    : require("../assets/profile_image.png")
+                }
                 style={{ borderRadius: 50, width: 50, height: 50 }}
               />
               <Text style={styles.timestamp}>{getDate(props.timestamp)}</Text>
             </View>
             <View>
-              <Text style={{ fontWeight: "bold", marginLeft: 10}}>{publisher}</Text>
-              <Image />
+              <Text style={{ fontWeight: "bold", marginLeft: 10 }}>
+                {publisher}
+              </Text>
+              <Image source={setDifficultyImage()} style={{ marginLeft: 8, marginTop: 4, width: 50, height: 20, resizeMode: 'stretch'}}/>
             </View>
           </View>
 
           <View style={styles.type}>
-            <Image source={require("../assets/car_accident_icon.png")} />
+            <Image source={setTypeImage()} style={{ width: 25, height: 25 }} />
           </View>
         </View>
 
-        <Text style={styles.post}>{props.text}</Text>
+        { props.text ? <Text style={styles.post}>{props.text}</Text> : null }
 
-        <Image
-          source={{ uri: props.image }}
-          style={styles.postImage}
-          resizeMode="cover"
-        />
+        {props.image ? (
+          <Image
+            source={{ uri: props.image }}
+            style={styles.postImage}
+            resizeMode="cover"
+          />
+        ) : null}
 
         <View style={{ flexDirection: "row" }}></View>
       </View>
@@ -87,6 +124,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     fontSize: 14,
+    marginBottom: 15,
   },
   timestamp: {
     marginTop: 8,

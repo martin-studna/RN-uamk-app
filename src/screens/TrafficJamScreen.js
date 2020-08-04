@@ -15,24 +15,18 @@ const TrafficJamScreen = (props) => {
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
 
-  useEffect(() => {
-    getPhotoPermission();
-  }, []);
-
-  getPhotoPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    if (status != "granted") {
-      alert("We need permission to access your camera roll");
-    }
-  };
-
-  handlePost = () => {
+  const handlePost = () => {
     Fire.shared
-      .addPostAsync({ text: text.trim(), localUri: image })
+      .addPostAsync({
+        text: text,
+        localUri: image,
+        difficulty: difficulty,
+        type: "traffic_jam",
+      })
       .then((ref) => {
         setText("");
         setImage(null);
+        setDifficulty(null);
         props.navigation.goBack();
       })
       .catch((err) => {
@@ -204,7 +198,7 @@ const TrafficJamScreen = (props) => {
         </View>
         <View style={styles.bottomPart}>
           <View style={styles.sendButtonContainer}>
-            <TouchableOpacity style={styles.sendButton}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => handlePost()}>
               <Ionicons name="md-arrow-up" size={30} />
             </TouchableOpacity>
           </View>

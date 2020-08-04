@@ -12,24 +12,18 @@ const DangerScreen = (props) => {
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
 
-  useEffect(() => {
-    getPhotoPermission();
-  }, []);
-
-  getPhotoPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    if (status != "granted") {
-      alert("We need permission to access your camera roll");
-    }
-  };
-
-  handlePost = () => {
+  const handlePost = () => {
     Fire.shared
-      .addPostAsync({ text: text.trim(), localUri: image })
+      .addPostAsync({
+        text: text,
+        localUri: image,
+        difficulty: difficulty,
+        type: "danger",
+      })
       .then((ref) => {
         setText("");
         setImage(null);
+        setDifficulty(null);
         props.navigation.goBack();
       })
       .catch((err) => {

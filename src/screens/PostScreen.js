@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
-import * as ImagePicker from "expo-image-picker";
 import Fire from "../Fire.js";
 import colors from "../colors";
 import Global from "../global";
@@ -17,21 +15,14 @@ const PostScreen = (props) => {
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
 
-  useEffect(() => {
-    getPhotoPermission();
-  }, []);
-
-  const getPhotoPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    if (status != "granted") {
-      alert("We need permission to access your camera roll");
-    }
-  };
-
   const handlePost = () => {
     Fire.shared
-      .addPostAsync({ text: text.trim(), localUri: image })
+      .addPostAsync({
+        text: text,
+        localUri: image,
+        difficulty: difficulty,
+        type: "car_accident",
+      })
       .then((ref) => {
         setText("");
         setImage(null);
@@ -52,7 +43,9 @@ const PostScreen = (props) => {
 
   const takePhotoFromCamera = async () => {
     const result = await Camera.shared.takePhotoFromCameraAsync();
-    if (!result.cancelled) setImage(result.uri);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
   };
 
   const onClickAddImage = () => {
@@ -81,9 +74,10 @@ const PostScreen = (props) => {
   return (
     <Root>
       <View style={styles.container}>
-        <NavigationEvents onWillFocus={() => {
-          setDifficulty(null)
-        }} />
+        <NavigationEvents
+          onWillFocus={() => {
+          }}
+        />
         <View style={styles.exitContainer}>
           <TouchableOpacity
             style={styles.exit}
@@ -114,7 +108,7 @@ const PostScreen = (props) => {
               styles.difficultyRectangle,
               {
                 backgroundColor:
-                  difficulty === "easy"
+                difficulty === "easy"
                     ? colors.smallDifficulty
                     : "transparent",
               },
@@ -136,7 +130,7 @@ const PostScreen = (props) => {
               styles.difficultyRectangle,
               {
                 backgroundColor:
-                  difficulty === "medium"
+                difficulty === "medium"
                     ? colors.mediumDifficulty
                     : "transparent",
               },
@@ -158,10 +152,12 @@ const PostScreen = (props) => {
               styles.difficultyRectangle,
               {
                 backgroundColor:
-                  difficulty === "hard" ? colors.bigDifficulty : "transparent",
+                difficulty === "hard" ? colors.bigDifficulty : "transparent",
               },
             ]}
-            onPress={() => setDifficulty("hard")}
+            onPress={() => {
+              setDifficulty("hard");
+            }}
           >
             <View style={styles.carCircle}>
               <Image
@@ -200,7 +196,10 @@ const PostScreen = (props) => {
         </View>
         <View style={styles.bottomPart}>
           <View style={styles.sendButtonContainer}>
-            <TouchableOpacity style={styles.sendButton}>
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={() => handlePost()}
+            >
               <Ionicons name="md-arrow-up" size={30} />
             </TouchableOpacity>
           </View>

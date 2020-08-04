@@ -14,23 +14,14 @@ const TrafficClosureScreen = (props) => {
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
 
-  useEffect(() => {
-    getPhotoPermission();
-  }, []);
-
-  const getPhotoPermission = async () => {
-    if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-      if (status != "granted") {
-        alert("We need permission to access your camera roll");
-      }
-    }
-  };
-
   const handlePost = () => {
     Fire.shared
-      .addPostAsync({ text: text.trim(), localUri: image })
+      .addPostAsync({
+        text: text,
+        localUri: image,
+        difficulty: difficulty,
+        type: "traffic_closure",
+      })
       .then((ref) => {
         setText("");
         setImage(null);
@@ -206,7 +197,7 @@ const TrafficClosureScreen = (props) => {
         </View>
         <View style={styles.bottomPart}>
           <View style={styles.sendButtonContainer}>
-            <TouchableOpacity style={styles.sendButton}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => handlePost()}>
               <Ionicons name="md-arrow-up" size={30} />
             </TouchableOpacity>
           </View>
