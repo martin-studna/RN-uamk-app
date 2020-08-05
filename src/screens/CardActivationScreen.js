@@ -10,9 +10,35 @@ import {
 } from "react-native";
 import colors from "../colors";
 import { Ionicons } from "@expo/vector-icons";
+import Fire from "../Fire";
+import firebase from "firebase";
 
 const CardActivationScreen = (props) => {
-  const [cardId, setCardId] = useState("");
+  const [code, setCode] = useState("");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    Fire.shared
+      .getUserByIdAsync(firebase.auth().currentUser.uid)
+      .then((user) => {
+        setUser(user);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const activateCard = async () => {
+    if (user.data().cardId !== null) {
+      alert("Kartu máte už aktivovanou.");
+      return;
+    }
+
+    const result = await Fire.shared.addCardAsync(user.id, code);
+
+    const userResult = await Fire.shared.updateUserByIdAsync(user.id, {
+      cardId: result.id,
+      cardActivationCode: code,
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -34,10 +60,13 @@ const CardActivationScreen = (props) => {
           <TextInput
             placeholder="9220000000"
             style={styles.input}
-            value={cardId}
-            onChangeText={(input) => setCardId(input)}
+            value={code}
+            onChangeText={(input) => setCode(input)}
           ></TextInput>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => activateCard()}
+          >
             <Text
               style={{ fontWeight: "700", fontSize: 16, color: colors.primary }}
             >

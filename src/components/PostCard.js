@@ -9,7 +9,7 @@ const PostCard = (props) => {
 
   useEffect(() => {
     Fire.shared.getUserByIdAsync(props.publisher).then((res) => {
-      console.log("GET POST USER DATA: ", res.data());
+      //console.log("GET POST USER DATA: ", res.data());
       setPublisher(res.data().username);
       setPublisherImage(res.data().image);
     });
@@ -88,7 +88,7 @@ const PostCard = (props) => {
               <Text style={{ fontWeight: "bold", marginLeft: 10 }}>
                 {publisher}
               </Text>
-              <Image source={setDifficultyImage()} style={{ marginLeft: 8, marginTop: 4, width: 50, height: 20, resizeMode: 'stretch'}}/>
+              <Image source={setDifficultyImage()} style={{ marginLeft: 8, marginTop: 4, width: 60, height: 20, resizeMode: 'stretch'}}/>
             </View>
           </View>
 

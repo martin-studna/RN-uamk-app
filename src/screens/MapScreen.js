@@ -45,7 +45,6 @@ const MapScreen = (props) => {
       console.log(newPosts)
       setPosts(newPosts);
     }
-    setLoading(false)
   }
 
   const setTypeImage = (type) => {
@@ -126,12 +125,16 @@ const MapScreen = (props) => {
       longitudeDelta: location.longitudeDelta,
     });
     console.log(location);
+    setLoading(false)
+
   };
 
   return (
     <View style={{ flex: 1, width: "100%"}}>
 
-      <MapView style={styles.container} region={location}>
+      <MapView
+        showsTraffic={true}
+       style={styles.container} region={location}>
         <Marker
           coordinate={{
             latitude: location.latitude,

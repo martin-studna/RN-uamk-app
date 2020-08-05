@@ -17,8 +17,59 @@ class Fire {
       return null
     }
 
-    return Location.getCurrentPositionAsync();
-    
+    return Location.getCurrentPositionAsync(); 
+  }
+
+  getPostsByUserIdAsync = async (id) => {
+    return new Promise( async(res, rej) => {
+      const postsRef = await this.firestore.collection('posts').get()
+
+      if (postsRef.empty) {
+        rej('Array is empty')
+        return
+      }
+
+      let posts = []
+
+      for (let i = 0; i < postsRef.docs.length; i++) {
+      
+        if (postsRef.docs[i].data().publisher === id) {
+          posts.push(postsRef.docs[i].data())
+        }
+      }
+
+      res(posts)
+    })
+  }
+
+  getFollowersByUserIdAsync = async (id) => {
+    return new Promise((res,rej) => {
+
+      this.firestore
+        .collection('follow')
+        .doc(id)
+        .collection('followers')
+        .get()
+        .then(result => {
+          res(result)
+        })
+        .catch(err => {
+          rej(err)
+        })
+    })
+  }
+
+  getFollowingByUserIdAsync = async (id) => {
+    return new Promise((res,rej) => {
+
+      this.firestore
+        .collection('follow')
+        .doc(id)
+        .collection('following')
+        .get()
+        .then(result => res(result))
+        .catch(err => rej(err))
+    })
   }
 
   addPostAsync = async ({ difficulty, type, text, localUri }) => {
@@ -65,7 +116,7 @@ class Fire {
           mail,
           password,
           image: null,
-          points: 0,
+          points: 10,
           cardId: null,
           cardActivationCode: null,
         })
@@ -82,6 +133,26 @@ class Fire {
     });
   };
 
+  addCardAsync = async (uid, activationCode) => {
+    return new Promise((res,rej) => {
+      this.firestore
+      .collection('cards')
+      .add({
+        uid,
+        activationCode,
+        active: true
+      })
+      .then(result => {
+        console.log(result.id)
+        res(result)
+      })
+      .catch(err => {
+        console.error(err)
+        rej(err)
+      })
+    }) 
+  }
+
   getUserByIdAsync = async (id) => {
     return new Promise((res, rej) => {
       this.firestore
@@ -92,19 +163,6 @@ class Fire {
         .catch(err => rej(err))
         });
   };
-
-  getFollowingByUserIdAsync = async id => {
-    return new Promise((res,rej) => {
-      this.firestore
-        .collection('follow')
-        .doc(this.uid)
-        .collection('following')
-        .doc(id)
-        .get()
-        .then(ref => res(ref))
-        .catch(err => rej(err))
-    })
-  }
 
   followUserByIdAsync = async (id) => {
 
@@ -152,8 +210,13 @@ class Fire {
         .collection("users")
         .doc(id)
         .update(fields)
-        .then(ref => res(ref))
-        .catch((err) => rej(err));
+        .then(ref => {
+          console.log(ref)
+          res(ref)
+        })
+        .catch((err) => {
+          rej(err)
+        });
     });
   };
 

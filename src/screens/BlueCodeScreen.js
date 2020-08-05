@@ -23,7 +23,7 @@ const BlueCodeScreen = (props) => {
   const [lastVid, setLastVid] = useState(null);
   const [videos, setVideos] = useState([]);
 
-  const YOUTUBE_API_KEY = 'AIzaSyAoYtb3-0wpYChxtlp9pLY4nRxXVWTqzZQ'
+  const YOUTUBE_API_KEY = 'AIzaSyCfDyk81Girkru2oVdLZYfciLwAy03jXlM'
   const YOUTUBE_CHANNEL_ID = 'UCUOhEDlRYWqHUAGkyjz1zaA'
 
   const youtube = axios.create({
@@ -33,10 +33,18 @@ const BlueCodeScreen = (props) => {
   const getVideos = async () => {
     setIsLoading(true);
 
-    const snapshot = await youtube.get(
-      `/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=20`);
+    let snapshot = null
 
-    console.log('YOUTUBE DATA: ' ,snapshot)
+    try {
+      snapshot = await youtube.get(
+        `/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=20`);
+      
+    } catch (error) {
+      console.log(error)
+      alert('Bohužel došlo někde k chybě')
+      return
+    }
+
 
     if (snapshot.data.items.length !== 0) {
       let newVideos = [];
@@ -58,39 +66,6 @@ const BlueCodeScreen = (props) => {
 
     setIsLoading(false);
   };
-
-  // const getMore = async () => {
-  //   if (lastDoc) {
-  //     setIsMoreLoading(true);
-
-  //     setTimeout(async () => {
-  //       let snapshot = await postsRef
-  //         .orderBy("timestamp")
-  //         .startAfter(lastDoc.data().uid)
-  //         .limit(3)
-  //         .get();
-
-  //       if (!snapshot.empty) {
-  //         let newPosts = posts;
-
-  //         setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
-
-  //         for (let i = 0; i < snapshot.docs.length; i++) {
-  //           newPosts.push(snapshot.docs[i].data());
-  //         }
-
-  //         setPosts(newPosts);
-  //         if (snapshot.docs.length < 3) setLastDoc(null);
-  //       } else {
-  //         setLastDoc(null);
-  //       }
-
-  //       setIsMoreLoading(false);
-  //     }, 1000);
-  //   }
-
-  //   onEndReachedCallDuringMomentum = false;
-  // };
 
   const onRefresh = () => {
     setTimeout(() => {

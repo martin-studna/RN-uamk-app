@@ -6,28 +6,6 @@ import firebase from "firebase";
 import { NavigationEvents } from "react-navigation";
 
 const UserCard = (props) => {
-  const [followStatus, setFollowStatus] = useState("Odebírat");
-
-  // const getStatus = () => {
-  //   console.log("get status");
-  //   Fire.shared.getFollowingByUserIdAsync(props.id).then((res) => {
-  //     if (res.data()) {
-  //       setFollowStatus("Odebírám");
-  //     } else setFollowStatus("Odebírat");
-  //   });
-  // };
-
-  const followButtonAction = () => {
-    if (followStatus === "Odebírat") {
-      Fire.shared
-        .followUserByIdAsync(props.id)
-        .then(() => setFollowStatus("Odebírám"));
-    } else {
-      Fire.shared
-        .unfollowUserByIdAsync(props.id)
-        .then(() => setFollowStatus("Odebírat"));
-    }
-  };
 
   return (
     <TouchableOpacity
@@ -46,12 +24,6 @@ const UserCard = (props) => {
         <Text style={styles.username}>{props.username}</Text>
       </View>
       <View style={{ flex: 1 }}></View>
-      {/* <TouchableOpacity
-        style={styles.followButton}
-        onPress={() => followButtonAction()}
-      >
-        <Text style={styles.followButtonText}>{followStatus}</Text>
-      </TouchableOpacity> */}
     </TouchableOpacity>
   );
 };
@@ -65,7 +37,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     marginBottom: 7,
-
+    borderWidth: 2,
+    borderColor: colors.uamkBlue,
+    borderRadius: 10,
     alignItems: "center",
   },
   image: {

@@ -7,13 +7,14 @@ import {
   ImageBackground,
   ActivityIndicator,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors.js";
 import MenuButton from "../components/MenuButton.js";
 import Fire from "../Fire.js";
-import { TouchableOpacity } from "react-native-gesture-handler";
+
 import PostCard from "../components/PostCard.js";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
@@ -22,9 +23,6 @@ import Global from "../global.js";
 
 const HomeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
-
-  const [email, setEmail] = useState("");
-  const [displayName, setDisplayName] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isMoreLoading, setIsMoreLoading] = useState(false);
@@ -35,17 +33,6 @@ const HomeScreen = (props) => {
 
   const postsRef = Fire.shared.getPostsRef();
 
-
-  useEffect(() => {
-    const user = firebase.auth().currentUser;
-
-    setEmail(user.email);
-    setDisplayName(user.displayName);
-
-    //getPosts();
-    getLocation();
-  }, []);
-
   getLocation = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
@@ -55,7 +42,7 @@ const HomeScreen = (props) => {
     }
 
     const userLocation = await Location.getCurrentPositionAsync();
-    console.log(userLocation);
+    //console.log(userLocation);
     setLocation(userLocation);
   };
 
@@ -67,13 +54,15 @@ const HomeScreen = (props) => {
     if (!snapshot.empty) {
       let newPosts = [];
 
-      console.log(snapshot.docs[snapshot.docs.length - 1].data())
+      //console.log(snapshot.docs[snapshot.docs.length - 1].data())
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
       for (let i = 0; i < snapshot.docs.length; i++) {
+        if (!snapshot.docs[i].data().text) continue;
 
-        if(!snapshot.docs[i].data().text)
-          continue;
+        let time = getTime(snapshot.docs[i].data().timestamp);
+
+        if (time >= 6) continue;
 
         newPosts.push(snapshot.docs[i].data());
       }
@@ -86,14 +75,21 @@ const HomeScreen = (props) => {
     setIsLoading(false);
   };
 
+  const getTime = (timestamp) => {
+    const currentDate = new Date();
+    let passedTime = (currentDate.getTime() - timestamp) / 1000;
+    passedTime = Math.floor(passedTime / (60 * 60));
+    return passedTime;
+  };
+
   const getMore = async () => {
     if (lastDoc) {
-      console.log(lastDoc.data())
+      //console.log(lastDoc.data())
       setIsMoreLoading(true);
 
       setTimeout(async () => {
         let snapshot = await postsRef
-          .orderBy("timestamp", 'desc')
+          .orderBy("timestamp", "desc")
           .startAfter(lastDoc.data().timestamp)
           .limit(5)
           .get();
@@ -104,9 +100,11 @@ const HomeScreen = (props) => {
           setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
           for (let i = 0; i < snapshot.docs.length; i++) {
+            if (!snapshot.docs[i].data().text) continue;
 
-            if(!snapshot.docs[i].data().text)
-              continue;
+            let time = getTime(snapshot.docs[i].data().timestamp);
+
+            if (time >= 6) continue;
 
             newPosts.push(snapshot.docs[i].data());
           }
@@ -136,8 +134,8 @@ const HomeScreen = (props) => {
     return (
       <ActivityIndicator
         size="large"
-        color={"#D83E64"}
-        style={{ marginBottom: 10 }}
+        color={colors.primary}
+        style={{ marginBottom: 14 }}
       />
     );
   };
@@ -159,9 +157,10 @@ const HomeScreen = (props) => {
     <View style={styles.container}>
       <NavigationEvents
         onWillFocus={() => {
-          Global.postDescription = null
-          Global.postImage = null
-          Global.postDifficulty = null
+          getLocation()
+          Global.postDescription = null;
+          Global.postImage = null;
+          Global.postDifficulty = null;
           getPosts();
         }}
       />
