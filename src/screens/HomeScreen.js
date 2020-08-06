@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -32,8 +32,13 @@ const HomeScreen = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [location, setLocation] = useState(null);
   const [semaphore, setSemaphore] = useState(false);
+  const [difficulty, setDifficulty] = useState(null);
 
   const postsRef = Fire.shared.getPostsRef();
+
+  useEffect(() => {
+    getPosts()
+  }, [difficulty])
 
   getLocation = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -52,7 +57,6 @@ const HomeScreen = (props) => {
 
     const snapshot = await postsRef.orderBy("timestamp", "desc").limit(5).get();
 
-
     if (!snapshot.empty) {
       let newPosts = [];
 
@@ -60,7 +64,11 @@ const HomeScreen = (props) => {
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
       for (let i = 0; i < snapshot.docs.length; i++) {
-        if (!snapshot.docs[i].data().text && !snapshot.docs[i].data().image) continue;
+        if (semaphore && difficulty !== snapshot.docs[i].data().difficulty)
+          continue;
+
+        if (!snapshot.docs[i].data().text && !snapshot.docs[i].data().image)
+          continue;
 
         let time = getTime(snapshot.docs[i].data().timestamp);
 
@@ -102,7 +110,11 @@ const HomeScreen = (props) => {
           setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
           for (let i = 0; i < snapshot.docs.length; i++) {
-            if (!snapshot.docs[i].data().text && !snapshot.docs[i].data().image) continue;
+            if (semaphore && difficulty !== snapshot.docs[i].data().difficulty)
+              continue;
+
+            if (!snapshot.docs[i].data().text && !snapshot.docs[i].data().image)
+              continue;
 
             let time = getTime(snapshot.docs[i].data().timestamp);
 
@@ -174,6 +186,20 @@ const HomeScreen = (props) => {
     return d;
   };
 
+  const toggleFilter = () => {
+    
+    const showSemaphore = !semaphore
+    setSemaphore(val => !val)
+
+    if (!showSemaphore) {
+      setDifficulty(null);
+    }
+  };
+
+  const filter = (difficulty) => {
+    setDifficulty(difficulty);
+  };
+
   return (
     <View style={styles.container}>
       <NavigationEvents
@@ -182,6 +208,9 @@ const HomeScreen = (props) => {
           Global.postDescription = null;
           Global.postImage = null;
           Global.postDifficulty = null;
+          Global.semaphore = false
+          Global.difficulty = null
+          setDifficulty(null);
           getPosts();
         }}
       />
@@ -205,7 +234,7 @@ const HomeScreen = (props) => {
           }
           initialNumToRender={5}
           onEndReachedThreshold={0.1}
-          contentContainerStyle={{ paddingBottom: 80}}
+          contentContainerStyle={{ paddingBottom: 80 }}
           onMomentumScrollBegin={() => {
             onEndReachedCallDuringMomentum = false;
           }}
@@ -235,7 +264,7 @@ const HomeScreen = (props) => {
       <View style={styles.difficultyButtonContainer}>
         <TouchableOpacity
           style={styles.fabButton}
-          onPress={() => setSemaphore((val) => !val)}
+          onPress={() => toggleFilter()}
         >
           <Image
             source={require("../assets/button_semafory_ipka.png")}
@@ -245,19 +274,22 @@ const HomeScreen = (props) => {
       </View>
 
       {semaphore ? (
-        <View style={styles.greenLightButtonContainer}>
-          <TouchableOpacity style={styles.fabButton}></TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.greenLightButtonContainer}
+          onPress={() => filter("easy")}
+        ></TouchableOpacity>
       ) : null}
       {semaphore ? (
-        <View style={styles.orangeLightButtonContainer}>
-          <TouchableOpacity style={styles.fabButton}></TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.orangeLightButtonContainer}
+          onPress={() => filter("medium")}
+        ></TouchableOpacity>
       ) : null}
       {semaphore ? (
-        <View style={styles.redLightButtonContainer}>
-          <TouchableOpacity style={styles.fabButton}></TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.redLightButtonContainer}
+          onPress={() => filter("hard")}
+        ></TouchableOpacity>
       ) : null}
     </View>
   );
