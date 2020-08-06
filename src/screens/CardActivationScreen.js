@@ -7,15 +7,18 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Alert
 } from "react-native";
 import colors from "../colors";
 import { Ionicons } from "@expo/vector-icons";
 import Fire from "../Fire";
 import firebase from "firebase";
+import ProgressDialog from "../components/ProgressDialog";
 
 const CardActivationScreen = (props) => {
   const [code, setCode] = useState("");
   const [user, setUser] = useState(null);
+  const [progressCard, setProgressCard] = useState(false)
 
   useEffect(() => {
     Fire.shared
@@ -28,20 +31,40 @@ const CardActivationScreen = (props) => {
 
   const activateCard = async () => {
     if (user.data().cardId !== null) {
-      alert("Kartu máte už aktivovanou.");
+      Alert.alert(
+        "Kartu máte už aktivovanou.",
+        null,
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
       return;
     }
+
+    setProgressCard(true)
 
     const result = await Fire.shared.addCardAsync(user.id, code);
 
     const userResult = await Fire.shared.updateUserByIdAsync(user.id, {
       cardId: result.id,
       cardActivationCode: code,
-    });
+    })
+    .then(() => {
+      setProgressCard(false)
+      props.navigation.navigate('Home')
+    })
+    .catch(err => {
+
+    })
   };
 
   return (
     <View style={styles.container}>
+      <ProgressDialog 
+        title='Aktivace karty'
+        text='Prosím, čekejte, tohle může chvíli trvat...'
+      />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Ionicons name="md-arrow-back" size={32} color={colors.uamkBlue} />
@@ -121,13 +144,11 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: colors.primary,
     width: "100%",
-    height: 90,
+    height: 60,
     display: "flex",
     alignItems: "center",
     flexDirection: "row",
-    paddingTop: 40,
     paddingHorizontal: 15,
-    paddingBottom: 10,
   },
   headerTitle: {
     marginLeft: 15,

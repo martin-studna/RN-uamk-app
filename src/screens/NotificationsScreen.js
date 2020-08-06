@@ -182,13 +182,11 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: colors.primary,
     width: "100%",
-    height: 90,
+    height: 60,
     display: "flex",
     alignItems: "center",
     flexDirection: "row",
-    paddingTop: 40,
     paddingHorizontal: 15,
-    paddingBottom: 10,
   },
   headerTitle: {
     fontSize: 20,

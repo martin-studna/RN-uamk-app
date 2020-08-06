@@ -20,7 +20,7 @@ const DescriptionScreen = (props) => {
       <View style={styles.buttonsContainer}>
       <View style={styles.exitButtonContainer}>
         <TouchableOpacity style={styles.exitButton} onPress={() => props.navigation.goBack()}>
-          <Text>ZRUŠIT</Text>
+          <Text style={{color: 'black'}}>ZRUŠIT</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.middle}>
@@ -31,7 +31,7 @@ const DescriptionScreen = (props) => {
           Global.postDescription = description
           props.navigation.goBack()
         }}>
-          <Text>ULOŽIT</Text>
+          <Text style={{color: 'black'}}>ULOŽIT</Text>
         </TouchableOpacity>
       </View>
       </View>

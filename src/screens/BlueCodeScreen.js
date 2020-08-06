@@ -6,7 +6,8 @@ import {
   ImageBackground,
   RefreshControl,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import colors from "../colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -41,7 +42,14 @@ const BlueCodeScreen = (props) => {
       
     } catch (error) {
       console.log(error)
-      alert('Bohužel došlo někde k chybě')
+      Alert.alert(
+        "Bohužel došlo k chybě",
+        null,
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
       return
     }
 
@@ -145,10 +153,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: 80,
+    height: 60,
     width: "100%",
     paddingLeft: 16,
-    paddingTop: 20,
     backgroundColor: colors.primary,
     alignItems: "center",
     borderBottomColor: "#EBECF4",

@@ -86,13 +86,11 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: colors.primary,
     width: "100%",
-    height: 90,
+    height: 60,
     display: "flex",
     alignItems: "center",
     flexDirection: "row",
-    paddingTop: 40,
-    paddingHorizontal: 15,
-    paddingBottom: 10,
+    paddingLeft: 15,
   },
   headerTitle: {
     marginLeft: 15,
@@ -106,6 +104,7 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     marginBottom: 9,
+    color: 'black'
   },
   uamkLogo: {
     width: 120,

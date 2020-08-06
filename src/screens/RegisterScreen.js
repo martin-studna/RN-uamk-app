@@ -4,14 +4,19 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import * as firebase from "firebase";
 import Fire from "../Fire.js";
 import colors from "../colors";
+import ProgressDialog from "../components/ProgressDialog.js";
 
 const RegisterScreen = (props) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+  const [progress, setProgress] = useState(false)
 
   const handleSignUp = () => {
+    setProgress(true)
+
+
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -22,6 +27,9 @@ const RegisterScreen = (props) => {
             mail: email,
             password,
         })
+        .then(() => {
+          setProgress(false)
+        })
       })
       .catch((error) => setErrorMessage(error.message));
   };
@@ -31,6 +39,11 @@ const RegisterScreen = (props) => {
       style={styles.container}
       source={require("../assets/backgroundimage_zoom.png")}
     >
+    <ProgressDialog 
+      visible={progress}
+      title={'Zaregistrovat se'}
+      text={'Prosím počkejte, tohle může chvíli trvat...'}
+    />
       <View style={styles.errorMessage}>
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       </View>

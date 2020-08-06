@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, Image } from "react-native";
+import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import * as Permissions from "expo-permissions";
@@ -9,14 +9,31 @@ import Global from "../global";
 import { ActionSheet, Root } from "native-base";
 import Camera from "../Camera";
 import { NavigationEvents } from "react-navigation";
+import ProgressDialog from "../components/ProgressDialog.js";
 
 const PostScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
+  const [progress, setProgress] = useState(false)
 
 
   const handlePost = () => {
+
+    if (!difficulty) {
+      Alert.alert(
+        "Zvolte závažnost situace",
+        null,
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+      return
+    }
+
+    setProgress(true)
+
     Fire.shared
       .addPostAsync({
         text: Global.postDescription,
@@ -28,6 +45,7 @@ const PostScreen = (props) => {
         setText("");
         setImage(null);
         setDifficulty(null);
+        setProgress(false)
         props.navigation.goBack();
       })
       .catch((err) => {
@@ -55,7 +73,7 @@ const PostScreen = (props) => {
       {
         options: BUTTONS,
         cancelButtonIndex: 2,
-        title: "Select a Photo",
+        title: "Fotka",
       },
       (buttonIndex) => {
         switch (buttonIndex) {
@@ -74,9 +92,17 @@ const PostScreen = (props) => {
 
   return (
     <Root>
+      <ProgressDialog  
+      title='Nahrávám nový příspěvek'
+      text='Prosím počkejte...'
+      visible={progress}/>
       <View style={styles.container}>
         <NavigationEvents
           onWillFocus={() => {
+          }}
+          onWillBlur={() => {
+            Global.postDescription = ''
+            setDifficulty(null)
           }}
         />
         <View style={styles.exitContainer}>

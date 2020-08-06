@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
@@ -30,6 +31,7 @@ const HomeScreen = (props) => {
   const [posts, setPosts] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [location, setLocation] = useState(null);
+  const [semaphore, setSemaphore] = useState(false);
 
   const postsRef = Fire.shared.getPostsRef();
 
@@ -42,7 +44,6 @@ const HomeScreen = (props) => {
     }
 
     const userLocation = await Location.getCurrentPositionAsync();
-    //console.log(userLocation);
     setLocation(userLocation);
   };
 
@@ -50,6 +51,7 @@ const HomeScreen = (props) => {
     setIsLoading(true);
 
     const snapshot = await postsRef.orderBy("timestamp", "desc").limit(5).get();
+
 
     if (!snapshot.empty) {
       let newPosts = [];
@@ -153,11 +155,30 @@ const HomeScreen = (props) => {
     );
   };
 
+  const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+  };
+
+  const getDistance = (postLocation) => {
+    let R = 6371; // Radius of the earth in km
+    let dLat = deg2rad(postLocation.latitude - location.coords.latitude); // deg2rad below
+    let dLon = deg2rad(postLocation.longitude - location.coords.longitude);
+    let a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(location.coords.latitude)) *
+        Math.cos(deg2rad(postLocation.latitude)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c; // Distance in km
+    return d;
+  };
+
   return (
     <View style={styles.container}>
       <NavigationEvents
         onWillFocus={() => {
-          getLocation()
+          getLocation();
           Global.postDescription = null;
           Global.postImage = null;
           Global.postDifficulty = null;
@@ -176,6 +197,7 @@ const HomeScreen = (props) => {
           style={styles.feed}
           data={posts}
           renderItem={({ item }) => renderPost(item)}
+          keyExtractor={(item) => item.id}
           key={(item) => item.id}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={renderFooter}
@@ -184,6 +206,7 @@ const HomeScreen = (props) => {
           }
           initialNumToRender={5}
           onEndReachedThreshold={0.1}
+          contentContainerStyle={{ paddingBottom: 80}}
           onMomentumScrollBegin={() => {
             onEndReachedCallDuringMomentum = false;
           }}
@@ -210,6 +233,33 @@ const HomeScreen = (props) => {
           <Ionicons name="md-map" size={23} color={colors.primary} />
         </TouchableOpacity>
       </View>
+      <View style={styles.difficultyButtonContainer}>
+        <TouchableOpacity
+          style={styles.fabButton}
+          onPress={() => setSemaphore((val) => !val)}
+        >
+          <Image
+            source={require("../assets/button_semafory_ipka.png")}
+            style={{ width: 15, height: 25, resizeMode: "stretch" }}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {semaphore ? (
+        <View style={styles.greenLightButtonContainer}>
+          <TouchableOpacity style={styles.fabButton}></TouchableOpacity>
+        </View>
+      ) : null}
+      {semaphore ? (
+        <View style={styles.orangeLightButtonContainer}>
+          <TouchableOpacity style={styles.fabButton}></TouchableOpacity>
+        </View>
+      ) : null}
+      {semaphore ? (
+        <View style={styles.redLightButtonContainer}>
+          <TouchableOpacity style={styles.fabButton}></TouchableOpacity>
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -228,9 +278,8 @@ const styles = StyleSheet.create({
     marginLeft: 42,
   },
   header: {
-    height: 80,
+    height: 60,
     paddingLeft: 16,
-    paddingTop: 20,
     backgroundColor: colors.primary,
     alignItems: "center",
     borderBottomColor: "#EBECF4",
@@ -285,8 +334,48 @@ const styles = StyleSheet.create({
     height: 55,
     backgroundColor: colors.uamkBlue,
     position: "absolute",
+    left: 10,
+    bottom: 20,
+    zIndex: 10,
+    borderRadius: 50,
+  },
+  difficultyButtonContainer: {
+    width: 55,
+    height: 55,
+    backgroundColor: colors.uamkBlue,
+    position: "absolute",
     right: 10,
-    top: 50,
+    top: 30,
+    zIndex: 10,
+    borderRadius: 50,
+  },
+  greenLightButtonContainer: {
+    width: 45,
+    height: 45,
+    backgroundColor: "#5bd83d",
+    position: "absolute",
+    right: 15,
+    top: 100,
+    zIndex: 10,
+    borderRadius: 50,
+  },
+  orangeLightButtonContainer: {
+    width: 45,
+    height: 45,
+    backgroundColor: "#fcb000",
+    position: "absolute",
+    right: 15,
+    top: 150,
+    zIndex: 10,
+    borderRadius: 50,
+  },
+  redLightButtonContainer: {
+    width: 45,
+    height: 45,
+    backgroundColor: "#f84242",
+    position: "absolute",
+    right: 15,
+    top: 200,
     zIndex: 10,
     borderRadius: 50,
   },

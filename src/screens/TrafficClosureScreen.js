@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, Image } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
@@ -8,7 +14,7 @@ import Fire from "../Fire.js";
 import { ActionSheet, Root } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../colors";
-import Global from '../global'
+import Global from "../global";
 
 const TrafficClosureScreen = (props) => {
   const [text, setText] = useState("");
@@ -16,6 +22,16 @@ const TrafficClosureScreen = (props) => {
   const [difficulty, setDifficulty] = useState(null);
 
   const handlePost = () => {
+    if (!difficulty) {
+      Alert.alert(
+        "Zvolte závažnost situace",
+        null,
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+        { cancelable: false }
+      );
+      return;
+    }
+
     Fire.shared
       .addPostAsync({
         text: Global.postDescription,
@@ -27,7 +43,7 @@ const TrafficClosureScreen = (props) => {
         setText("");
         setImage(null);
         setDifficulty(null);
-        props.navigation.navigate('Home');
+        props.navigation.navigate("Home");
       })
       .catch((err) => {
         console.error(err);
@@ -198,7 +214,10 @@ const TrafficClosureScreen = (props) => {
         </View>
         <View style={styles.bottomPart}>
           <View style={styles.sendButtonContainer}>
-            <TouchableOpacity style={styles.sendButton} onPress={() => handlePost()}>
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={() => handlePost()}
+            >
               <Ionicons name="md-arrow-up" size={30} />
             </TouchableOpacity>
           </View>
@@ -352,7 +371,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     width: "100%",
-    height: "40%",
+    height: 55,
     backgroundColor: colors.primary,
   },
   sendButtonContainer: {

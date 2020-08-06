@@ -85,7 +85,7 @@ const PostCard = (props) => {
               <Text style={styles.timestamp}>{getDate(props.timestamp)}</Text>
             </View>
             <View>
-              <Text style={{ fontWeight: "bold", marginLeft: 10 }}>
+              <Text style={{ fontWeight: "bold", marginLeft: 10, color: 'black' }}>
                 {publisher}
               </Text>
               <Image source={setDifficultyImage()} style={{ marginLeft: 8, marginTop: 4, width: 60, height: 20, resizeMode: 'stretch'}}/>
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
     fontSize: 14,
     marginBottom: 15,
+    color: 'black'
   },
   timestamp: {
     marginTop: 8,

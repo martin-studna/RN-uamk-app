@@ -6,6 +6,7 @@ import Fire from "../Fire";
 import firebase from "firebase";
 import { ActivityIndicator } from "react-native-paper";
 import { NavigationEvents } from "react-navigation";
+import ProgressDialog from "../components/ProgressDialog";
 
 const ProfileScreen = (props) => {
   const [user, setUser] = useState(null);
@@ -104,6 +105,11 @@ const ProfileScreen = (props) => {
           getPosts();
         }}
       />
+      <ProgressDialog 
+        color='rgba(0,0,0,0.5)'
+        visible={loading}
+      />
+
       <View style={styles.header}>
         <Text style={styles.headerTitle}>
           {user && user.username ? user.username : ""}
@@ -203,23 +209,6 @@ const ProfileScreen = (props) => {
           </Text>
         </View>
       </View>
-
-      {loading ? (
-        <View
-          style={{
-            backgroundColor: "rgb(255,255,255)",
-            zIndex: 10,
-            position: "absolute",
-            height: "100%",
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" />
-        </View>
-      ) : null}
     </View>
   );
 };
@@ -232,13 +221,11 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: colors.primary,
     width: "100%",
-    height: 90,
+    height: 60,
     display: "flex",
     alignItems: "center",
     flexDirection: "row",
-    paddingTop: 40,
     paddingHorizontal: 15,
-    paddingBottom: 10,
   },
   headerTitle: {
     fontSize: 20,
@@ -249,7 +236,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     width: "100%",
-    paddingHorizontal: 40,
+    justifyContent: "center",
     marginTop: 30,
   },
   profileImage: {

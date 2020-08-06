@@ -7,37 +7,36 @@ import Fire from "../Fire";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import { Ionicons } from "@expo/vector-icons";
+import ProgressDialog from '../components/ProgressDialog'
 
-const ProfileSettingsScreen = (props) => {
+const ProfileSettingsScreen = props => {
   const [username, setUsername] = useState("");
   const [fullname, setFullname] = useState("");
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(true)
+  const [progressUpdate, setProgressUpdate] = useState(false)
+  const [progressSignOut, setProgressSignOut] = useState(false)
 
   useEffect(() => {
     Fire.shared.getUserByIdAsync(firebase.auth().currentUser.uid).then((user) => {
       setFullname(user.data().fullname);
       setUsername(user.data().username);
       setImage(user.data().image);
+      setLoading(false)
     }, []);
 
     firebase.auth().onAuthStateChanged((user) => {
+      setProgressSignOut(false)
       props.navigation.navigate(user ? "App" : "Auth");
     });
   }, []);
 
   const signOutUser = async () => {
+    setProgressSignOut(true)
     try {
       await firebase.auth().signOut();
     } catch (e) {
       console.log(e);
-    }
-  };
-
-  const getPhotoPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    if (status != "granted") {
-      alert("We need permission to access your camera roll");
     }
   };
 
@@ -54,6 +53,8 @@ const ProfileSettingsScreen = (props) => {
   };
 
   const updateProfile = async () => {
+
+    setProgressUpdate(true)
     
     let uri = null
 
@@ -70,13 +71,27 @@ const ProfileSettingsScreen = (props) => {
       .updateUserByIdAsync(
         firebase.auth().currentUser.uid, updates)
         .then(res => {
-         props.navigation.goBack()
+          setProgressUpdate(false)
+         props.navigation.navigate('Home')
         })
         .catch(err => console.error(err))
   }
 
   return (
     <View style={styles.container}>
+    <ProgressDialog 
+      visible={loading}
+    />
+    <ProgressDialog 
+      visible={progressUpdate}
+      title={'Nastavení účtu'}
+      text={'Prosím, čekejte, aktualizujeme Váš profil...'}
+    />
+    <ProgressDialog 
+      visible={progressSignOut}
+      title={'Odhlásit'}
+      text={'Prosím, počkejte chvíli...'}
+    />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Ionicons name="md-close" size={32} color={colors.uamkBlue} />
@@ -171,14 +186,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: 80,
+    height: 60,
     width: "100%",
     backgroundColor: colors.primary,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: 'flex-end',
-    paddingBottom: 10,
+    alignItems: 'center',
+
     paddingHorizontal: 15
   },
 });

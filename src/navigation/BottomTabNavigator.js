@@ -9,8 +9,8 @@ import ProfileScreen from '../screens/ProfileScreen'
 import PostScreen from '../screens/PostScreen'
 import colors from '../colors'
 import { Ionicons } from '@expo/vector-icons'
-import PostStackNavigator from './PostStackNavigator'
-import ProfileStackNavigator from './ProfileStackNavigator'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
 
 const AppTabNavigator = createBottomTabNavigator(
@@ -18,13 +18,13 @@ const AppTabNavigator = createBottomTabNavigator(
     Home: {
       screen: HomeScreen,
       navigationOptions: {
-        tabBarIcon: ({tintColor}) => <Ionicons name='md-home' size={30} color={colors.uamkBlue} />
+        tabBarIcon: ({tintColor, focused}) => <MaterialCommunityIcon name={focused ? 'home' : 'home-outline'} size={30} color={tintColor} />
       }
     },
     Search: {
       screen: SearchScreen,
       navigationOptions: {
-        tabBarIcon: ({tintColor}) => <Ionicons name='md-search' size={30} color={colors.uamkBlue} />
+        tabBarIcon: ({tintColor, focused}) => <Ionicons name='md-search' size={30} color={tintColor} />
       }
     },
     Post: {
@@ -41,20 +41,20 @@ const AppTabNavigator = createBottomTabNavigator(
     Notifications: {
       screen: NotificationsScreen,
       navigationOptions: {
-        tabBarIcon: ({tintColor}) => <Ionicons name='md-notifications' size={30} color={colors.uamkBlue} />
+        tabBarIcon: ({tintColor, focused}) => <MaterialIcon name={ focused ? 'notifications' : 'notifications-none'} size={30} color={tintColor} />
       }
     },
     Profile: {
       screen: ProfileScreen,
       navigationOptions: {
-        tabBarIcon: ({tintColor}) => <Ionicons name='md-person' size={30} color={colors.uamkBlue}  />
+        tabBarIcon: ({tintColor, focused}) => <MaterialIcon name={ focused ? 'person' : 'person-outline'} size={30} color={tintColor}  />
       }
     }
   },
   {
     tabBarOptions: {
-      activeTintColor: colors.uamkBlue,
-      inactiveTintColor: '#B8BBC4',
+      activeTintColor: '#fff',
+      inactiveTintColor: colors.uamkBlue,
       showLabel: false,
       style: {
         backgroundColor: colors.primary,

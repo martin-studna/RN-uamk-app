@@ -4,16 +4,20 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import * as firebase from "firebase";
 import { StatusBar } from "expo-status-bar";
 import colors from "../colors";
+import ProgressDialog from "../components/ProgressDialog";
 
 const LoginScreen = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+  const [progress, setProgress] = useState(false)
 
   const handleLogin = () => {
+    setProgress(true)
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
+      .then(() => setProgress(false))
       .catch((error) => setErrorMessage(error.message));
   };
 
@@ -22,6 +26,11 @@ const LoginScreen = (props) => {
       style={styles.container}
       source={require("../assets/backgroundimage_zoom.png")}
     >
+    <ProgressDialog 
+      visible={progress}
+      title="Přihlašování"
+      text="Prosím počkejte, tohle může chvíli trvat..."
+    />
       <StatusBar barStyle="light-content"></StatusBar>
 
       <View style={styles.errorMessage}>

@@ -99,6 +99,8 @@ target 'RNuamkapp' do
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   post_install do |installer|
     flipper_post_install(installer)
   end
