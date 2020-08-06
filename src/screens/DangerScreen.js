@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
+import { View, Text, StyleSheet, Image, Alert } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-import * as Permissions from "expo-permissions";
 import Fire from "../Fire.js";
 import { ActionSheet, Root } from "native-base";
 import colors from "../colors";
 import Global from "../global";
+import Camera from '../Camera'
+import ProgressDialog from '../components/ProgressDialog'
 
 const DangerScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
+  const [progress, setProgress] = useState(false)
+
 
   const handlePost = () => {
     if (!difficulty) {
@@ -24,6 +27,8 @@ const DangerScreen = (props) => {
       return;
     }
 
+    setProgress(true)
+
     Fire.shared
       .addPostAsync({
         text: Global.postDescription,
@@ -35,6 +40,7 @@ const DangerScreen = (props) => {
         setText("");
         setImage(null);
         setDifficulty(null);
+        setProgress(false)
         props.navigation.navigate("Home");
       })
       .catch((err) => {
@@ -79,6 +85,10 @@ const DangerScreen = (props) => {
 
   return (
     <Root>
+    <ProgressDialog  
+      title='Nahrávám nový příspěvek'
+      text='Prosím počkejte...'
+      visible={progress}/>
       <View style={styles.container}>
         <View style={styles.exitContainer}>
           <TouchableOpacity

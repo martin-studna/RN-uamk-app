@@ -8,14 +8,14 @@ class Camera {
 
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-      if (status != "granted") {
+      if (status !== "granted") {
         alert("We need permission to access your camera roll");
         rej('We need permission to access your camera roll')
       }
       else {
         ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
+          allowsEditing: false,
           aspect: [4, 3],
         })
         .then(result => res(result))
@@ -28,16 +28,16 @@ class Camera {
   takePhotoFromCameraAsync = async () => {
     return new Promise( async (res,rej) => {
 
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
-      if (status != "granted") {
+      if (status !== "granted") {
         alert("We need permission to access your camera roll");
         rej('We need permission to access your camera roll')
       }
       else {
         ImagePicker.launchCameraAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
+          allowsEditing: false,
           aspect: [4, 3],
         })
         .then(result => res(result))

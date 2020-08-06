@@ -62,6 +62,7 @@ const CardActivationScreen = (props) => {
   return (
     <View style={styles.container}>
       <ProgressDialog 
+        visible={progressCard}
         title='Aktivace karty'
         text='Prosím, čekejte, tohle může chvíli trvat...'
       />

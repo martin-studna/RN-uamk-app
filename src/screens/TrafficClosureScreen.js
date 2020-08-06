@@ -15,11 +15,15 @@ import { ActionSheet, Root } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../colors";
 import Global from "../global";
+import ProgressDialog from "../components/ProgressDialog.js";
+import Camera from '../Camera'
+
 
 const TrafficClosureScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
+  const [progress, setProgress] = useState(false)
 
   const handlePost = () => {
     if (!difficulty) {
@@ -32,6 +36,8 @@ const TrafficClosureScreen = (props) => {
       return;
     }
 
+    setProgress(true)
+
     Fire.shared
       .addPostAsync({
         text: Global.postDescription,
@@ -43,6 +49,7 @@ const TrafficClosureScreen = (props) => {
         setText("");
         setImage(null);
         setDifficulty(null);
+        setProgress(false)
         props.navigation.navigate("Home");
       })
       .catch((err) => {
@@ -87,6 +94,10 @@ const TrafficClosureScreen = (props) => {
 
   return (
     <Root>
+     <ProgressDialog  
+      title='Nahrávám nový příspěvek'
+      text='Prosím počkejte...'
+      visible={progress}/>
       <View style={styles.container}>
         <View style={styles.exitContainer}>
           <TouchableOpacity

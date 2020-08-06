@@ -16,11 +16,16 @@ import * as ImagePicker from "expo-image-picker";
 import colors from "../colors";
 import { ActionSheet, Root } from "native-base";
 import Camera from "../Camera";
+import ProgressDialog from "../components/ProgressDialog.js";
+import Global from '../global.js'
+
 
 const TrafficJamScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
+  const [progress, setProgress] = useState(false)
+
 
   const handlePost = () => {
     if (!difficulty) {
@@ -33,6 +38,8 @@ const TrafficJamScreen = (props) => {
       return;
     }
 
+    setProgress(true)
+
     Fire.shared
       .addPostAsync({
         text: Global.postDescription,
@@ -44,6 +51,7 @@ const TrafficJamScreen = (props) => {
         setText("");
         setImage(null);
         setDifficulty(null);
+        setProgress(false)
         props.navigation.navigate("Home");
       })
       .catch((err) => {
@@ -88,6 +96,10 @@ const TrafficJamScreen = (props) => {
 
   return (
     <Root>
+    <ProgressDialog  
+      title='Nahrávám nový příspěvek'
+      text='Prosím počkejte...'
+      visible={progress}/>
       <View style={styles.container}>
         <View style={styles.exitContainer}>
           <TouchableOpacity

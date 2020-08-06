@@ -224,7 +224,7 @@ class Fire {
     
     const path = `photos/${this.uid}/${Date.now()}.jpg`;
 
-    console.log('UPLOAD PHOTO URI: ', path);
+    console.log('LOCAL PHOTO URI: ', path);
 
     return new Promise(async (res, rej) => {
       const response = await fetch(uri);
@@ -240,6 +240,7 @@ class Fire {
         },
         async () => {
           const url = await upload.snapshot.ref.getDownloadURL();
+          console.log('REMOTE PHOTO URI: ', url);
           res(url);
         }
       );

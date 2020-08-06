@@ -62,6 +62,7 @@ const PostScreen = (props) => {
 
   const takePhotoFromCamera = async () => {
     const result = await Camera.shared.takePhotoFromCameraAsync();
+    console.log(result)
     if (!result.cancelled) {
       setImage(result.uri);
     }

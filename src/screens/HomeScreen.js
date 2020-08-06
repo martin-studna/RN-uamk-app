@@ -60,13 +60,13 @@ const HomeScreen = (props) => {
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
       for (let i = 0; i < snapshot.docs.length; i++) {
-        if (!snapshot.docs[i].data().text) continue;
+        if (!snapshot.docs[i].data().text && !snapshot.docs[i].data().image) continue;
 
         let time = getTime(snapshot.docs[i].data().timestamp);
 
         if (time >= 6) continue;
 
-        newPosts.push(snapshot.docs[i].data());
+        newPosts.push(snapshot.docs[i]);
       }
 
       setPosts(newPosts);
@@ -102,13 +102,13 @@ const HomeScreen = (props) => {
           setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
           for (let i = 0; i < snapshot.docs.length; i++) {
-            if (!snapshot.docs[i].data().text) continue;
+            if (!snapshot.docs[i].data().text && !snapshot.docs[i].data().image) continue;
 
             let time = getTime(snapshot.docs[i].data().timestamp);
 
             if (time >= 6) continue;
 
-            newPosts.push(snapshot.docs[i].data());
+            newPosts.push(snapshot.docs[i]);
           }
 
           setPosts(newPosts);
@@ -145,12 +145,12 @@ const HomeScreen = (props) => {
   const renderPost = (post) => {
     return (
       <PostCard
-        timestamp={post.timestamp}
-        text={post.text}
-        image={post.image}
-        difficulty={post.difficulty}
-        type={post.type}
-        publisher={post.publisher}
+        timestamp={post.data().timestamp}
+        text={post.data().text}
+        image={post.data().image}
+        difficulty={post.data().difficulty}
+        type={post.data().type}
+        publisher={post.data().publisher}
       />
     );
   };
@@ -197,8 +197,7 @@ const HomeScreen = (props) => {
           style={styles.feed}
           data={posts}
           renderItem={({ item }) => renderPost(item)}
-          keyExtractor={(item) => item.id}
-          key={(item) => item.id}
+          keyExtractor={(item, i) => item.id}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={renderFooter}
           refreshControl={
