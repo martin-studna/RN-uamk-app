@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-import * as Permissions from "expo-permissions";
 import Fire from "../Fire.js";
 import colors from "../colors";
 import Global from "../global";
