@@ -3,13 +3,16 @@ import { StyleSheet, View, ActivityIndicator, Image } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
-import Fire from '../Fire'
+import Fire from "../Fire";
 import colors from "../colors";
+import Global from '../global'
 
 const MapScreen = (props) => {
   const [location, setLocation] = useState({
-    latitude: 0,
-    longitude: 0,
+    coords: {
+      latitude: 0,
+      longitude: 0,
+    },
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -19,33 +22,50 @@ const MapScreen = (props) => {
 
   const postsRef = Fire.shared.getPostsRef();
 
-
   useEffect(() => {
     setLoading(true);
     getLocation();
-    getPosts()
+    getPosts();
   }, []);
 
   const getPosts = async () => {
-
-
     const snapshot = await postsRef.get();
 
     if (!snapshot.empty) {
       let newPosts = [];
 
       for (let i = 0; i < snapshot.docs.length; i++) {
-
-        if(!snapshot.docs[i].data().text)
-          continue;
+        // let distance = getDistance(snapshot.docs[i].data().location);
+        // if (distance > Global.radius)
+        //   continue
 
         newPosts.push(snapshot.docs[i].data());
       }
 
-      console.log(newPosts)
+      console.log(newPosts);
       setPosts(newPosts);
     }
-  }
+  };
+
+  const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+  };
+
+  const getDistance = (postLocation) => {
+    let R = 6371; // Radius of the earth in km
+    let dLat = deg2rad(postLocation.latitude - location.coords.latitude); // deg2rad below
+    let dLon = deg2rad(postLocation.longitude - location.coords.longitude);
+    let a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(location.coords.latitude)) *
+        Math.cos(deg2rad(postLocation.latitude)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c; // Distance in km
+    console.log(d);
+    return d;
+  };
 
   const setTypeImage = (type) => {
     switch (type) {
@@ -70,43 +90,55 @@ const MapScreen = (props) => {
   const setTitle = (type) => {
     switch (type) {
       case "car_accident":
-        return 'Dopravní nehoda';
+        return "Dopravní nehoda";
         break;
       case "traffic_jam":
-        return 'Dopravní zácpa';
+        return "Dopravní zácpa";
         break;
       case "traffic_closure":
-        return 'Dopravní uzavírka';
+        return "Dopravní uzavírka";
         break;
       case "danger":
-        return 'Dopravní nebezpečí';
+        return "Dopravní nebezpečí";
         break;
       default:
-        return 'Dopravní nehoda';
+        return "Dopravní nehoda";
         break;
     }
-  }
+  };
 
   const renderMarkers = () => {
-
-    return (
-      posts.map((marker,i) => (
-        <Marker 
-        style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}
-          key={i}
-          coordinate={{latitude: marker.location.latitude, longitude: marker.location.longitude}}
-          title={setTitle()}
-          description={marker.text}
+    return posts.map((marker, i) => (
+      <Marker
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        key={i}
+        coordinate={{
+          latitude: marker.location.latitude,
+          longitude: marker.location.longitude,
+        }}
+        title={setTitle()}
+        description={marker.text}
+      >
+        <View
+          style={{
+            borderRadius: 50,
+            backgroundColor: colors.primary,
+            padding: 10,
+          }}
         >
-        <View style={{borderRadius: 50, backgroundColor: colors.primary, padding: 10}}>
-          <Image source={setTypeImage(marker.type)} style={{width: 20, height: 20, }} resizeMode='contain'/>
-
+          <Image
+            source={setTypeImage(marker.type)}
+            style={{ width: 20, height: 20 }}
+            resizeMode="contain"
+          />
         </View>
-        </Marker>
-      ))
-    )
-
-  }
+      </Marker>
+    ));
+  };
 
   const getLocation = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -118,36 +150,47 @@ const MapScreen = (props) => {
 
     const userLocation = await Location.getCurrentPositionAsync();
 
-    setLocation({
-      latitude: userLocation.coords.latitude,
-      longitude: userLocation.coords.longitude,
-      latitudeDelta: location.latitudeDelta,
-      longitudeDelta: location.longitudeDelta,
-    });
+    setLocation(userLocation);
     console.log(location);
-    setLoading(false)
-
+    setLoading(false);
   };
 
   return (
-    <View style={{ flex: 1, width: "100%"}}>
-
+    <View style={{ flex: 1, width: "100%" }}>
       <MapView
         showsTraffic={true}
-       style={styles.container} region={location}>
+        style={styles.container}
+        region={{
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          longitudeDelta: 0.0421,
+          latitudeDelta: 0.0922,
+        }}
+      >
         <Marker
           coordinate={{
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
           }}
         ></Marker>
-        { posts ? renderMarkers() : null}
+        {posts ? renderMarkers() : null}
       </MapView>
-      { loading ? (
-        <View style={{backgroundColor: 'rgb(255,255,255)', zIndex: 10, position: 'absolute', height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size='large'/>
+      {loading ? (
+        <View
+          style={{
+            backgroundColor: "rgb(255,255,255)",
+            zIndex: 10,
+            position: "absolute",
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" />
         </View>
-        ) : null}
+      ) : null}
     </View>
   );
 };

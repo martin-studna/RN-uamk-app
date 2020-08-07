@@ -153,19 +153,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: 60,
-    width: "100%",
+    height: Platform.OS === 'android' ? 60 : 100,
     paddingLeft: 16,
     backgroundColor: colors.primary,
     alignItems: "center",
-    borderBottomColor: "#EBECF4",
-    borderBottomWidth: 1,
-    shadowColor: "#454D65",
-    shadowOffset: { height: 5 },
-    shadowRadius: 15,
-    shadowOpacity: 0.2,
-    zIndex: 10,
+    paddingTop: Platform.OS === 'ios' ? 40 : 0,
     flexDirection: "row",
+    width: '100%'
   },
   headerTitle: {
     color: colors.uamkBlue,

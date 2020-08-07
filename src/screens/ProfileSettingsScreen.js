@@ -186,15 +186,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: 60,
+    height: Platform.OS === 'android' ? 60 : 100,
     width: "100%",
     backgroundColor: colors.primary,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: 'center',
-
-    paddingHorizontal: 15
+    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    paddingHorizontal: 15,
   },
 });
 

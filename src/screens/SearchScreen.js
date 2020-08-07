@@ -101,11 +101,11 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: colors.primary,
     width: "100%",
-    height: 60,
+    height: Platform.OS === 'android' ? 60 : 100,
     display: "flex",
     alignItems: "center",
     flexDirection: "row",
-    paddingTop: 10,
+    paddingTop: Platform.OS === 'ios' ? 40 : 10,
     paddingHorizontal: 15,
     paddingBottom: 10,
   },

@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingBottom: 5,
     color: colors.primary,
-
+    width: '95%',
     textAlign: "left",
   },
   imgView: {

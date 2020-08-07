@@ -180,13 +180,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
+    height: Platform.OS === 'android' ? 60 : 100,
+    paddingLeft: 16,
     backgroundColor: colors.primary,
-    width: "100%",
-    height: 60,
-    display: "flex",
     alignItems: "center",
+    paddingTop: Platform.OS === 'ios' ? 40 : 0,
     flexDirection: "row",
-    paddingHorizontal: 15,
+    width: '100%'
   },
   headerTitle: {
     fontSize: 20,

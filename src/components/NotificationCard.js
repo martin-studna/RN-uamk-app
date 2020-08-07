@@ -77,6 +77,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     marginHorizontal: 5,
   },
+  header : {
+
+  },
   post: {
     marginLeft: 16,
     marginRight: 16,

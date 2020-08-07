@@ -55,6 +55,7 @@ const PostScreen = (props) => {
 
   const choosePhotoFromLibrary = async () => {
     let result = await Camera.shared.choosePhotoFromLibraryAsync();
+    console.log(result)
     if (!result.cancelled) {
       setImage(result.uri);
     }

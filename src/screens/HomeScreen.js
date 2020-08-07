@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   Image,
+  Platform,
 } from "react-native";
 import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
@@ -33,12 +34,14 @@ const HomeScreen = (props) => {
   const [location, setLocation] = useState(null);
   const [semaphore, setSemaphore] = useState(false);
   const [difficulty, setDifficulty] = useState(null);
+  const [mount, setMount] = useState(false);
 
   const postsRef = Fire.shared.getPostsRef();
 
   useEffect(() => {
-    getPosts()
-  }, [difficulty])
+    if (mount) getPosts();
+    else setMount(true);
+  }, [difficulty, location]);
 
   getLocation = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -49,6 +52,7 @@ const HomeScreen = (props) => {
     }
 
     const userLocation = await Location.getCurrentPositionAsync();
+
     setLocation(userLocation);
   };
 
@@ -60,10 +64,13 @@ const HomeScreen = (props) => {
     if (!snapshot.empty) {
       let newPosts = [];
 
-      //console.log(snapshot.docs[snapshot.docs.length - 1].data())
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
-
+      console.log("USER LOCATION", location);
       for (let i = 0; i < snapshot.docs.length; i++) {
+        let distance = getDistance(snapshot.docs[i].data().location);
+        if (distance > Global.radius)
+          continue
+
         if (semaphore && difficulty !== snapshot.docs[i].data().difficulty)
           continue;
 
@@ -110,6 +117,10 @@ const HomeScreen = (props) => {
           setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
           for (let i = 0; i < snapshot.docs.length; i++) {
+            let distance = getDistance(snapshot.docs[i].data().location);
+            if (distance > Global.radius)
+              continue
+
             if (semaphore && difficulty !== snapshot.docs[i].data().difficulty)
               continue;
 
@@ -183,13 +194,13 @@ const HomeScreen = (props) => {
         Math.sin(dLon / 2);
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     let d = R * c; // Distance in km
+    console.log(d);
     return d;
   };
 
   const toggleFilter = () => {
-    
-    const showSemaphore = !semaphore
-    setSemaphore(val => !val)
+    const showSemaphore = !semaphore;
+    setSemaphore((val) => !val);
 
     if (!showSemaphore) {
       setDifficulty(null);
@@ -208,10 +219,7 @@ const HomeScreen = (props) => {
           Global.postDescription = null;
           Global.postImage = null;
           Global.postDifficulty = null;
-          Global.semaphore = false
-          Global.difficulty = null
           setDifficulty(null);
-          getPosts();
         }}
       />
       <View style={styles.header}>
@@ -309,17 +317,11 @@ const styles = StyleSheet.create({
     marginLeft: 42,
   },
   header: {
-    height: 60,
+    height: Platform.OS === 'android' ? 60 : 100,
     paddingLeft: 16,
     backgroundColor: colors.primary,
     alignItems: "center",
-    borderBottomColor: "#EBECF4",
-    borderBottomWidth: 1,
-    shadowColor: "#454D65",
-    shadowOffset: { height: 5 },
-    shadowRadius: 15,
-    shadowOpacity: 0.2,
-    zIndex: 10,
+    paddingTop: Platform.OS === 'ios' ? 40 : 0,
     flexDirection: "row",
   },
   headerTitle: {
@@ -376,7 +378,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.uamkBlue,
     position: "absolute",
     right: 10,
-    top: 30,
+    top: Platform.OS === 'android' ? 30 : 75,
     zIndex: 10,
     borderRadius: 50,
   },
@@ -386,7 +388,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#5bd83d",
     position: "absolute",
     right: 15,
-    top: 100,
+    top: Platform.OS === 'android' ? 100 : 155,
     zIndex: 10,
     borderRadius: 50,
   },
@@ -396,7 +398,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fcb000",
     position: "absolute",
     right: 15,
-    top: 150,
+    top: Platform.OS === 'android' ? 150 : 205,
     zIndex: 10,
     borderRadius: 50,
   },
@@ -406,7 +408,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f84242",
     position: "absolute",
     right: 15,
-    top: 200,
+    top: Platform.OS === 'android' ? 200 : 255,
     zIndex: 10,
     borderRadius: 50,
   },

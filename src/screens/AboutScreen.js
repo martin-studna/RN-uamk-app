@@ -77,13 +77,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    backgroundColor: colors.primary,
-    width: "100%",
-    height: 60,
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "row",
+    height: Platform.OS === 'android' ? 60 : 100,
     paddingLeft: 15,
+    backgroundColor: colors.primary,
+    alignItems: "center",
+    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    flexDirection: "row",
+    width: '100%'
   },
   headerTitle: {
     marginLeft: 15,
