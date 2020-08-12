@@ -16,7 +16,6 @@ const RegisterScreen = (props) => {
   const handleSignUp = () => {
     setProgress(true)
 
-
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)

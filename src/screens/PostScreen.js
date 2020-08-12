@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, StyleSheet, TextInput, Image, Alert, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Fire from "../Fire.js";
 import colors from "../colors";
@@ -9,52 +8,51 @@ import { ActionSheet, Root } from "native-base";
 import Camera from "../Camera";
 import { NavigationEvents } from "react-navigation";
 import ProgressDialog from "../components/ProgressDialog.js";
+import CallDialog from "../components/CallDialog.js";
 
 const PostScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
-  const [progress, setProgress] = useState(false)
+  const [progress, setProgress] = useState(false);
+  const [optionsVisible, setOptionsVisible] = useState(false);
+  const [callDialogVisible, setCallDialogVisible] = useState(false);
 
-
-  const handlePost = () => {
-
+  const handlePost = async () => {
     if (!difficulty) {
       Alert.alert(
         "Zvolte závažnost situace",
         null,
-        [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
         { cancelable: false }
       );
-      return
+      return;
     }
 
-    setProgress(true)
+    setProgress(true);
 
-    Fire.shared
-      .addPostAsync({
+    try {
+      await Fire.shared.addPostAsync({
         text: Global.postDescription,
         localUri: image,
         difficulty: difficulty,
         type: "car_accident",
-      })
-      .then((ref) => {
-        setText("");
-        setImage(null);
-        setDifficulty(null);
-        setProgress(false)
-        props.navigation.goBack();
-      })
-      .catch((err) => {
-        console.error(err);
       });
+      await Fire.shared.addPoints(10);
+    } catch (error) {
+      console.error(error);
+    }
+
+    setText("");
+    setImage(null);
+    setDifficulty(null);
+    setProgress(false);
+    props.navigation.goBack();
   };
 
   const choosePhotoFromLibrary = async () => {
     let result = await Camera.shared.choosePhotoFromLibraryAsync();
-    console.log(result)
+    console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -62,7 +60,7 @@ const PostScreen = (props) => {
 
   const takePhotoFromCamera = async () => {
     const result = await Camera.shared.takePhotoFromCameraAsync();
-    console.log(result)
+    console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -91,19 +89,28 @@ const PostScreen = (props) => {
     );
   };
 
+  const closeFunction = () => setCallDialogVisible(val => !val)
+
   return (
     <Root>
-      <ProgressDialog  
-      title='Nahrávám nový příspěvek'
-      text='Prosím počkejte...'
-      visible={progress}/>
+      <CallDialog
+        visible={callDialogVisible}
+        closeFunction={closeFunction}
+       />
+
+      <ProgressDialog
+        title="Nahrávám nový příspěvek"
+        text="Prosím počkejte..."
+        visible={progress}
+      />
       <View style={styles.container}>
         <NavigationEvents
-          onWillFocus={() => {
-          }}
+          onWillFocus={() => {}}
           onWillBlur={() => {
-            Global.postDescription = ''
-            setDifficulty(null)
+            Global.postDescription = "";
+            setOptionsVisible(false)
+            setCallDialogVisible(false)
+            setDifficulty(null);
           }}
         />
         <View style={styles.exitContainer}>
@@ -136,7 +143,7 @@ const PostScreen = (props) => {
               styles.difficultyRectangle,
               {
                 backgroundColor:
-                difficulty === "easy"
+                  difficulty === "easy"
                     ? colors.smallDifficulty
                     : "transparent",
               },
@@ -158,7 +165,7 @@ const PostScreen = (props) => {
               styles.difficultyRectangle,
               {
                 backgroundColor:
-                difficulty === "medium"
+                  difficulty === "medium"
                     ? colors.mediumDifficulty
                     : "transparent",
               },
@@ -180,7 +187,7 @@ const PostScreen = (props) => {
               styles.difficultyRectangle,
               {
                 backgroundColor:
-                difficulty === "hard" ? colors.bigDifficulty : "transparent",
+                  difficulty === "hard" ? colors.bigDifficulty : "transparent",
               },
             ]}
             onPress={() => {
@@ -223,10 +230,42 @@ const PostScreen = (props) => {
           </TouchableOpacity>
         </View>
         <View style={styles.bottomPart}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              marginBottom: 32,
+              justifyContent: "space-between",
+              width: "35%",
+            }}
+          >
+            {optionsVisible ? (
+              <View style={styles.callOptionButtonContainer}>
+                <TouchableOpacity
+                  style={styles.callOptionButton}
+                  onPress={() => setCallDialogVisible(val => !val) }
+                >
+                  <Ionicons name="md-call" size={22} />
+                </TouchableOpacity>
+              </View>
+            ) : null}
+
+            {optionsVisible ? (
+              <View style={styles.sendOptionButtonContainer}>
+                <TouchableOpacity
+                  style={styles.sendOptionButton}
+                  onPress={() => handlePost()}
+                >
+                  <Ionicons name="md-navigate" size={22} />
+                </TouchableOpacity>
+              </View>
+            ) : null}
+          </View>
+
           <View style={styles.sendButtonContainer}>
             <TouchableOpacity
               style={styles.sendButton}
-              onPress={() => handlePost()}
+              onPress={() => setOptionsVisible((val) => !val)}
             >
               <Ionicons name="md-arrow-up" size={30} />
             </TouchableOpacity>
@@ -375,6 +414,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     justifyContent: "flex-end",
+    alignItems: "center",
     width: "100%",
   },
   bottomBar: {
@@ -401,6 +441,43 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  callOptionButtonContainer: {
+    alignSelf: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+    width: 45,
+    height: 45,
+    borderRadius: 50,
+    backgroundColor: "#00E676",
+  },
+  callOptionButton: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sendOptionButtonContainer: {
+    alignSelf: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+    width: 45,
+    height: 45,
+    borderRadius: 50,
+    backgroundColor: "#5482FF",
+  },
+  sendOptionButton: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    transform: [{ rotate: "45deg" }],
   },
 });
 

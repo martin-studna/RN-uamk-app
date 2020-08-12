@@ -6,6 +6,7 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  Alert
 } from "react-native";
 import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
@@ -31,7 +32,25 @@ const NotificationsScreen = props => {
   const getNotifications = async () => {
     setIsLoading(true);
 
-    const snapshot = await postsRef.orderBy("timestamp", "desc").limit(5).get();
+    let snapshot = null
+
+    try {
+      snapshot = await postsRef.orderBy("timestamp", "desc").limit(5).get();
+      
+    } catch (error) {
+      console.warn(error)
+      setIsLoading(false)
+      setIsMoreLoading(false)
+      Alert.alert(
+        "Bohužel došlo k chybě připojení se serverem.",
+        'Žádáme Vás o strpení. Pracujeme na tom.',
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+      return
+    }
 
     if (!snapshot.empty) {
       let newNotifications = [];

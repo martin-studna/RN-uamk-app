@@ -9,7 +9,6 @@ const PostCard = (props) => {
 
   useEffect(() => {
     Fire.shared.getUserByIdAsync(props.publisher).then((res) => {
-      //console.log("GET POST USER DATA: ", res.data());
       setPublisher(res.data().username);
       setPublisherImage(res.data().image);
     });
@@ -143,6 +142,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 175,
     marginVertical: 16,
+    backgroundColor: '#edf4ff'
   },
   type: {
     borderRadius: 100,

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TextInput,
   FlatList,
+  Alert
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import UserCard from "../components/UserCard.js";
@@ -20,14 +21,20 @@ const SearchScreen = props => {
 
   const usersRef = Fire.shared.getUsersRef();
 
+  useEffect(() => {
+    getUsers()
+  }, [search])
+
   const getUsers = async () => {
     setIsLoading(true);
+
+    console.log('Search: ', search)
 
     try {
       const snapshot = await usersRef
         .orderBy("username")
         .startAt(search)
-        .endAt(search + "~")
+        .endAt(search + "\uf8ff")
         .get();
 
       let newUsers = [];
@@ -46,7 +53,17 @@ const SearchScreen = props => {
 
       setIsLoading(false);
     } catch (error) {
-      console.log(error)
+      
+      console.debug(error.message)
+      Alert.alert(
+        "Bohužel došlo k chybě připojení se serverem.",
+        'Žádáme Vás o strpení. Pracujeme na tom.',
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+      return
     }
   };
 
@@ -65,7 +82,7 @@ const SearchScreen = props => {
     <View style={styles.container}>
     <NavigationEvents 
       onWillFocus={() => {
-        getUsers()
+        setSearch('')
       }}
     />
       <View style={styles.header}>
@@ -74,10 +91,7 @@ const SearchScreen = props => {
           style={styles.searchBar}
           placeholder="Hledat"
           value={search}
-          onChangeText={(term) => {
-            setSearch(term);
-            getUsers();
-          }}
+          onChangeText={(term) => setSearch(term)}
         ></TextInput>
       </View>
 

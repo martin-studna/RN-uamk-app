@@ -27,7 +27,7 @@ const TrafficJamScreen = (props) => {
   const [progress, setProgress] = useState(false)
 
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!difficulty) {
       Alert.alert(
         "Zvolte závažnost situace",
@@ -40,23 +40,28 @@ const TrafficJamScreen = (props) => {
 
     setProgress(true)
 
-    Fire.shared
-      .addPostAsync({
-        text: Global.postDescription,
-        localUri: image,
-        difficulty: difficulty,
-        type: "traffic_jam",
-      })
-      .then((ref) => {
-        setText("");
-        setImage(null);
-        setDifficulty(null);
-        setProgress(false)
-        props.navigation.navigate("Home");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    try {
+      await Fire.shared
+        .addPostAsync({
+          text: Global.postDescription,
+          localUri: image,
+          difficulty: difficulty,
+          type: "traffic_jam",
+        })
+
+      await Fire.shared
+        .addPoints(10)
+      
+    } catch (error) {
+      console.error(error);
+    }
+
+
+      setText("");
+      setImage(null);
+      setDifficulty(null);
+      setProgress(false)
+      props.navigation.navigate("Home");
   };
 
   const choosePhotoFromLibrary = async () => {

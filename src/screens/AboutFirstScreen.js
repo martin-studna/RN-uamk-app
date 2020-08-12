@@ -41,35 +41,34 @@ const AboutFirstScreen = (props) => {
         </View>
 
         <View style={styles.imagesContainer}>
-          <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.uamk.cz")}
-          >
-            <Image
-              source={require("../assets/uamk_logo.png")}
-              style={styles.uamkLogo}
-            />
-          </TouchableOpacity>
-          <View style={styles.imageColumn}>
-            <TouchableOpacity
-              onPress={() => Linking.openURL("https://www.iprima.cz/")}
-            >
-              <Image
-                source={require("../assets/prima.png")}
-                style={styles.primaLogo}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                Linking.openURL("https://prima.iprima.cz/porady/modry-kod")
-              }
-            >
-              <Image
-                source={require("../assets/modry_kod_img.png")}
-                style={styles.bluecodeLogo}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://www.uamk.cz")}
+        >
+          <Image
+            source={require("../assets/uamk_logo.png")}
+            style={styles.uamkLogo}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://www.iprima.cz/")}
+        >
+          <Image
+            source={require("../assets/prima.png")}
+            style={styles.primaLogo}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL("https://prima.iprima.cz/porady/modry-kod")
+          }
+        >
+          <Image
+            source={require("../assets/modry_kod_img.png")}
+            style={styles.bluecodeLogo}
+          />
+        </TouchableOpacity>
+      </View>
         <TouchableOpacity style={styles.button} onPress={() => props.navigation.navigate('Home')}>
           <Text style={{ fontWeight: 'bold', color: colors.uamkBlue, fontSize: 16}}>Pokračovat</Text>
         </TouchableOpacity>
@@ -109,7 +108,7 @@ const styles = StyleSheet.create({
   uamkLogo: {
     width: 120,
     height: 120,
-    marginRight: 30,
+    marginBottom: 20,
   },
   primaLogo: {
     width: 100,
@@ -124,7 +123,9 @@ const styles = StyleSheet.create({
   },
   imagesContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   imageColumn: {
     display: "flex",

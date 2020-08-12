@@ -16,7 +16,7 @@ const DangerScreen = (props) => {
   const [progress, setProgress] = useState(false)
 
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!difficulty) {
       Alert.alert(
         "Zvolte závažnost situace",
@@ -29,24 +29,29 @@ const DangerScreen = (props) => {
 
     setProgress(true)
 
-    Fire.shared
-      .addPostAsync({
-        text: Global.postDescription,
-        localUri: image,
-        difficulty: difficulty,
-        type: "danger",
-      })
-      .then((ref) => {
-        setText("");
-        setImage(null);
-        setDifficulty(null);
-        setProgress(false)
-        props.navigation.navigate("Home");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+    try {
+      await Fire.shared
+        .addPostAsync({
+          text: Global.postDescription,
+          localUri: image,
+          difficulty: difficulty,
+          type: "danger",
+        })
+
+      await Fire.shared
+        .addPoints(10)
+      
+    } catch (error) {
+      console.error(error);
+    }
+
+      
+      setText("");
+      setImage(null);
+      setDifficulty(null);
+      setProgress(false)
+      props.navigation.navigate("Home");
+    };
 
   const choosePhotoFromLibrary = async () => {
     let result = await Camera.shared.choosePhotoFromLibraryAsync();

@@ -44,19 +44,22 @@ const CardActivationScreen = (props) => {
 
     setProgressCard(true)
 
-    const result = await Fire.shared.addCardAsync(user.id, code);
+    try {
+      const result = await Fire.shared.addCardAsync(user.id, code);
+      await Fire.shared.updateUserByIdAsync(user.id, {
+        cardId: result.id,
+        cardActivationCode: code,
+      })
+      await Fire.shared.addPoints(100)
+      
+    } catch (error) {
+      console.error(error)
+    }
 
-    const userResult = await Fire.shared.updateUserByIdAsync(user.id, {
-      cardId: result.id,
-      cardActivationCode: code,
-    })
-    .then(() => {
-      setProgressCard(false)
-      props.navigation.navigate('Home')
-    })
-    .catch(err => {
 
-    })
+
+    setProgressCard(false)
+    props.navigation.navigate('Home')
   };
 
   return (

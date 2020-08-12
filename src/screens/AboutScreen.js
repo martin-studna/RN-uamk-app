@@ -50,22 +50,25 @@ const AboutScreen = (props) => {
             style={styles.uamkLogo}
           />
         </TouchableOpacity>
-        <View style={styles.imageColumn}>
-          <TouchableOpacity
-            onPress={() => Linking.openURL("https://www.iprima.cz/")}
-          >
-            <Image
-              source={require("../assets/prima.png")}
-              style={styles.primaLogo}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL('https://prima.iprima.cz/porady/modry-kod')}>
-            <Image
-              source={require("../assets/modry_kod_img.png")}
-              style={styles.bluecodeLogo}
-            />
-          </TouchableOpacity>
-        </View>
+
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://www.iprima.cz/")}
+        >
+          <Image
+            source={require("../assets/prima.png")}
+            style={styles.primaLogo}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL("https://prima.iprima.cz/porady/modry-kod")
+          }
+        >
+          <Image
+            source={require("../assets/modry_kod_img.png")}
+            style={styles.bluecodeLogo}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -77,13 +80,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: Platform.OS === 'android' ? 60 : 100,
+    height: Platform.OS === "android" ? 60 : 100,
     paddingLeft: 15,
     backgroundColor: colors.primary,
     alignItems: "center",
-    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    paddingTop: Platform.OS === "ios" ? 40 : 0,
     flexDirection: "row",
-    width: '100%'
+    width: "100%",
   },
   headerTitle: {
     marginLeft: 15,
@@ -97,12 +100,12 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     marginBottom: 9,
-    color: 'black'
+    color: "black",
   },
   uamkLogo: {
     width: 120,
     height: 120,
-    marginRight: 30,
+    marginBottom: 20,
   },
   primaLogo: {
     width: 100,
@@ -117,7 +120,9 @@ const styles = StyleSheet.create({
   },
   imagesContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   imageColumn: {
     display: "flex",

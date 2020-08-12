@@ -43,8 +43,8 @@ const BlueCodeScreen = (props) => {
     } catch (error) {
       console.log(error)
       Alert.alert(
-        "Bohužel došlo k chybě",
-        null,
+        "Bohužel došlo k chybě připojení se serverem.",
+        'Strpení, prosím. Pracujeme na tom.',
         [
           { text: "OK", onPress: () => console.log("OK Pressed") }
         ],
@@ -125,7 +125,7 @@ const BlueCodeScreen = (props) => {
           style={styles.feed}
           data={videos}
           renderItem={({ item }) => renderVideo(item)}
-          key={(item) => item.videoId}
+          keyExtractor={(item) => item.videoId}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={renderFooter}
           refreshControl={

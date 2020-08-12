@@ -100,6 +100,20 @@ class Fire {
     });
   };
 
+  addPoints = async (points) => {
+
+    return new Promise((res,rej) => {
+      this.firestore
+        .collection('users')
+        .doc(this.uid)
+        .update({
+          points: firebase.firestore.FieldValue.increment(points)
+        })
+        .then(result => res(result))
+        .catch(err => rej(err))
+    })
+  }
+
   addUserAsync = async ({
     uid,
     username,

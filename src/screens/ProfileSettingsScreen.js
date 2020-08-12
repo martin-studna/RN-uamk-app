@@ -5,38 +5,42 @@ import colors from "../colors";
 import firebase from "firebase";
 import Fire from "../Fire";
 import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
 import { Ionicons } from "@expo/vector-icons";
-import ProgressDialog from '../components/ProgressDialog'
+import ProgressDialog from "../components/ProgressDialog";
 
-const ProfileSettingsScreen = props => {
+const ProfileSettingsScreen = (props) => {
   const [username, setUsername] = useState("");
   const [fullname, setFullname] = useState("");
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(true)
-  const [progressUpdate, setProgressUpdate] = useState(false)
-  const [progressSignOut, setProgressSignOut] = useState(false)
+  const [loading, setLoading] = useState(true);
+  const [progressUpdate, setProgressUpdate] = useState(false);
+  const [progressSignOut, setProgressSignOut] = useState(false);
 
   useEffect(() => {
-    Fire.shared.getUserByIdAsync(firebase.auth().currentUser.uid).then((user) => {
-      setFullname(user.data().fullname);
-      setUsername(user.data().username);
-      setImage(user.data().image);
-      setLoading(false)
-    }, []);
+    Fire.shared
+      .getUserByIdAsync(firebase.auth().currentUser.uid)
+      .then((user) => {
+        setFullname(user.data().fullname);
+        setUsername(user.data().username);
+        setImage(user.data().image);
+        setLoading(false);
+      })
+      .catch(err => {
+        setLoading(false)
+      })
 
     firebase.auth().onAuthStateChanged((user) => {
-      setProgressSignOut(false)
+      setProgressSignOut(false);
       props.navigation.navigate(user ? "App" : "Auth");
     });
   }, []);
 
   const signOutUser = async () => {
-    setProgressSignOut(true)
+    setProgressSignOut(true);
     try {
       await firebase.auth().signOut();
     } catch (e) {
-      console.log(e);
+      console.warn(e);
     }
   };
 
@@ -53,45 +57,40 @@ const ProfileSettingsScreen = props => {
   };
 
   const updateProfile = async () => {
+    setProgressUpdate(true);
 
-    setProgressUpdate(true)
-    
-    let uri = null
+    let uri = null;
 
-    if (image !== null)
-      uri = await Fire.shared.uploadPhotoAsync(image)
+    if (image !== null) uri = await Fire.shared.uploadPhotoAsync(image);
 
     const updates = {
       image: uri,
       username,
-      fullname
-    }
-    
+      fullname,
+    };
+
     Fire.shared
-      .updateUserByIdAsync(
-        firebase.auth().currentUser.uid, updates)
-        .then(res => {
-          setProgressUpdate(false)
-         props.navigation.navigate('Home')
-        })
-        .catch(err => console.error(err))
-  }
+      .updateUserByIdAsync(firebase.auth().currentUser.uid, updates)
+      .then((res) => {
+        setProgressUpdate(false);
+        props.navigation.navigate("Home");
+      })
+      .catch((err) => console.warn(err));
+  };
 
   return (
     <View style={styles.container}>
-    <ProgressDialog 
-      visible={loading}
-    />
-    <ProgressDialog 
-      visible={progressUpdate}
-      title={'Nastavení účtu'}
-      text={'Prosím, čekejte, aktualizujeme Váš profil...'}
-    />
-    <ProgressDialog 
-      visible={progressSignOut}
-      title={'Odhlásit'}
-      text={'Prosím, počkejte chvíli...'}
-    />
+      <ProgressDialog visible={loading} />
+      <ProgressDialog
+        visible={progressUpdate}
+        title={"Nastavení účtu"}
+        text={"Prosím, čekejte, aktualizujeme Váš profil..."}
+      />
+      <ProgressDialog
+        visible={progressSignOut}
+        title={"Odhlásit"}
+        text={"Prosím, počkejte chvíli..."}
+      />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Ionicons name="md-close" size={32} color={colors.uamkBlue} />
@@ -111,18 +110,18 @@ const ProfileSettingsScreen = props => {
           Změnit
         </Text>
       </TouchableOpacity>
-      <TextInput 
-        placeholder="Celé jméno" 
-        onChangeText={fullname => setFullname(fullname)}
+      <TextInput
+        placeholder="Celé jméno"
+        onChangeText={(fullname) => setFullname(fullname)}
         value={fullname}
-        style={styles.editFullname}>
-      </TextInput>
-      <TextInput 
+        style={styles.editFullname}
+      ></TextInput>
+      <TextInput
         placeholder="Uživatelské jméno"
         value={username}
-        onChangeText={username => setUsername(username)} 
-        style={styles.editUsername}>
-      </TextInput>
+        onChangeText={(username) => setUsername(username)}
+        style={styles.editUsername}
+      ></TextInput>
       <View style={{ flex: 1 }}></View>
       <View style={styles.logoutContainer}>
         <TouchableOpacity style={styles.logout} onPress={() => signOutUser()}>
@@ -186,14 +185,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: Platform.OS === 'android' ? 60 : 100,
+    height: Platform.OS === "android" ? 60 : 100,
     width: "100%",
     backgroundColor: colors.primary,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    alignItems: "center",
+    paddingTop: Platform.OS === "ios" ? 40 : 0,
     paddingHorizontal: 15,
   },
 });

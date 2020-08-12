@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ActivityIndicator, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import Fire from "../Fire";
 import colors from "../colors";
-import Global from '../global'
+import Global from "../global";
+import { Ionicons } from "@expo/vector-icons";
 
 const MapScreen = (props) => {
   const [location, setLocation] = useState({
@@ -35,10 +42,6 @@ const MapScreen = (props) => {
       let newPosts = [];
 
       for (let i = 0; i < snapshot.docs.length; i++) {
-        // let distance = getDistance(snapshot.docs[i].data().location);
-        // if (distance > Global.radius)
-        //   continue
-
         newPosts.push(snapshot.docs[i].data());
       }
 
@@ -157,6 +160,26 @@ const MapScreen = (props) => {
 
   return (
     <View style={{ flex: 1, width: "100%" }}>
+      <TouchableOpacity
+        style={{
+          backgroundColor: "white",
+          width: 35,
+          height: 35,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 50,
+          position: 'absolute',
+          zIndex: 10,
+          top: 40,
+          right: 20
+
+        }}
+        onPress={() => props.navigation.goBack()}
+      >
+        <Ionicons name="md-close" size={30} color={colors.shadowBackground} />
+      </TouchableOpacity>
+
       <MapView
         showsTraffic={true}
         style={styles.container}

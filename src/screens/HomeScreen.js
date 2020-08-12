@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Image,
   Platform,
+  Alert,
 } from "react-native";
 import * as firebase from "firebase";
 import { Ionicons } from "@expo/vector-icons";
@@ -35,15 +36,17 @@ const HomeScreen = (props) => {
   const [semaphore, setSemaphore] = useState(false);
   const [difficulty, setDifficulty] = useState(null);
   const [mount, setMount] = useState(false);
+  const [followings, setFollowings] = useState([]);
 
   const postsRef = Fire.shared.getPostsRef();
 
   useEffect(() => {
-    if (mount) getPosts();
-    else setMount(true);
-  }, [difficulty, location]);
+    if (mount) {
+      getPosts();
+    } else setMount(true);
+  }, [difficulty, location, followings]);
 
-  getLocation = async () => {
+  const getLocation = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
     if (status !== "granted") {
@@ -51,35 +54,40 @@ const HomeScreen = (props) => {
       setErrorMessage("PERMISSION NOT GRANTED");
     }
 
-    const userLocation = await Location.getCurrentPositionAsync();
-
-    setLocation(userLocation);
+    try {
+      const userLocation = await Location.getCurrentPositionAsync();
+      setLocation(userLocation);
+    } catch (error) {
+      console.warn(error);
+    }
   };
 
   const getPosts = async () => {
     setIsLoading(true);
 
-    const snapshot = await postsRef.orderBy("timestamp", "desc").limit(5).get();
+    let snapshot = null;
+    try {
+      let timeRange = new Date();
+      timeRange.setHours(timeRange.getHours() - 6);
+
+      snapshot = await postsRef
+        .where("timestamp", ">=", timeRange.getTime())
+        .orderBy("timestamp", "desc")
+        .limit(5)
+        .get();
+    } catch (error) {
+      console.warn(error);
+      setIsLoading(false);
+      setIsMoreLoading(false);
+      return;
+    }
 
     if (!snapshot.empty) {
       let newPosts = [];
 
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
-      console.log("USER LOCATION", location);
       for (let i = 0; i < snapshot.docs.length; i++) {
-        let distance = getDistance(snapshot.docs[i].data().location);
-        if (distance > Global.radius)
-          continue
-
-        if (semaphore && difficulty !== snapshot.docs[i].data().difficulty)
-          continue;
-
-        if (!snapshot.docs[i].data().text && !snapshot.docs[i].data().image)
-          continue;
-
-        let time = getTime(snapshot.docs[i].data().timestamp);
-
-        if (time >= 6) continue;
+        if (!validPost(snapshot.docs[i].data())) continue;
 
         newPosts.push(snapshot.docs[i]);
       }
@@ -92,24 +100,35 @@ const HomeScreen = (props) => {
     setIsLoading(false);
   };
 
-  const getTime = (timestamp) => {
-    const currentDate = new Date();
-    let passedTime = (currentDate.getTime() - timestamp) / 1000;
-    passedTime = Math.floor(passedTime / (60 * 60));
-    return passedTime;
-  };
-
   const getMore = async () => {
     if (lastDoc) {
       //console.log(lastDoc.data())
       setIsMoreLoading(true);
 
       setTimeout(async () => {
-        let snapshot = await postsRef
-          .orderBy("timestamp", "desc")
-          .startAfter(lastDoc.data().timestamp)
-          .limit(5)
-          .get();
+        let snapshot = null;
+        try {
+          let timeRange = new Date();
+          timeRange.setHours(timeRange.getHours() - 6);
+
+          snapshot = await postsRef
+            .where("timestamp", ">=", timeRange.getTime())
+            .orderBy("timestamp", "desc")
+            .startAfter(lastDoc.data().timestamp)
+            .limit(5)
+            .get();
+
+        } catch (error) {
+          console.warn(error);
+          setIsLoading(false);
+          setIsMoreLoading(false);
+          Alert.alert(
+            "Bohužel došlo k chybě připojení se serverem.",
+            "Strpení, prosím. Pracujeme na tom.",
+            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+            { cancelable: false }
+          );
+        }
 
         if (!snapshot.empty) {
           let newPosts = posts;
@@ -117,19 +136,7 @@ const HomeScreen = (props) => {
           setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
 
           for (let i = 0; i < snapshot.docs.length; i++) {
-            let distance = getDistance(snapshot.docs[i].data().location);
-            if (distance > Global.radius)
-              continue
-
-            if (semaphore && difficulty !== snapshot.docs[i].data().difficulty)
-              continue;
-
-            if (!snapshot.docs[i].data().text && !snapshot.docs[i].data().image)
-              continue;
-
-            let time = getTime(snapshot.docs[i].data().timestamp);
-
-            if (time >= 6) continue;
+            if (!validPost(snapshot.docs[i].data())) continue;
 
             newPosts.push(snapshot.docs[i]);
           }
@@ -165,18 +172,18 @@ const HomeScreen = (props) => {
     );
   };
 
-  const renderPost = (post) => {
+  const renderPost = useCallback(({ item }) => {
     return (
       <PostCard
-        timestamp={post.data().timestamp}
-        text={post.data().text}
-        image={post.data().image}
-        difficulty={post.data().difficulty}
-        type={post.data().type}
-        publisher={post.data().publisher}
+        timestamp={item.data().timestamp}
+        text={item.data().text}
+        image={item.data().image}
+        difficulty={item.data().difficulty}
+        type={item.data().type}
+        publisher={item.data().publisher}
       />
     );
-  };
+  }, []);
 
   const deg2rad = (deg) => {
     return deg * (Math.PI / 180);
@@ -194,7 +201,6 @@ const HomeScreen = (props) => {
         Math.sin(dLon / 2);
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     let d = R * c; // Distance in km
-    console.log(d);
     return d;
   };
 
@@ -207,19 +213,71 @@ const HomeScreen = (props) => {
     }
   };
 
-  const filter = (difficulty) => {
+  const filterByDifficulty = (difficulty) => {
     setDifficulty(difficulty);
   };
+
+  const validPost = (post) => {
+    let distance = getDistance(post.location);
+
+    if (!post.text && !post.image) return false;
+
+    for (let i = 0; i < followings.length; i++) {
+      if (
+        post.publisher === followings[i].id ||
+        post.publisher === firebase.auth().currentUser.uid
+      ) {
+        if (semaphore && difficulty !== post.difficulty) return false;
+
+        return true;
+      } else return false;
+    }
+
+    if (distance < Global.radius) {
+      if (semaphore && difficulty !== post.difficulty) return false;
+
+      return true;
+    } 
+
+    return false;
+  };
+
+  const componentWillMount = async () => {
+    let result = null;
+    try {
+      result = await Fire.shared.getFollowingByUserIdAsync(
+        firebase.auth().currentUser.uid
+      );
+      getLocation();
+      setFollowings(result.docs);
+      Global.postDescription = null;
+      Global.postImage = null;
+      Global.postDifficulty = null;
+      setDifficulty(null);
+    } catch (error) {
+      if (error.code === "resource-exhausted") console.log("true");
+
+      console.warn(error.name);
+      console.warn(error.code);
+      console.warn(error.message);
+    }
+  };
+
+  /**
+   * Arrow functions defined in Flatlist component are created on each render. This makes application significantly slower.
+   * We are trying to prevent this behaviour by defining these function outside of the return statement
+   */
+
+  const keyExtractor = useCallback((item) => item.id, []);
+  const filterEasy = () => filterByDifficulty("easy");
+  const filterMedium = () => filterByDifficulty("medium");
+  const filterHard = () => filterByDifficulty("hard");
 
   return (
     <View style={styles.container}>
       <NavigationEvents
         onWillFocus={() => {
-          getLocation();
-          Global.postDescription = null;
-          Global.postImage = null;
-          Global.postDifficulty = null;
-          setDifficulty(null);
+          componentWillMount();
         }}
       />
       <View style={styles.header}>
@@ -233,10 +291,11 @@ const HomeScreen = (props) => {
         <FlatList
           style={styles.feed}
           data={posts}
-          renderItem={({ item }) => renderPost(item)}
-          keyExtractor={(item, i) => item.id}
+          renderItem={renderPost}
+          keyExtractor={keyExtractor}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={renderFooter}
+          maxToRenderPerBatch={7}
           refreshControl={
             <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
           }
@@ -270,10 +329,7 @@ const HomeScreen = (props) => {
         </TouchableOpacity>
       </View>
       <View style={styles.difficultyButtonContainer}>
-        <TouchableOpacity
-          style={styles.fabButton}
-          onPress={() => toggleFilter()}
-        >
+        <TouchableOpacity style={styles.fabButton} onPress={toggleFilter}>
           <Image
             source={require("../assets/button_semafory_ipka.png")}
             style={{ width: 15, height: 25, resizeMode: "stretch" }}
@@ -284,19 +340,19 @@ const HomeScreen = (props) => {
       {semaphore ? (
         <TouchableOpacity
           style={styles.greenLightButtonContainer}
-          onPress={() => filter("easy")}
+          onPress={filterEasy}
         ></TouchableOpacity>
       ) : null}
       {semaphore ? (
         <TouchableOpacity
           style={styles.orangeLightButtonContainer}
-          onPress={() => filter("medium")}
+          onPress={filterMedium}
         ></TouchableOpacity>
       ) : null}
       {semaphore ? (
         <TouchableOpacity
           style={styles.redLightButtonContainer}
-          onPress={() => filter("hard")}
+          onPress={filterHard}
         ></TouchableOpacity>
       ) : null}
     </View>
@@ -317,11 +373,11 @@ const styles = StyleSheet.create({
     marginLeft: 42,
   },
   header: {
-    height: Platform.OS === 'android' ? 60 : 100,
+    height: Platform.OS === "android" ? 60 : 100,
     paddingLeft: 16,
     backgroundColor: colors.primary,
     alignItems: "center",
-    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    paddingTop: Platform.OS === "ios" ? 40 : 0,
     flexDirection: "row",
   },
   headerTitle: {
@@ -378,7 +434,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.uamkBlue,
     position: "absolute",
     right: 10,
-    top: Platform.OS === 'android' ? 30 : 75,
+    top: Platform.OS === "android" ? 30 : 75,
     zIndex: 10,
     borderRadius: 50,
   },
@@ -388,7 +444,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#5bd83d",
     position: "absolute",
     right: 15,
-    top: Platform.OS === 'android' ? 100 : 155,
+    top: Platform.OS === "android" ? 100 : 155,
     zIndex: 10,
     borderRadius: 50,
   },
@@ -398,7 +454,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fcb000",
     position: "absolute",
     right: 15,
-    top: Platform.OS === 'android' ? 150 : 205,
+    top: Platform.OS === "android" ? 150 : 205,
     zIndex: 10,
     borderRadius: 50,
   },
@@ -408,7 +464,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f84242",
     position: "absolute",
     right: 15,
-    top: Platform.OS === 'android' ? 200 : 255,
+    top: Platform.OS === "android" ? 200 : 255,
     zIndex: 10,
     borderRadius: 50,
   },

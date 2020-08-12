@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Alert } from "react-native";
 import colors from "../colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Fire from "../Fire";
 import firebase from "firebase";
-import { ActivityIndicator } from "react-native-paper";
 import { NavigationEvents } from "react-navigation";
 import ProgressDialog from "../components/ProgressDialog";
 
@@ -20,16 +19,15 @@ const ProfileScreen = (props) => {
   const [jams, setJams] = useState(0)
   const [closures, setClosures] = useState(0)
 
-
-  useEffect(() => {}, []);
-
   const getFollowers = async () => {
     Fire.shared
       .getFollowersByUserIdAsync(firebase.auth().currentUser.uid)
       .then((result) => {
         setFollowers(result.docs.length);
       })
-      .catch((err) => console.error("Error: ", err));
+      .catch((err) => {
+        console.warn("Error: ", err)
+      });
   };
 
   const getFollowings = async () => {
@@ -39,7 +37,7 @@ const ProfileScreen = (props) => {
         setFollowing(result.docs.length);
       })
       .catch((error) => {
-        console.error("Error: ", error);
+        console.warn("Error: ", error);
       });
   };
 
@@ -54,7 +52,7 @@ const ProfileScreen = (props) => {
         }
       })
       .catch((err) => {
-        console.error("Error: ", err);
+        console.warn("Error: ", err);
       });
   };
 
@@ -87,7 +85,18 @@ const ProfileScreen = (props) => {
           setLoading(false);
         }, 100);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.warn(err)
+        Alert.alert(
+          "Bohužel došlo k chybě připojení se serverem.",
+          'Žádáme Vás o strpení. Pracujeme na tom.',
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
+          { cancelable: false }
+        );
+        setLoading(false)
+      });
   };
 
   return (
