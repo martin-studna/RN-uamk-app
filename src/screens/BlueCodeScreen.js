@@ -42,14 +42,7 @@ const BlueCodeScreen = (props) => {
       
     } catch (error) {
       console.log(error)
-      Alert.alert(
-        "Bohužel došlo k chybě připojení se serverem.",
-        'Strpení, prosím. Pracujeme na tom.',
-        [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
-        { cancelable: false }
-      );
+
       return
     }
 

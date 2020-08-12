@@ -102,7 +102,6 @@ const HomeScreen = (props) => {
 
   const getMore = async () => {
     if (lastDoc) {
-      //console.log(lastDoc.data())
       setIsMoreLoading(true);
 
       setTimeout(async () => {
@@ -122,12 +121,6 @@ const HomeScreen = (props) => {
           console.warn(error);
           setIsLoading(false);
           setIsMoreLoading(false);
-          Alert.alert(
-            "Bohužel došlo k chybě připojení se serverem.",
-            "Strpení, prosím. Pracujeme na tom.",
-            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-            { cancelable: false }
-          );
         }
 
         if (!snapshot.empty) {

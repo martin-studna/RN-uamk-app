@@ -41,14 +41,6 @@ const NotificationsScreen = props => {
       console.warn(error)
       setIsLoading(false)
       setIsMoreLoading(false)
-      Alert.alert(
-        "Bohužel došlo k chybě připojení se serverem.",
-        'Žádáme Vás o strpení. Pracujeme na tom.',
-        [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
-        { cancelable: false }
-      );
       return
     }
 

@@ -87,14 +87,6 @@ const ProfileScreen = (props) => {
       })
       .catch((err) => {
         console.warn(err)
-        Alert.alert(
-          "Bohužel došlo k chybě připojení se serverem.",
-          'Žádáme Vás o strpení. Pracujeme na tom.',
-          [
-            { text: "OK", onPress: () => console.log("OK Pressed") }
-          ],
-          { cancelable: false }
-        );
         setLoading(false)
       });
   };
