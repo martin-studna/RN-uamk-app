@@ -59,6 +59,7 @@ const HomeScreen = (props) => {
       setLocation(userLocation);
     } catch (error) {
       console.warn(error);
+      return
     }
   };
 
@@ -70,15 +71,36 @@ const HomeScreen = (props) => {
       let timeRange = new Date();
       timeRange.setHours(timeRange.getHours() - 6);
 
-      snapshot = await postsRef
-        .where("timestamp", ">=", timeRange.getTime())
-        .orderBy("timestamp", "desc")
-        .limit(5)
-        .get();
+      if (semaphore && difficulty) {
+        snapshot = await postsRef
+          .where("timestamp", ">=", timeRange.getTime())
+          .where('difficulty', '==', difficulty)
+          .orderBy("timestamp", "desc")
+          .limit(5)
+          .get();
+
+          console.log(snapshot.docs.length);
+      }
+      else {
+        snapshot = await postsRef
+          .where("timestamp", ">=", timeRange.getTime())
+          .orderBy("timestamp", "desc")
+          .limit(5)
+          .get();
+      }
+
     } catch (error) {
       console.warn(error);
       setIsLoading(false);
       setIsMoreLoading(false);
+      Alert.alert(
+        "Omlouváme se.",
+        'Momentálně jsou příspěvky o dopravní situaci nedostupné.',
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
       return;
     }
 
@@ -94,6 +116,7 @@ const HomeScreen = (props) => {
 
       setPosts(newPosts);
     } else {
+      setPosts([])
       setLastDoc(null);
     }
 
@@ -110,20 +133,38 @@ const HomeScreen = (props) => {
           let timeRange = new Date();
           timeRange.setHours(timeRange.getHours() - 6);
 
-          snapshot = await postsRef
-            .where("timestamp", ">=", timeRange.getTime())
-            .orderBy("timestamp", "desc")
-            .startAfter(lastDoc.data().timestamp)
-            .limit(5)
-            .get();
+          if (semaphore && difficulty) {
+            snapshot = await postsRef
+              .where("timestamp", ">=", timeRange.getTime())
+              .where('difficulty', '==', difficulty)
+              .orderBy("timestamp", "desc")
+              .startAfter(lastDoc.data().timestamp)
+              .limit(5)
+              .get();
+          }
+          else {
+            snapshot = await postsRef
+              .where("timestamp", ">=", timeRange.getTime())
+              .orderBy("timestamp", "desc")
+              .startAfter(lastDoc.data().timestamp)
+              .limit(5)
+              .get();
+          }
 
         } catch (error) {
           console.warn(error);
           setIsLoading(false);
           setIsMoreLoading(false);
+          return
         }
 
         if (!snapshot.empty) {
+
+          if (snapshot.docs[snapshot.docs.length - 1].id !== lastDoc.id) {
+            setIsMoreLoading(false)
+            return
+          }
+
           let newPosts = posts;
 
           setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
@@ -133,6 +174,8 @@ const HomeScreen = (props) => {
 
             newPosts.push(snapshot.docs[i]);
           }
+
+          console.log(newPosts.length);
 
           setPosts(newPosts);
           if (snapshot.docs.length < 5) setLastDoc(null);
@@ -220,15 +263,11 @@ const HomeScreen = (props) => {
         post.publisher === followings[i].id ||
         post.publisher === firebase.auth().currentUser.uid
       ) {
-        if (semaphore && difficulty !== post.difficulty) return false;
-
         return true;
       } else return false;
     }
 
     if (distance < Global.radius) {
-      if (semaphore && difficulty !== post.difficulty) return false;
-
       return true;
     } 
 
@@ -253,11 +292,12 @@ const HomeScreen = (props) => {
       console.warn(error.name);
       console.warn(error.code);
       console.warn(error.message);
+      return
     }
   };
 
   /**
-   * Arrow functions defined in Flatlist component are created on each render. This makes application significantly slower.
+   * Arrow functions defined in Flatlist component are being created on each render. This makes application significantly slower.
    * We are trying to prevent this behaviour by defining these function outside of the return statement
    */
 

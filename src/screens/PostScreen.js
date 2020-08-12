@@ -110,7 +110,6 @@ const PostScreen = (props) => {
             Global.postDescription = "";
             setOptionsVisible(false)
             setCallDialogVisible(false)
-            setDifficulty(null);
           }}
         />
         <View style={styles.exitContainer}>

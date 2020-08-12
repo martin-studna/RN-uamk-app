@@ -41,8 +41,15 @@ const BlueCodeScreen = (props) => {
         `/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=20`);
       
     } catch (error) {
-      console.log(error)
-
+      console.warn(error)
+      Alert.alert(
+        "Omlouváme se.",
+        'Momentálně jsou videa Modrého kódu nedostupná.',
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
       return
     }
 
