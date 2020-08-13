@@ -41,10 +41,13 @@ const HomeScreen = (props) => {
   const postsRef = Fire.shared.getPostsRef();
 
   useEffect(() => {
-    if (mount) {
-      getPosts();
-    } else setMount(true);
-  }, [difficulty, location, followings]);
+    if (mount && location) {
+      getPosts()    
+    } 
+    else {
+      setMount(true)
+    }
+  }, [location, difficulty, followings]);
 
   const getLocation = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -56,6 +59,7 @@ const HomeScreen = (props) => {
 
     try {
       const userLocation = await Location.getCurrentPositionAsync();
+      console.log(userLocation);
       setLocation(userLocation);
     } catch (error) {
       console.warn(error);
@@ -160,7 +164,7 @@ const HomeScreen = (props) => {
 
         if (!snapshot.empty) {
 
-          if (snapshot.docs[snapshot.docs.length - 1].id !== lastDoc.id) {
+          if (snapshot.docs[snapshot.docs.length - 1].id === lastDoc.id) {
             setIsMoreLoading(false)
             return
           }
@@ -192,6 +196,7 @@ const HomeScreen = (props) => {
 
   const onRefresh = () => {
     setTimeout(() => {
+
       getPosts();
     }, 1000);
   };
@@ -226,9 +231,12 @@ const HomeScreen = (props) => {
   };
 
   const getDistance = (postLocation) => {
+
+    console.log(location);
+
     let R = 6371; // Radius of the earth in km
-    let dLat = deg2rad(postLocation.latitude - location.coords.latitude); // deg2rad below
-    let dLon = deg2rad(postLocation.longitude - location.coords.longitude);
+    let dLat = deg2rad(postLocation.latitude - location?.coords.latitude); // deg2rad below
+    let dLon = deg2rad(postLocation.longitude - location?.coords.longitude);
     let a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(location.coords.latitude)) *
@@ -261,7 +269,8 @@ const HomeScreen = (props) => {
     for (let i = 0; i < followings.length; i++) {
       if (
         post.publisher === followings[i].id ||
-        post.publisher === firebase.auth().currentUser.uid
+        post.publisher === firebase.auth().currentUser.uid ||
+       post.publisher === 'UAMK'
       ) {
         return true;
       } else return false;
@@ -277,14 +286,16 @@ const HomeScreen = (props) => {
   const componentWillMount = async () => {
     let result = null;
     try {
+      await getLocation();
       result = await Fire.shared.getFollowingByUserIdAsync(
         firebase.auth().currentUser.uid
       );
-      getLocation();
       setFollowings(result.docs);
       Global.postDescription = null;
       Global.postImage = null;
       Global.postDifficulty = null;
+      if (!posts && location)
+        getPosts();
       setDifficulty(null);
     } catch (error) {
       if (error.code === "resource-exhausted") console.log("true");

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ImageBackground, Image } from "react-native";
+import { View, Text, StyleSheet, ImageBackground, Image, Alert } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import * as firebase from "firebase";
 import { StatusBar } from "expo-status-bar";
@@ -18,7 +18,46 @@ const LoginScreen = (props) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => setProgress(false))
-      .catch((error) => setErrorMessage(error.message));
+      .catch((error) => {
+        setProgress(false)
+
+        switch (error.code) {
+          case 'auth/user-not-found':
+            Alert.alert(
+              "Uživatel nebyl nalezen",
+              null,
+              [
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+              ],
+              { cancelable: false }
+            );
+            break;
+          case 'auth/invalid-email':
+            Alert.alert(
+              "Špatně zadaný email",
+              null,
+              [
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+              ],
+              { cancelable: false }
+            );
+            break;
+          case 'auth/wrong-password':
+            Alert.alert(
+              "Špatné zadané heslo",
+              null,
+              [
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+              ],
+              { cancelable: false }
+            );
+            break;
+          default:
+            break;
+        }
+
+        console.log(error.code);
+      });
   };
 
   return (

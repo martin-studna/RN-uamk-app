@@ -50,6 +50,7 @@ const BlueCodeScreen = (props) => {
         ],
         { cancelable: false }
       );
+      setIsLoading(false)
       return
     }
 
@@ -109,6 +110,9 @@ const BlueCodeScreen = (props) => {
     <NavigationEvents 
       onWillFocus={() => {
         getVideos()
+      }}
+      onWillBlur={() => {
+        setVideos([])
       }}
     />
       <View style={styles.header}>

@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ImageBackground, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  Alert,
+} from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import * as firebase from "firebase";
 import Fire from "../Fire.js";
@@ -11,26 +18,62 @@ const RegisterScreen = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-  const [progress, setProgress] = useState(false)
+  const [progress, setProgress] = useState(false);
 
   const handleSignUp = () => {
-    setProgress(true)
+    setProgress(true);
 
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(cred => {
-        return Fire.shared.addUserAsync({
+      .then((cred) => {
+        return Fire.shared
+          .addUserAsync({
             uid: cred.user.uid,
             username: name,
             mail: email,
             password,
-        })
-        .then(() => {
-          setProgress(false)
-        })
+          })
+          .then(() => {
+            setProgress(false);
+          });
       })
-      .catch((error) => setErrorMessage(error.message));
+      .catch((error) => {
+        setProgress(false);
+        console.log(error.code);
+        console.log(error.message);
+
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            Alert.alert(
+              "Účet už existuje.",
+              "Tato emailová adresa je už použita jiným účtem.",
+              [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+              { cancelable: false }
+            );
+            break;
+          case 'auth/invalid-email':
+            Alert.alert(
+              "Zadali jste špatně emailovou adresu",
+              null,
+              [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+              { cancelable: false }
+            );
+          break;
+          case 'auth/weak-password':
+            Alert.alert(
+              "Heslo musí mít alespoň 6 znaků",
+              null,
+              [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+              { cancelable: false }
+            );
+          
+            break;
+
+          default:
+            break;
+        }
+      });
   };
 
   return (
@@ -38,11 +81,11 @@ const RegisterScreen = (props) => {
       style={styles.container}
       source={require("../assets/backgroundimage_zoom.png")}
     >
-    <ProgressDialog 
-      visible={progress}
-      title={'Zaregistrovat se'}
-      text={'Prosím počkejte, tohle může chvíli trvat...'}
-    />
+      <ProgressDialog
+        visible={progress}
+        title={"Zaregistrovat se"}
+        text={"Prosím počkejte, tohle může chvíli trvat..."}
+      />
       <View style={styles.errorMessage}>
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       </View>
@@ -93,8 +136,11 @@ const RegisterScreen = (props) => {
 
       <TouchableOpacity
         style={styles.registerButton}
-        onPress={() => props.navigation.navigate("Login")}>
-        <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16  }}>Už máte účet? Přihlásit se</Text>
+        onPress={() => props.navigation.navigate("Login")}
+      >
+        <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>
+          Už máte účet? Přihlásit se
+        </Text>
       </TouchableOpacity>
     </ImageBackground>
   );

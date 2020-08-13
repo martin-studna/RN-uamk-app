@@ -11,7 +11,6 @@ import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import Fire from "../Fire";
 import colors from "../colors";
-import Global from "../global";
 import { Ionicons } from "@expo/vector-icons";
 
 const MapScreen = (props) => {
@@ -111,36 +110,41 @@ const MapScreen = (props) => {
   };
 
   const renderMarkers = () => {
-    return posts.map((marker, i) => (
-      <Marker
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        key={i}
-        coordinate={{
-          latitude: marker.location.latitude,
-          longitude: marker.location.longitude,
-        }}
-        title={setTitle()}
-        description={marker.text}
-      >
-        <View
+    return posts.map((marker, i) => {
+      console.log(marker.location);
+      if (!marker.location || marker.location === "") return null;
+
+      return (
+        <Marker
           style={{
-            borderRadius: 50,
-            backgroundColor: colors.primary,
-            padding: 10,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
+          key={i}
+          coordinate={{
+            latitude: marker.location.latitude,
+            longitude: marker.location.longitude,
+          }}
+          title={setTitle()}
+          description={marker.text}
         >
-          <Image
-            source={setTypeImage(marker.type)}
-            style={{ width: 20, height: 20 }}
-            resizeMode="contain"
-          />
-        </View>
-      </Marker>
-    ));
+          <View
+            style={{
+              borderRadius: 50,
+              backgroundColor: colors.primary,
+              padding: 10,
+            }}
+          >
+            <Image
+              source={setTypeImage(marker.type)}
+              style={{ width: 20, height: 20 }}
+              resizeMode="contain"
+            />
+          </View>
+        </Marker>
+      );
+    });
   };
 
   const getLocation = async () => {
@@ -169,11 +173,10 @@ const MapScreen = (props) => {
           justifyContent: "center",
           alignItems: "center",
           borderRadius: 50,
-          position: 'absolute',
+          position: "absolute",
           zIndex: 10,
           top: 40,
-          right: 20
-
+          right: 20,
         }}
         onPress={() => props.navigation.goBack()}
       >
@@ -184,16 +187,16 @@ const MapScreen = (props) => {
         showsTraffic={true}
         style={styles.container}
         region={{
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
+          latitude: location ? location.coords.latitude : 0,
+          longitude: location ? location.coords.longitude : 0,
           longitudeDelta: 0.0421,
           latitudeDelta: 0.0922,
         }}
       >
         <Marker
           coordinate={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude: location ? location.coords.latitude : 0,
+            longitude: location ? location.coords.longitude : 0,
           }}
         ></Marker>
         {posts ? renderMarkers() : null}

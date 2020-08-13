@@ -5,6 +5,9 @@ import Fire from "../Fire";
 
 const NotificationCard = (props) => {
 
+  const [publisher, setPublisher] = useState('');
+  const [publisherImage, setPublisherImage] = useState(null)
+
   useEffect(() => {
     Fire.shared.getUserByIdAsync(props.publisher).then((res) => {
       setPublisher(res.data().username);

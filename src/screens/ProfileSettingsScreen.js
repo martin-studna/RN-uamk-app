@@ -7,6 +7,7 @@ import Fire from "../Fire";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import ProgressDialog from "../components/ProgressDialog";
+import Camera from '../Camera'
 
 const ProfileSettingsScreen = (props) => {
   const [username, setUsername] = useState("");
@@ -44,13 +45,10 @@ const ProfileSettingsScreen = (props) => {
     }
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-
+  
+  const choosePhotoFromLibrary = async () => {
+    let result = await Camera.shared.choosePhotoFromLibraryAsync();
+    console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -103,7 +101,7 @@ const ProfileSettingsScreen = (props) => {
         source={image ? { uri: image } : require("../assets/profile_image.png")}
         style={styles.image}
       />
-      <TouchableOpacity style={styles.changeImage} onPress={() => pickImage()}>
+      <TouchableOpacity style={styles.changeImage} onPress={() => choosePhotoFromLibrary()}>
         <Text
           style={{ fontWeight: "bold", color: colors.uamkBlue, fontSize: 16 }}
         >
