@@ -4,6 +4,8 @@ import colors from "../colors";
 import Fire from "../Fire";
 import firebase from "firebase";
 import { NavigationEvents } from "react-navigation";
+import ImageWrapper from "./ImageWrapper";
+
 
 const UserCard = (props) => {
 
@@ -13,7 +15,7 @@ const UserCard = (props) => {
       onPress={() => props.navigation.navigate("User", { uid: props.id })}
     >
       <View style={{ display: "flex", flexDirection: "row" }}>
-        <Image
+        <ImageWrapper
           style={styles.image}
           source={
             props.image

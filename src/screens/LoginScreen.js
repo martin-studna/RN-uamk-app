@@ -5,6 +5,7 @@ import * as firebase from "firebase";
 import { StatusBar } from "expo-status-bar";
 import colors from "../colors";
 import ProgressDialog from "../components/ProgressDialog";
+import ImageWrapper from "../components/ImageWrapper";
 
 const LoginScreen = (props) => {
   const [email, setEmail] = useState("");
@@ -76,7 +77,7 @@ const LoginScreen = (props) => {
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       </View>
 
-      <Image
+      <ImageWrapper
         source={require("../assets/zirani_logo_circle.png")}
         style={styles.logo}
       />

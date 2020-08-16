@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Fire from "../Fire";
 import firebase from "firebase";
 import ProgressDialog from "../components/ProgressDialog";
+import ImageWrapper from "../components/ImageWrapper";
 
 const CardActivationScreen = (props) => {
   const [code, setCode] = useState("");
@@ -77,7 +78,7 @@ const CardActivationScreen = (props) => {
       </View>
       <ScrollView style={{ flex: 1, width: "100%" }}>
         <View style={styles.content}>
-          <Image
+          <ImageWrapper
             source={require("../assets/uamk_logo.png")}
             style={{ width: 110, height: 110 }}
           />
@@ -101,7 +102,7 @@ const CardActivationScreen = (props) => {
             </Text>
           </TouchableOpacity>
 
-          <Image
+          <ImageWrapper
             style={{
               width: 240,
               height: 130,

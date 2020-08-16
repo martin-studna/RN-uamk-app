@@ -17,12 +17,13 @@ import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors.js";
 import MenuButton from "../components/MenuButton.js";
 import Fire from "../Fire.js";
-
+import { getDistance } from "geolib";
 import PostCard from "../components/PostCard.js";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import { NavigationEvents } from "react-navigation";
 import Global from "../global.js";
+import ImageWrapper from "../components/ImageWrapper.js";
 
 const HomeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -31,7 +32,6 @@ const HomeScreen = (props) => {
   const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [lastDoc, setLastDoc] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [location, setLocation] = useState(null);
   const [semaphore, setSemaphore] = useState(false);
   const [difficulty, setDifficulty] = useState(null);
@@ -42,10 +42,9 @@ const HomeScreen = (props) => {
 
   useEffect(() => {
     if (mount && location) {
-      getPosts()    
-    } 
-    else {
-      setMount(true)
+      getPosts();
+    } else {
+      setMount(true);
     }
   }, [location, difficulty, followings]);
 
@@ -63,7 +62,7 @@ const HomeScreen = (props) => {
       setLocation(userLocation);
     } catch (error) {
       console.warn(error);
-      return
+      return;
     }
   };
 
@@ -78,31 +77,27 @@ const HomeScreen = (props) => {
       if (semaphore && difficulty) {
         snapshot = await postsRef
           .where("timestamp", ">=", timeRange.getTime())
-          .where('difficulty', '==', difficulty)
+          .where("difficulty", "==", difficulty)
           .orderBy("timestamp", "desc")
           .limit(5)
           .get();
 
-          console.log(snapshot.docs.length);
-      }
-      else {
+        console.log(snapshot.docs.length);
+      } else {
         snapshot = await postsRef
           .where("timestamp", ">=", timeRange.getTime())
           .orderBy("timestamp", "desc")
           .limit(5)
           .get();
       }
-
     } catch (error) {
       console.warn(error);
       setIsLoading(false);
       setIsMoreLoading(false);
       Alert.alert(
         "Omlouváme se.",
-        'Momentálně jsou příspěvky o dopravní situaci nedostupné.',
-        [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
+        "Momentálně jsou příspěvky o dopravní situaci nedostupné.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
         { cancelable: false }
       );
       return;
@@ -120,7 +115,7 @@ const HomeScreen = (props) => {
 
       setPosts(newPosts);
     } else {
-      setPosts([])
+      setPosts([]);
       setLastDoc(null);
     }
 
@@ -140,13 +135,12 @@ const HomeScreen = (props) => {
           if (semaphore && difficulty) {
             snapshot = await postsRef
               .where("timestamp", ">=", timeRange.getTime())
-              .where('difficulty', '==', difficulty)
+              .where("difficulty", "==", difficulty)
               .orderBy("timestamp", "desc")
               .startAfter(lastDoc.data().timestamp)
               .limit(5)
               .get();
-          }
-          else {
+          } else {
             snapshot = await postsRef
               .where("timestamp", ">=", timeRange.getTime())
               .orderBy("timestamp", "desc")
@@ -154,19 +148,17 @@ const HomeScreen = (props) => {
               .limit(5)
               .get();
           }
-
         } catch (error) {
           console.warn(error);
           setIsLoading(false);
           setIsMoreLoading(false);
-          return
+          return;
         }
 
         if (!snapshot.empty) {
-
           if (snapshot.docs[snapshot.docs.length - 1].id === lastDoc.id) {
-            setIsMoreLoading(false)
-            return
+            setIsMoreLoading(false);
+            return;
           }
 
           let newPosts = posts;
@@ -196,7 +188,6 @@ const HomeScreen = (props) => {
 
   const onRefresh = () => {
     setTimeout(() => {
-
       getPosts();
     }, 1000);
   };
@@ -230,23 +221,6 @@ const HomeScreen = (props) => {
     return deg * (Math.PI / 180);
   };
 
-  const getDistance = (postLocation) => {
-
-    console.log(location);
-
-    let R = 6371; // Radius of the earth in km
-    let dLat = deg2rad(postLocation.latitude - location?.coords.latitude); // deg2rad below
-    let dLon = deg2rad(postLocation.longitude - location?.coords.longitude);
-    let a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(location.coords.latitude)) *
-        Math.cos(deg2rad(postLocation.latitude)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    let d = R * c; // Distance in km
-    return d;
-  };
 
   const toggleFilter = () => {
     const showSemaphore = !semaphore;
@@ -262,7 +236,15 @@ const HomeScreen = (props) => {
   };
 
   const validPost = (post) => {
-    let distance = getDistance(post.location);
+    let distance = getDistance(
+      {
+        longitude: location.coords.longitude,
+        latitude: location.coords.latitude,
+      },
+      { longitude: post.location.longitude, latitude: post.location.latitude }
+    ) / 1000
+
+    console.log(distance)
 
     if (!post.text && !post.image) return false;
 
@@ -270,7 +252,7 @@ const HomeScreen = (props) => {
       if (
         post.publisher === followings[i].id ||
         post.publisher === firebase.auth().currentUser.uid ||
-       post.publisher === 'UAMK'
+        post.publisher === "UAMK"
       ) {
         return true;
       } else return false;
@@ -278,7 +260,7 @@ const HomeScreen = (props) => {
 
     if (distance < Global.radius) {
       return true;
-    } 
+    }
 
     return false;
   };
@@ -294,8 +276,6 @@ const HomeScreen = (props) => {
       Global.postDescription = null;
       Global.postImage = null;
       Global.postDifficulty = null;
-      if (!posts && location)
-        getPosts();
       setDifficulty(null);
     } catch (error) {
       if (error.code === "resource-exhausted") console.log("true");
@@ -303,7 +283,7 @@ const HomeScreen = (props) => {
       console.warn(error.name);
       console.warn(error.code);
       console.warn(error.message);
-      return
+      return;
     }
   };
 
@@ -374,7 +354,7 @@ const HomeScreen = (props) => {
       </View>
       <View style={styles.difficultyButtonContainer}>
         <TouchableOpacity style={styles.fabButton} onPress={toggleFilter}>
-          <Image
+          <ImageWrapper
             source={require("../assets/button_semafory_ipka.png")}
             style={{ width: 15, height: 25, resizeMode: "stretch" }}
           />

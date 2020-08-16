@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import colors from "../colors";
 import Fire from "../Fire";
+import ImageWrapper from "./ImageWrapper";
+import FastImage from "react-native-fast-image";
 
 const PostCard = (props) => {
   const [publisher, setPublisher] = useState("");
@@ -73,7 +75,7 @@ const PostCard = (props) => {
         >
           <View style={{ margin: 20, flexDirection: "row" }}>
             <View>
-              <Image
+              <ImageWrapper
                 source={
                   publisherImage
                     ? { uri: publisherImage }
@@ -87,19 +89,19 @@ const PostCard = (props) => {
               <Text style={{ fontWeight: "bold", marginLeft: 10, color: 'black' }}>
                 {publisher}
               </Text>
-              <Image source={setDifficultyImage()} style={{ marginLeft: 8, marginTop: 4, width: 60, height: 20, resizeMode: 'stretch'}}/>
+              <ImageWrapper source={setDifficultyImage()} style={{ marginLeft: 8, marginTop: 4, width: 60, height: 20, resizeMode:'contain'}} resizeMode='contain' />
             </View>
           </View>
 
           <View style={styles.type}>
-            <Image source={setTypeImage()} style={{ width: 25, height: 25 }} />
+            <ImageWrapper source={setTypeImage()} style={{ width: 25, height: 25 }} />
           </View>
         </View>
 
         { props.text ? <Text style={styles.post}>{props.text}</Text> : null }
 
         {props.image ? (
-          <Image
+          <ImageWrapper
             source={{ uri: props.image }}
             style={styles.postImage}
             resizeMode="cover"

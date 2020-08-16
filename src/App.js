@@ -9,10 +9,11 @@ import DrawerNavigator from './navigation/DrawerNavigator'
 import AuthNavigator from './navigation/AuthNavigator'
 import AppStackNavigator from './navigation/AppStackNavigator'
 
+
 console.disableYellowBox = true;
 
 YellowBox.ignoreWarnings(['Setting a timer']);
-
+ 
 
 export default createAppContainer(
   createSwitchNavigator(

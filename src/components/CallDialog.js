@@ -10,6 +10,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors";
 import { Linking } from 'react-native'
+import ImageWrapper from "./ImageWrapper";
 
 const CallDialog = (props) => {
   return (
@@ -71,9 +72,9 @@ const CallDialog = (props) => {
                   style={[styles.callButton, { backgroundColor: "#fe0100" }]}
                   onPress={() => Linking.openURL(`tel:155`)}
                 >
-                  <Image source={require("../assets/icon_ambulance.png")} style={{width: 30, height: 30, resizeMode: 'stretch'}} />
+                  <ImageWrapper source={require("../assets/icon_ambulance.png")} style={{width: 30, height: 30, resizeMode: 'stretch'}} />
                 </TouchableOpacity>
-                <Text style={{ textAlign: "center" }}>Záchranná služba</Text>
+                <Text style={{ textAlign: "center", color: 'black' }}>Záchranná služba</Text>
               </View>
               <View
                 style={{
@@ -87,9 +88,9 @@ const CallDialog = (props) => {
                   style={[styles.callButton, { backgroundColor: "#01C2FF" }]}
                   onPress={() => Linking.openURL('tel:158')}
                 >
-                  <Image source={require("../assets/police_icon.png")} />
+                  <ImageWrapper source={require("../assets/police_icon.png")} style={{width: 30, height: 30, resizeMode: 'stretch'}} />
                 </TouchableOpacity>
-                <Text style={{ textAlign: "center" }}>Policie</Text>
+                <Text style={{ textAlign: "center", color: 'black' }}>Policie</Text>
               </View>
               <View
                 style={{ width: 70, display: "flex", alignItems: "center" }}
@@ -98,12 +99,12 @@ const CallDialog = (props) => {
                   style={[styles.callButton, { backgroundColor: "#FF9800" }]}
                   onPress={() => Linking.openURL('tel:150')}
                 >
-                  <Image 
+                  <ImageWrapper 
                   style={{width: 30, height: 30}}
                   source={require("../assets/icon_firefighter.png")} />
 
                 </TouchableOpacity>
-                <Text>Hasiči</Text>
+                <Text style={{ textAlign: "center", color: 'black' }}>Hasiči</Text>
               </View>
             </View>
             <View style={{ display: "flex", flexDirection: "row" }}>
@@ -114,12 +115,12 @@ const CallDialog = (props) => {
                   style={[styles.callButton, { backgroundColor: "#FFEB3B" }]}
                   onPress={() => Linking.openURL('tel:+420 261 104 333')}
                 >
-                  <Image
+                  <ImageWrapper
                     style={{width: 30, height: 15, resizeMode: 'stretch'}} 
                     source={require("../assets/icon_uamk.png")} />
 
                 </TouchableOpacity>
-                <Text>ÚAMK</Text>
+                <Text style={{ textAlign: "center", color: 'black' }}>ÚAMK</Text>
               </View>
             </View>
           </View>

@@ -6,15 +6,17 @@ import Fire from "../Fire.js";
 import { ActionSheet, Root } from "native-base";
 import colors from "../colors";
 import Global from "../global";
-import Camera from '../Camera'
-import ProgressDialog from '../components/ProgressDialog'
+import Camera from "../Camera";
+import ProgressDialog from "../components/ProgressDialog";
+import ImageWrapper from "../components/ImageWrapper.js";
+import PointsDialog from "../components/PointsDialog.js";
 
 const DangerScreen = (props) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
-  const [progress, setProgress] = useState(false)
-
+  const [progress, setProgress] = useState(false);
+  const [pointsDialogVisible, setPointsDialogVisible] = useState(false);
 
   const handlePost = async () => {
     if (!difficulty) {
@@ -27,31 +29,31 @@ const DangerScreen = (props) => {
       return;
     }
 
-    setProgress(true)
+    setProgress(true);
 
     try {
-      await Fire.shared
-        .addPostAsync({
-          text: Global.postDescription,
-          localUri: image,
-          difficulty: difficulty,
-          type: "danger",
-        })
+      await Fire.shared.addPostAsync({
+        text: Global.postDescription,
+        localUri: image,
+        difficulty: difficulty,
+        type: "danger",
+      });
 
-      await Fire.shared
-        .addPoints(10)
-      
+      await Fire.shared.addPoints(10);
     } catch (error) {
       console.error(error);
     }
 
-      
-      setText("");
-      setImage(null);
-      setDifficulty(null);
-      setProgress(false)
+    setText("");
+    setImage(null);
+    setDifficulty(null);
+    setProgress(false);
+    setPointsDialogVisible(true);
+    setTimeout(() => {
+      setPointsDialogVisible(false);
       props.navigation.navigate("Home");
-    };
+    }, 1000);
+  };
 
   const choosePhotoFromLibrary = async () => {
     let result = await Camera.shared.choosePhotoFromLibraryAsync();
@@ -90,10 +92,15 @@ const DangerScreen = (props) => {
 
   return (
     <Root>
-    <ProgressDialog  
-      title='Nahrávám nový příspěvek'
-      text='Prosím počkejte...'
-      visible={progress}/>
+      <ProgressDialog
+        title="Nahrávám nový příspěvek"
+        text="Prosím počkejte..."
+        visible={progress}
+      />
+      <PointsDialog
+        text="Získali jste 10 bodů!"
+        visible={pointsDialogVisible}
+      />
       <View style={styles.container}>
         <View style={styles.exitContainer}>
           <TouchableOpacity
@@ -109,7 +116,7 @@ const DangerScreen = (props) => {
         </View>
         <View style={styles.titleContainer}>
           <View style={styles.imageContainer}>
-            <Image
+            <ImageWrapper
               style={styles.imageTitle}
               source={require("../assets/danger_icon.png")}
             />
@@ -135,7 +142,7 @@ const DangerScreen = (props) => {
                 { backgroundColor: colors.smallDifficulty },
               ]}
             >
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/danger_icon.png")}
               />
@@ -162,7 +169,7 @@ const DangerScreen = (props) => {
                 { backgroundColor: colors.mediumDifficulty },
               ]}
             >
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/danger_icon.png")}
               />
@@ -185,7 +192,7 @@ const DangerScreen = (props) => {
                 { backgroundColor: colors.bigDifficulty },
               ]}
             >
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/danger_icon.png")}
               />
@@ -225,7 +232,7 @@ const DangerScreen = (props) => {
               style={styles.sendButton}
               onPress={() => handlePost()}
             >
-              <Ionicons name="md-arrow-up" size={30} />
+              <Ionicons name="md-arrow-up" size={30} color='black' />
             </TouchableOpacity>
           </View>
           <View style={styles.bottomBar}></View>

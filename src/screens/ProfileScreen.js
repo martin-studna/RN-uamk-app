@@ -6,6 +6,7 @@ import Fire from "../Fire";
 import firebase from "firebase";
 import { NavigationEvents } from "react-navigation";
 import ProgressDialog from "../components/ProgressDialog";
+import ImageWrapper from '../components/ImageWrapper'
 
 const ProfileScreen = (props) => {
   const [user, setUser] = useState(null);
@@ -118,7 +119,7 @@ const ProfileScreen = (props) => {
       </View>
 
       <View style={styles.profileContainer}>
-        <Image
+        <ImageWrapper
           source={
             user && user.image
               ? { uri: user.image }

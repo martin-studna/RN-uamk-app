@@ -10,8 +10,13 @@ import MapView, { Marker } from "react-native-maps";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 import Fire from "../Fire";
+import { getDistance } from "geolib";
 import colors from "../colors";
 import { Ionicons } from "@expo/vector-icons";
+import ImageWrapper from "../components/ImageWrapper";
+import firebase from "firebase";
+import Global from "../global";
+import { NavigationEvents } from "react-navigation";
 
 const MapScreen = (props) => {
   const [location, setLocation] = useState({
@@ -22,6 +27,7 @@ const MapScreen = (props) => {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+  const [followings, setFollowings] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
@@ -29,18 +35,33 @@ const MapScreen = (props) => {
   const postsRef = Fire.shared.getPostsRef();
 
   useEffect(() => {
+    getPosts()
+  }, [location])
+
+  const loadData = async () => {
     setLoading(true);
-    getLocation();
-    getPosts();
-  }, []);
-
+    try {
+      await getLocation();
+      const result = await Fire.shared.getFollowingByUserIdAsync(
+        firebase.auth().currentUser.uid
+      );
+      setFollowings(result.docs);
+    } catch (error) {
+      setLoading(false)
+      console.log(error);
+    }
+  };
   const getPosts = async () => {
-    const snapshot = await postsRef.get();
+    let timeRange = new Date();
+    timeRange.setHours(timeRange.getHours() - 6);
 
+    const snapshot = await postsRef.where("timestamp", ">=", timeRange.getTime()).get();
     if (!snapshot.empty) {
       let newPosts = [];
 
       for (let i = 0; i < snapshot.docs.length; i++) {
+        if (!validPost(snapshot.docs[i].data())) continue;
+
         newPosts.push(snapshot.docs[i].data());
       }
 
@@ -49,25 +70,38 @@ const MapScreen = (props) => {
     }
   };
 
-  const deg2rad = (deg) => {
-    return deg * (Math.PI / 180);
+  const validPost = (post) => {
+    console.log(location.coords);
+    let distance =
+      getDistance(
+        {
+          longitude: location.coords.longitude,
+          latitude: location.coords.latitude,
+        },
+        { longitude: post.location.longitude, latitude: post.location.latitude }
+      ) / 1000;
+
+      console.log('Distance: ', distance);
+      console.log('Radius: ',Global.radius)
+  
+    if (distance < Global.radius) {
+      return true;
+    }
+
+    for (let i = 0; i < followings.length; i++) {
+      if (
+        post.publisher === followings[i].id ||
+        post.publisher === firebase.auth().currentUser.uid ||
+        post.publisher === "UAMK"
+      ) {
+        return true;
+      } else return false;
+    }
+
+
+    return false;
   };
 
-  const getDistance = (postLocation) => {
-    let R = 6371; // Radius of the earth in km
-    let dLat = deg2rad(postLocation.latitude - location.coords.latitude); // deg2rad below
-    let dLon = deg2rad(postLocation.longitude - location.coords.longitude);
-    let a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(location.coords.latitude)) *
-        Math.cos(deg2rad(postLocation.latitude)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    let d = R * c; // Distance in km
-    console.log(d);
-    return d;
-  };
 
   const setTypeImage = (type) => {
     switch (type) {
@@ -136,7 +170,7 @@ const MapScreen = (props) => {
               padding: 10,
             }}
           >
-            <Image
+            <ImageWrapper
               source={setTypeImage(marker.type)}
               style={{ width: 20, height: 20 }}
               resizeMode="contain"
@@ -158,12 +192,20 @@ const MapScreen = (props) => {
     const userLocation = await Location.getCurrentPositionAsync();
 
     setLocation(userLocation);
-    console.log(location);
     setLoading(false);
   };
 
   return (
     <View style={{ flex: 1, width: "100%" }}>
+    <NavigationEvents
+    onWillFocus={() => {
+      loadData();
+    }}
+      onWillBlur={() => {
+        setPosts([])
+        setFollowings([])
+      }}
+    />
       <TouchableOpacity
         style={{
           backgroundColor: "white",

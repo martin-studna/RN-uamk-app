@@ -11,6 +11,7 @@ import {
 	Linking,
 } from "react-native";
 import colors from "../colors";
+import ImageWrapper from "./ImageWrapper";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -34,7 +35,7 @@ export default class MenuDrawer extends React.Component {
           <View style={styles.topLinks}>
             <View style={styles.profile}>
               <View style={styles.imgView}>
-                <Image
+                <ImageWrapper
                   style={styles.img}
                   source={require("../assets/zirani_logo_circle.png")}
                 />

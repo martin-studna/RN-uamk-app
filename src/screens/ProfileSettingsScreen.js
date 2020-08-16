@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import ProgressDialog from "../components/ProgressDialog";
 import Camera from '../Camera'
+import ImageWrapper from "../components/ImageWrapper";
 
 const ProfileSettingsScreen = (props) => {
   const [username, setUsername] = useState("");
@@ -97,7 +98,7 @@ const ProfileSettingsScreen = (props) => {
           <Ionicons name="md-checkmark" size={32} color={colors.uamkBlue} />
         </TouchableOpacity>
       </View>
-      <Image
+      <ImageWrapper
         source={image ? { uri: image } : require("../assets/profile_image.png")}
         style={styles.image}
       />

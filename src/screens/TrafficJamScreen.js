@@ -18,6 +18,8 @@ import { ActionSheet, Root } from "native-base";
 import Camera from "../Camera";
 import ProgressDialog from "../components/ProgressDialog.js";
 import Global from '../global.js'
+import ImageWrapper from "../components/ImageWrapper.js";
+import PointsDialog from "../components/PointsDialog.js";
 
 
 const TrafficJamScreen = (props) => {
@@ -25,6 +27,7 @@ const TrafficJamScreen = (props) => {
   const [image, setImage] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
   const [progress, setProgress] = useState(false)
+  const [pointsDialogVisible, setPointsDialogVisible] = useState(false)
 
 
   const handlePost = async () => {
@@ -61,7 +64,12 @@ const TrafficJamScreen = (props) => {
       setImage(null);
       setDifficulty(null);
       setProgress(false)
-      props.navigation.navigate("Home");
+      setPointsDialogVisible(true)
+      setTimeout(() => {
+        setPointsDialogVisible(false)
+        props.navigation.navigate("Home");
+  
+      }, 1000);
   };
 
   const choosePhotoFromLibrary = async () => {
@@ -105,6 +113,10 @@ const TrafficJamScreen = (props) => {
       title='Nahrávám nový příspěvek'
       text='Prosím počkejte...'
       visible={progress}/>
+       <PointsDialog 
+        text='Získali jste 10 bodů!'
+        visible={pointsDialogVisible}
+      />
       <View style={styles.container}>
         <View style={styles.exitContainer}>
           <TouchableOpacity
@@ -120,7 +132,7 @@ const TrafficJamScreen = (props) => {
         </View>
         <View style={styles.titleContainer}>
           <View style={styles.imageContainer}>
-            <Image
+            <ImageWrapper
               style={styles.imageTitle}
               source={require("../assets/traffic_jam_icon.png")}
             />
@@ -146,7 +158,7 @@ const TrafficJamScreen = (props) => {
                 { backgroundColor: colors.smallDifficulty },
               ]}
             >
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/traffic_jam_icon.png")}
               />
@@ -173,7 +185,7 @@ const TrafficJamScreen = (props) => {
                 { backgroundColor: colors.mediumDifficulty },
               ]}
             >
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/traffic_jam_icon.png")}
               />
@@ -196,7 +208,7 @@ const TrafficJamScreen = (props) => {
                 { backgroundColor: colors.bigDifficulty },
               ]}
             >
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/traffic_jam_icon.png")}
               />
@@ -236,7 +248,7 @@ const TrafficJamScreen = (props) => {
               style={styles.sendButton}
               onPress={() => handlePost()}
             >
-              <Ionicons name="md-arrow-up" size={30} />
+              <Ionicons name="md-arrow-up" size={30} color='black' />
             </TouchableOpacity>
           </View>
           <View style={styles.bottomBar}></View>

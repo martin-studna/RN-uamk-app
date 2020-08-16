@@ -90,7 +90,7 @@ const RegisterScreen = (props) => {
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       </View>
 
-      <Image
+      <ImageWrapper
         source={require("../assets/zirani_logo_circle.png")}
         style={styles.logo}
       />

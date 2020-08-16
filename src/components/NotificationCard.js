@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import colors from "../colors";
 import Fire from "../Fire";
+import ImageWrapper from "./ImageWrapper";
 
 const NotificationCard = (props) => {
 
@@ -50,9 +51,10 @@ const NotificationCard = (props) => {
                   alignItems: "center",
                 }}
               >
-                <Image
+                <ImageWrapper
                   source={require("../assets/uamk_logo.png")}
                   style={{ width: 27, height: 27, resizeMode: "contain" }}
+                  resizeMode='contain'
                 />
               </View>
               <Text style={styles.timestamp}>{getDate(props.timestamp)}</Text>

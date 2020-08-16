@@ -1,18 +1,21 @@
 import React from "react";
 import { View, Image, StyleSheet, Text, TouchableOpacity, Linking } from "react-native";
+import FastImage from "react-native-fast-image";
+import ImageWrapper from "./ImageWrapper";
 
 const VideoCard = props => {
   return (
     <TouchableOpacity style={styles.container} onPress={() => Linking.openURL(`https://m.youtube.com/watch?v=${props.videoId}`) }>
       <View style={styles.header}>
-        <Image source={require('../assets/prima.png')} style={{resizeMode: 'stretch', width: 50, height: 25}}/>
-        <Image source={require('../assets/book.png')} style={{resizeMode: 'stretch', width: 45, height: 45}}/>
+        <ImageWrapper source={require('../assets/prima.png')} style={{resizeMode: 'stretch', width: 50, height: 25}} resizeMode='stretch' />
+        <ImageWrapper source={require('../assets/book.png')} style={{resizeMode: 'stretch', width: 45, height: 45}} resizeMode='stretch' />
       </View>
       <Text style={{ fontWeight: 'bold', marginBottom: 10, color: '#5e5e5e', fontSize: 15}}>{props.title}</Text>
       <View style={{ display: 'flex', flexDirection: 'row', }}>
-        <Image
+        <ImageWrapper
           source={{ uri: props.medium.url }}
           style={{ width: 120, height: 70, resizeMode: 'stretch' }}
+          resizeMode='stretch'
         />
         <Text style={{color: 'grey', width: 200, marginLeft: 10}}>{props.description}</Text>
       </View>

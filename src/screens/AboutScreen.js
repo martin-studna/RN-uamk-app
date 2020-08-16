@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, Linking } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors";
+import ImageWrapper from "../components/ImageWrapper";
 
 const AboutScreen = (props) => {
   return (
@@ -45,7 +46,7 @@ const AboutScreen = (props) => {
         <TouchableOpacity
           onPress={() => Linking.openURL("https://www.uamk.cz")}
         >
-          <Image
+          <ImageWrapper
             source={require("../assets/uamk_logo.png")}
             style={styles.uamkLogo}
           />
@@ -54,7 +55,7 @@ const AboutScreen = (props) => {
         <TouchableOpacity
           onPress={() => Linking.openURL("https://www.iprima.cz/")}
         >
-          <Image
+          <ImageWrapper
             source={require("../assets/prima.png")}
             style={styles.primaLogo}
           />
@@ -64,7 +65,7 @@ const AboutScreen = (props) => {
             Linking.openURL("https://prima.iprima.cz/porady/modry-kod")
           }
         >
-          <Image
+          <ImageWrapper
             source={require("../assets/modry_kod_img.png")}
             style={styles.bluecodeLogo}
           />

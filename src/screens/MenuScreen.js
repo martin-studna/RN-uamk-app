@@ -4,6 +4,7 @@ import colors from "../colors";
 import { Ionicons } from "@expo/vector-icons";
 import { NavigationEvents } from "react-navigation";
 import Global from '../global'
+import ImageWrapper from "../components/ImageWrapper";
 
 const MenuScreen = (props) => {
   return (
@@ -27,7 +28,7 @@ const MenuScreen = (props) => {
         <View style={styles.row}>
           <TouchableOpacity style={styles.element} onPress={() => props.navigation.navigate(('TrafficJam'))}>
             <View style={styles.circle}>
-              <Image
+              <ImageWrapper
                 style={styles.logo}
                 source={require("../assets/traffic_jam_icon.png")}
               />
@@ -36,7 +37,7 @@ const MenuScreen = (props) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.element} onPress={() => props.navigation.navigate('Danger')}>
             <View style={styles.circle}>
-              <Image
+              <ImageWrapper
                 style={styles.logo}
                 source={require("../assets/danger_icon.png")}
               />
@@ -45,7 +46,7 @@ const MenuScreen = (props) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.element} onPress={() => props.navigation.navigate('TrafficClosure')}>
             <View style={styles.circle}>
-              <Image
+              <ImageWrapper
                 style={styles.logo}
                 source={require("../assets/traffic_closure_icon.png")}
               />
@@ -91,7 +92,6 @@ const styles = StyleSheet.create({
   menu: {
     width: "100%",
     height: "100%",
-    paddingHorizontal: 20,
     marginTop: 200,
     display: "flex",
     alignItems: "center",

@@ -11,6 +11,8 @@ import colors from '../colors'
 import { Ionicons } from '@expo/vector-icons'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import FastImage from 'react-native-fast-image'
+import ImageWrapper from '../components/ImageWrapper'
 
 
 const AppTabNavigator = createBottomTabNavigator(
@@ -33,7 +35,7 @@ const AppTabNavigator = createBottomTabNavigator(
         tabBarVisible: false,
         
         tabBarIcon: ({tintColor}) => 
-          <Image 
+          <ImageWrapper 
             style={{width: 70, height: 70, marginBottom: 10 }}
             source={require('../assets/button.png')} />
       }

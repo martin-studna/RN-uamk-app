@@ -9,6 +9,8 @@ import Camera from "../Camera";
 import { NavigationEvents } from "react-navigation";
 import ProgressDialog from "../components/ProgressDialog.js";
 import CallDialog from "../components/CallDialog.js";
+import PoinsDialog from "../components/PointsDialog";
+import ImageWrapper from "../components/ImageWrapper.js";
 
 const PostScreen = (props) => {
   const [text, setText] = useState("");
@@ -17,6 +19,7 @@ const PostScreen = (props) => {
   const [progress, setProgress] = useState(false);
   const [optionsVisible, setOptionsVisible] = useState(false);
   const [callDialogVisible, setCallDialogVisible] = useState(false);
+  const [pointsDialogVisible, setPointsDialogVisible] = useState(false)
 
   const handlePost = async () => {
     if (!difficulty) {
@@ -47,7 +50,13 @@ const PostScreen = (props) => {
     setImage(null);
     setDifficulty(null);
     setProgress(false);
-    props.navigation.goBack();
+
+    setPointsDialogVisible(true)
+    setTimeout(() => {
+      setPointsDialogVisible(false)
+      props.navigation.goBack();
+
+    }, 1000);
   };
 
   const choosePhotoFromLibrary = async () => {
@@ -103,6 +112,10 @@ const PostScreen = (props) => {
         text="Prosím počkejte..."
         visible={progress}
       />
+      <PoinsDialog 
+        text='Získali jste 10 bodů!'
+        visible={pointsDialogVisible}
+      />
       <View style={styles.container}>
         <NavigationEvents
           onWillFocus={() => {}}
@@ -129,9 +142,9 @@ const PostScreen = (props) => {
         </View>
         <View style={styles.titleContainer}>
           <View style={styles.imageContainer}>
-            <Image
+            <ImageWrapper
               style={styles.imageTitle}
-              source={require("../assets/plus_icon.png")}
+              source={require("../assets/zirani_logo_circle.png")}
             />
           </View>
           <Text style={styles.title}>Nahlásit nehodu</Text>
@@ -152,7 +165,7 @@ const PostScreen = (props) => {
             }}
           >
             <View style={styles.carCircle}>
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/car_crash_easy.png")}
               />
@@ -174,7 +187,7 @@ const PostScreen = (props) => {
             }}
           >
             <View style={styles.carCircle}>
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/car_crash_medium.png")}
               />
@@ -194,7 +207,7 @@ const PostScreen = (props) => {
             }}
           >
             <View style={styles.carCircle}>
-              <Image
+              <ImageWrapper
                 style={styles.imageCarCrash}
                 source={require("../assets/car_crash_hard.png")}
               />
@@ -239,24 +252,33 @@ const PostScreen = (props) => {
             }}
           >
             {optionsVisible ? (
+              <View style={{display: 'flex', alignItems: 'center'}}>
+
+              <Text style={{color: 'white', marginBottom: 5}}>Zavolat</Text>
               <View style={styles.callOptionButtonContainer}>
                 <TouchableOpacity
                   style={styles.callOptionButton}
                   onPress={() => setCallDialogVisible(val => !val) }
                 >
-                  <Ionicons name="md-call" size={22} />
+                  <Ionicons name="md-call" size={22} color='black' />
                 </TouchableOpacity>
+              </View>
               </View>
             ) : null}
 
             {optionsVisible ? (
+              <View style={{display: 'flex', alignItems: 'center'}}>
+
+              <Text style={{color: 'white', marginBottom: 5}}>Poslat</Text>
               <View style={styles.sendOptionButtonContainer}>
+            
                 <TouchableOpacity
                   style={styles.sendOptionButton}
                   onPress={() => handlePost()}
                 >
-                  <Ionicons name="md-navigate" size={22} />
+                  <Ionicons name="md-navigate" size={22} color='black' />
                 </TouchableOpacity>
+              </View>
               </View>
             ) : null}
           </View>
@@ -266,7 +288,7 @@ const PostScreen = (props) => {
               style={styles.sendButton}
               onPress={() => setOptionsVisible((val) => !val)}
             >
-              <Ionicons name="md-arrow-up" size={30} />
+              <Ionicons name="md-arrow-up" size={30} color='black' />
             </TouchableOpacity>
           </View>
           <View style={styles.bottomBar}></View>
@@ -325,19 +347,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   imageContainer: {
-    display: "flex",
-    width: 60,
-    height: 60,
-    justifyContent: "center",
-    alignItems: "center",
+    width: 80,
+    height: 80,
     borderRadius: 50,
-    backgroundColor: colors.uamkBlue,
-    padding: 10,
     marginBottom: 15,
   },
   imageTitle: {
-    width: 30,
-    height: 30,
+    width: '100%',
+    height: '100%',
   },
   title: {
     fontSize: 14,
