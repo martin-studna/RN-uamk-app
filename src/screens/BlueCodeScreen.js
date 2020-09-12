@@ -42,14 +42,14 @@ const BlueCodeScreen = (props) => {
       
     } catch (error) {
       console.warn(error)
-      Alert.alert(
-        "Omlouváme se.",
-        'Momentálně jsou videa Modrého kódu nedostupná.',
-        [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
-        { cancelable: false }
-      );
+      // Alert.alert(
+      //   "Omlouváme se.",
+      //   'Momentálně jsou videa Modrého kódu nedostupná.',
+      //   [
+      //     { text: "OK", onPress: () => console.log("OK Pressed") }
+      //   ],
+      //   { cancelable: false }
+      // );
       setIsLoading(false)
       return
     }

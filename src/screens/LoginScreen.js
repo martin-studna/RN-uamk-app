@@ -78,7 +78,7 @@ const LoginScreen = (props) => {
       </View>
 
       <ImageWrapper
-        source={require("../assets/zirani_logo_circle.png")}
+        source={require("../assets/logoZN.png")}
         style={styles.logo}
       />
 

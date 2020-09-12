@@ -37,7 +37,7 @@ export default class MenuDrawer extends React.Component {
               <View style={styles.imgView}>
                 <ImageWrapper
                   style={styles.img}
-                  source={require("../assets/zirani_logo_circle.png")}
+                  source={require("../assets/logoZN.png")}
                 />
               </View>
               <View style={styles.profileText}>

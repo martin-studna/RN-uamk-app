@@ -144,7 +144,7 @@ const PostScreen = (props) => {
           <View style={styles.imageContainer}>
             <ImageWrapper
               style={styles.imageTitle}
-              source={require("../assets/zirani_logo_circle.png")}
+              source={require("../assets/logoZN.png")}
             />
           </View>
           <Text style={styles.title}>Nahlásit nehodu</Text>

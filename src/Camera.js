@@ -1,5 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from 'expo-permissions'
+import { Alert } from 'react-native'
 
 class Camera {
 
@@ -7,9 +8,18 @@ class Camera {
     return new Promise( async (res,rej) => {
 
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
+      console.log(status)
       if (status !== "granted") {
-        alert("We need permission to access your camera roll");
+
+        Alert.alert(
+          "Je nám líto.",
+          'Aplikace nemá povolený přístup ke galerii fotek.',
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
+          { cancelable: false }
+        );
+        //alert("We need permission to access your camera roll");
         rej('We need permission to access your camera roll')
       }
       else {
@@ -31,7 +41,14 @@ class Camera {
       const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
       if (status !== "granted") {
-        alert("We need permission to access your camera roll");
+        Alert.alert(
+          "Je nám líto.",
+          'Aplikace nemá přístup ke kameře.',
+          [
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
+          { cancelable: false }
+        );
         rej('We need permission to access your camera roll')
       }
       else {

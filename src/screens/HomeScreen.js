@@ -53,7 +53,6 @@ const HomeScreen = (props) => {
 
     if (status !== "granted") {
       console.log("PERMISSION NOT GRANTED!");
-      setErrorMessage("PERMISSION NOT GRANTED");
     }
 
     try {

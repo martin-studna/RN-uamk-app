@@ -68,6 +68,7 @@ const AboutScreen = (props) => {
           <ImageWrapper
             source={require("../assets/modry_kod_img.png")}
             style={styles.bluecodeLogo}
+            resizeMode="stretch"
           />
         </TouchableOpacity>
       </View>
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
   bluecodeLogo: {
     marginTop: 30,
     height: 40,
-    width: 110,
+    width: 130,
     resizeMode: "stretch",
   },
   imagesContainer: {

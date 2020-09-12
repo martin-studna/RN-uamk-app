@@ -31,7 +31,7 @@ const LoadingScreen = (props) => {
         style={styles.backgroundImage}
         source={require("../assets/backgroundimage_zoom.png")}>
 
-        <Image  source={require('../assets/zirani_logo_circle.png')} style={styles.logo}/>
+        <Image  source={require('../assets/logoZN.png')} style={styles.logo}/>
 
       </ImageBackground>
     </View>

@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ImageBackground,
-  Image,
   Alert,
 } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -12,6 +11,7 @@ import * as firebase from "firebase";
 import Fire from "../Fire.js";
 import colors from "../colors";
 import ProgressDialog from "../components/ProgressDialog.js";
+import ImageWrapper from '../components/ImageWrapper';
 
 const RegisterScreen = (props) => {
   const [name, setName] = useState("");
@@ -91,7 +91,7 @@ const RegisterScreen = (props) => {
       </View>
 
       <ImageWrapper
-        source={require("../assets/zirani_logo_circle.png")}
+        source={require("../assets/logoZN.png")}
         style={styles.logo}
       />
 
@@ -129,7 +129,7 @@ const RegisterScreen = (props) => {
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-        <Text style={{ fontWeight: "bold", fontSize: 16 }}>Registrovat se</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 16, color: 'black' }}>Registrovat se</Text>
       </TouchableOpacity>
 
       <View style={{ flex: 1 }}></View>
