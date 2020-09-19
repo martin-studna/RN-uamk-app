@@ -104,7 +104,6 @@ const PostCard = (props) => {
           <ImageWrapper
             source={{ uri: props.image }}
             style={styles.postImage}
-            resizeMode="cover"
           />
         ) : null}
 

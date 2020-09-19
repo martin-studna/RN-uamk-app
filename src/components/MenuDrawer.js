@@ -2,9 +2,7 @@ import React from "react";
 import {
   View,
   Text,
-  Image,
   ScrollView,
-  Platform,
   Dimensions,
   StyleSheet,
   TouchableOpacity,
@@ -53,7 +51,7 @@ export default class MenuDrawer extends React.Component {
             {this.navLink("CardActivation", "Aktivovat kartu")}
             <TouchableOpacity
               style={{ height: 50 }}
-              onPress={() => Linking.openURL('https://ziranimnepomuzes.cz/').catch(err => console.error("Couldn't load page", err))}
+              onPress={() => Linking.openURL('https://ziranimnepomuzes.cz/podpora').catch(err => console.error("Couldn't load page", err))}
             >
               <Text style={styles.link}>Pomoc</Text>
             </TouchableOpacity>

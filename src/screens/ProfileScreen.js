@@ -108,6 +108,7 @@ const ProfileScreen = (props) => {
         }}
       />
       <ProgressDialog 
+        indicatorColor={colors.uamkBlue}
         color='rgba(0,0,0,0.5)'
         visible={loading}
       />

@@ -6,6 +6,8 @@ import { StatusBar } from "expo-status-bar";
 import colors from "../colors";
 import ProgressDialog from "../components/ProgressDialog";
 import ImageWrapper from "../components/ImageWrapper";
+import * as Animatable from 'react-native-animatable'
+import InputError from "../components/InputError";
 
 const LoginScreen = (props) => {
   const [email, setEmail] = useState("");
@@ -90,7 +92,8 @@ const LoginScreen = (props) => {
             onChangeText={(email) => setEmail(email)}
             value={email}
             autoCapitalize="none"
-          ></TextInput>
+          >
+          </TextInput>
         </View>
 
         <View style={{ marginTop: 10 }}>

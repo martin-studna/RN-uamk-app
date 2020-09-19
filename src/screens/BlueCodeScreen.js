@@ -7,14 +7,17 @@ import {
   RefreshControl,
   FlatList,
   ActivityIndicator,
-  Alert
+  Alert,
 } from "react-native";
 import colors from "../colors";
+import { ActionSheet, Root } from "native-base";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import VideoCard from "../components/VideoCard";
 import { NavigationEvents } from "react-navigation";
+import PointsDialog from "../components/PointsDialog";
+import Global from "../global";
 
 const BlueCodeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -23,9 +26,10 @@ const BlueCodeScreen = (props) => {
   const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [lastVid, setLastVid] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [pointsDialogVisible, setPointsDialogVisible] = useState(false);
 
-  const YOUTUBE_API_KEY = 'AIzaSyCfDyk81Girkru2oVdLZYfciLwAy03jXlM'
-  const YOUTUBE_CHANNEL_ID = 'UCUOhEDlRYWqHUAGkyjz1zaA'
+  const YOUTUBE_API_KEY = "AIzaSyCfDyk81Girkru2oVdLZYfciLwAy03jXlM";
+  const YOUTUBE_CHANNEL_ID = "UCUOhEDlRYWqHUAGkyjz1zaA";
 
   const youtube = axios.create({
     baseURL: "https://www.googleapis.com/youtube/v3",
@@ -34,26 +38,17 @@ const BlueCodeScreen = (props) => {
   const getVideos = async () => {
     setIsLoading(true);
 
-    let snapshot = null
+    let snapshot = null;
 
     try {
       snapshot = await youtube.get(
-        `/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=20`);
-      
+        `/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=20`
+      );
     } catch (error) {
-      console.warn(error)
-      // Alert.alert(
-      //   "Omlouváme se.",
-      //   'Momentálně jsou videa Modrého kódu nedostupná.',
-      //   [
-      //     { text: "OK", onPress: () => console.log("OK Pressed") }
-      //   ],
-      //   { cancelable: false }
-      // );
-      setIsLoading(false)
-      return
+      console.warn(error);
+      setIsLoading(false);
+      return;
     }
-
 
     if (snapshot.data.items.length !== 0) {
       let newVideos = [];
@@ -61,8 +56,8 @@ const BlueCodeScreen = (props) => {
       setLastVid(snapshot.data.items[snapshot.data.items.length - 1]);
 
       for (let i = 0; i < snapshot.data.items.length; i++) {
-        const videoId = snapshot.data.items[i].id.videoId 
-        const newVideo = { videoId, ...snapshot.data.items[i].snippet}
+        const videoId = snapshot.data.items[i].id.videoId;
+        const newVideo = { videoId, ...snapshot.data.items[i].snippet };
         newVideos.push(newVideo);
       }
 
@@ -94,6 +89,15 @@ const BlueCodeScreen = (props) => {
     );
   };
 
+  const onEnded = () => {
+    console.log("ended parent");
+    setPointsDialogVisible(true)
+    
+    setTimeout(() => {
+      setPointsDialogVisible(false)
+    }, 800)
+  }
+
   const renderVideo = (video) => {
     return (
       <VideoCard
@@ -101,53 +105,60 @@ const BlueCodeScreen = (props) => {
         title={video.title}
         videoId={video.videoId}
         description={video.description}
+        onEnded={onEnded}
       />
     );
   };
 
   return (
-    <View style={styles.container}>
-    <NavigationEvents 
-      onWillFocus={() => {
-        getVideos()
-      }}
-      onWillBlur={() => {
-        setVideos([])
-      }}
-    />
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => props.navigation.goBack()}>
-          <Ionicons name="md-arrow-back" size={32} color={colors.uamkBlue} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Modrý kód</Text>
-      </View>
-      <ImageBackground
-        style={styles.backgroundImage}
-        source={require("../assets/backgroundimage_zoom.png")}
-      >
-        <FlatList
-          style={styles.feed}
-          data={videos}
-          renderItem={({ item }) => renderVideo(item)}
-          keyExtractor={(item) => item.videoId}
-          showsVerticalScrollIndicator={false}
-          ListFooterComponent={renderFooter}
-          refreshControl={
-            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
-          }
-          initialNumToRender={3}
-          onEndReachedThreshold={0.1}
-          onMomentumScrollBegin={() => {
-            onEndReachedCallDuringMomentum = false;
+    <Root>
+      <PointsDialog
+        text="Získali jste 10 bodů!"
+        visible={pointsDialogVisible}
+      />
+      <View style={styles.container}>
+        <NavigationEvents
+          onWillFocus={() => {
+            getVideos();
           }}
-          onEndReached={() => {
-            if (!onEndReachedCallDuringMomentum && !isMoreLoading) {
-              //getMore();
-            }
+          onWillBlur={() => {
+            setVideos([]);
           }}
         />
-      </ImageBackground>
-    </View>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+            <Ionicons name="md-arrow-back" size={32} color={colors.uamkBlue} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Modrý kód</Text>
+        </View>
+        <ImageBackground
+          style={styles.backgroundImage}
+          source={require("../assets/backgroundimage_zoom.png")}
+        >
+          <FlatList
+            style={styles.feed}
+            data={videos}
+            renderItem={({ item }) => renderVideo(item)}
+            keyExtractor={(item) => item.videoId}
+            showsVerticalScrollIndicator={false}
+            ListFooterComponent={renderFooter}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+            }
+            initialNumToRender={3}
+            onEndReachedThreshold={0.1}
+            onMomentumScrollBegin={() => {
+              onEndReachedCallDuringMomentum = false;
+            }}
+            onEndReached={() => {
+              if (!onEndReachedCallDuringMomentum && !isMoreLoading) {
+                //getMore();
+              }
+            }}
+          />
+        </ImageBackground>
+      </View>
+    </Root>
   );
 };
 
@@ -157,13 +168,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: Platform.OS === 'android' ? 60 : 100,
+    height: Platform.OS === "android" ? 60 : 100,
     paddingLeft: 16,
     backgroundColor: colors.primary,
     alignItems: "center",
-    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    paddingTop: Platform.OS === "ios" ? 40 : 0,
     flexDirection: "row",
-    width: '100%'
+    width: "100%",
   },
   headerTitle: {
     color: colors.uamkBlue,

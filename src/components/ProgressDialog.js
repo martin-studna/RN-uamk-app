@@ -24,7 +24,7 @@ const ProgressDialog = (props) => {
               alignItems: "center",
             }}
           >
-            <ActivityIndicator size="large"  />
+            <ActivityIndicator size="large" color={props.indicatorColor}  />
             {props.text ? <Text style={{ marginLeft: 10, color: 'black' }}>{props.text}</Text> : null}
           </View>
         </View>

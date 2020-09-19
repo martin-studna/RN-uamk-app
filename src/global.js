@@ -4,5 +4,6 @@ module.exports = {
   postDifficulty: null,
   radius: 10,
   difficulty: null,
-  semaphore: false
+  semaphore: false,
+  showPointsForDialog: false
 }
