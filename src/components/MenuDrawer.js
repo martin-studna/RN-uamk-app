@@ -48,10 +48,10 @@ export default class MenuDrawer extends React.Component {
             {this.navLink("Settings", "Nastavení")}
             {this.navLink("About", "O projektu")}
             {this.navLink("BlueCode", "Modrý kód")}
-            {this.navLink("CardActivation", "Aktivovat kartu")}
+            {this.navLink("CardActivation", "Aktivovat asistenční kartu")}
             <TouchableOpacity
               style={{ height: 50 }}
-              onPress={() => Linking.openURL('https://ziranimnepomuzes.cz/podpora').catch(err => console.error("Couldn't load page", err))}
+              onPress={() => Linking.openURL('https://ziranimnepomuzes.cz/soutez').catch(err => console.error("Couldn't load page", err))}
             >
               <Text style={styles.link}>Pomoc</Text>
             </TouchableOpacity>
@@ -114,8 +114,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     padding: 6,
+    flexShrink: 1,
     paddingLeft: 14,
     margin: 5,
+    width: '95%',
     textAlign: "left",
     color: 'black',
   },

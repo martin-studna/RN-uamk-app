@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Linking } from "react-native";
+import { View, Text, StyleSheet, Image, Linking, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../colors";
@@ -14,6 +14,7 @@ const AboutScreen = (props) => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>O projektu</Text>
       </View>
+      <ScrollView style={{flex: 1, width: '100%'}} contentContainerStyle={{display: "flex", alignItems: "center"}}>
       <View style={styles.content}>
         <Text style={styles.paragraph}>
           Autorem projektu{" "}
@@ -40,6 +41,12 @@ const AboutScreen = (props) => {
           Projekt Zíráním nepomůžeš je financován z fondu zábrany škod České
           kanceláře pojistitelů.
         </Text>
+        <Text style={styles.paragraph}>
+        Zapojte se formou hlášení dopravních informací do soutěže o hodnotné ceny!
+        </Text>
+        <Text style={{color: "blue", fontSize: 16, textAlign: "center", marginBottom: 10}} onPress={() => Linking.openURL('https://ziranimnepomuzes.cz/soutez')}>
+        ziranimnepomuzes.cz/soutez
+        </Text>
       </View>
 
       <View style={styles.imagesContainer}>
@@ -49,6 +56,7 @@ const AboutScreen = (props) => {
           <ImageWrapper
             source={require("../assets/uamk_logo.png")}
             style={styles.uamkLogo}
+            resizeMode="stretch"
           />
         </TouchableOpacity>
 
@@ -58,6 +66,7 @@ const AboutScreen = (props) => {
           <ImageWrapper
             source={require("../assets/prima.png")}
             style={styles.primaLogo}
+            resizeMode="stretch"
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -72,6 +81,7 @@ const AboutScreen = (props) => {
           />
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </View>
   );
 };
@@ -116,6 +126,7 @@ const styles = StyleSheet.create({
   },
   bluecodeLogo: {
     marginTop: 30,
+    marginBottom: 40,
     height: 40,
     width: 130,
     resizeMode: "stretch",

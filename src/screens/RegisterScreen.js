@@ -77,10 +77,13 @@ const RegisterScreen = (props) => {
   };
 
   return (
-    <ImageBackground
+    <View
       style={styles.container}
-      source={require("../assets/backgroundimage_zoom.png")}
     >
+    <ImageWrapper 
+      source={require("../assets/backgroundimage_zoom.png")}
+      style={{position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}
+    />
       <ProgressDialog
         visible={progress}
         title={"Zaregistrovat se"}
@@ -142,7 +145,7 @@ const RegisterScreen = (props) => {
           Už máte účet? Přihlásit se
         </Text>
       </TouchableOpacity>
-    </ImageBackground>
+    </View>
   );
 };
 

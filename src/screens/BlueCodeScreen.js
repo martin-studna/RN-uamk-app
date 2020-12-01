@@ -18,6 +18,7 @@ import VideoCard from "../components/VideoCard";
 import { NavigationEvents } from "react-navigation";
 import PointsDialog from "../components/PointsDialog";
 import Global from "../global";
+import ImageWrapper from "../components/ImageWrapper";
 
 const BlueCodeScreen = (props) => {
   let onEndReachedCallDuringMomentum = false;
@@ -45,7 +46,7 @@ const BlueCodeScreen = (props) => {
         `/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=20`
       );
     } catch (error) {
-      console.warn(error);
+      //console.error(error);
       setIsLoading(false);
       return;
     }
@@ -57,6 +58,7 @@ const BlueCodeScreen = (props) => {
 
       for (let i = 0; i < snapshot.data.items.length; i++) {
         const videoId = snapshot.data.items[i].id.videoId;
+        if (!videoId) break
         const newVideo = { videoId, ...snapshot.data.items[i].snippet };
         newVideos.push(newVideo);
       }
@@ -131,10 +133,13 @@ const BlueCodeScreen = (props) => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Modrý kód</Text>
         </View>
-        <ImageBackground
+        <View
           style={styles.backgroundImage}
-          source={require("../assets/backgroundimage_zoom.png")}
         >
+        <ImageWrapper 
+          source={require("../assets/backgroundimage_zoom.png")}
+          style={{position: "absolute", top: 0, height: 0, height: "100%", width: "100%"}}
+        />
           <FlatList
             style={styles.feed}
             data={videos}
@@ -156,7 +161,7 @@ const BlueCodeScreen = (props) => {
               }
             }}
           />
-        </ImageBackground>
+        </View>
       </View>
     </Root>
   );

@@ -9,7 +9,7 @@
       "**/*"
     ],
     "android": {
-      "package": "com.rnuamkapp",
+      "package": "com.acresia.ziranimnepomuzes",
       "config": {
           "googleMaps": {
               "apiKey": "AIzaSyDXXWY9udhqHLU3CvNgrWEdpoGhPayRe88"
@@ -17,7 +17,7 @@
       }
     },
     "ios": {
-        "bundleIdentifier": "org.name.RNuamkapp",
+        "bundleIdentifier": "com.acresia.ziranimnepomuzes",
         "config": {
             "googleMapsApiKey": "AIzaSyDXXWY9udhqHLU3CvNgrWEdpoGhPayRe88"
         }

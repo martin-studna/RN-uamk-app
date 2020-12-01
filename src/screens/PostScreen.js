@@ -329,6 +329,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "6%",
     right: "6%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   },
   exit: {
     backgroundColor: "white",
@@ -457,6 +460,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    
   },
   callOptionButtonContainer: {
     alignSelf: "center",

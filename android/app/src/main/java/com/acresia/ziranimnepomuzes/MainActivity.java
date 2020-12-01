@@ -1,4 +1,4 @@
-package com.rnuamkapp;
+package com.acresia.ziranimnepomuzes;
 
 import android.os.Bundle;
 

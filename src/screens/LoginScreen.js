@@ -8,6 +8,7 @@ import ProgressDialog from "../components/ProgressDialog";
 import ImageWrapper from "../components/ImageWrapper";
 import * as Animatable from 'react-native-animatable'
 import InputError from "../components/InputError";
+import FastImage from "react-native-fast-image";
 
 const LoginScreen = (props) => {
   const [email, setEmail] = useState("");
@@ -64,10 +65,12 @@ const LoginScreen = (props) => {
   };
 
   return (
-    <ImageBackground
-      style={styles.container}
+    <View style={styles.container}>
+    <ImageWrapper
+      style={{position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}
+      resizeMode="cover"
       source={require("../assets/backgroundimage_zoom.png")}
-    >
+    />
     <ProgressDialog 
       visible={progress}
       title="Přihlašování"
@@ -123,7 +126,7 @@ const LoginScreen = (props) => {
           Registrovat se
         </Text>
       </TouchableOpacity>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -132,6 +135,10 @@ const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
     alignItems: "center",
+    width: "100%",
+    resizeMode: "cover",
+    height: "100%",
+    backgroundColor: colors.uamkBlue
   },
   errorMessage: {
     height: 72,

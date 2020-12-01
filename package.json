@@ -32,7 +32,7 @@
     "react-native-fab": "^1.0.17",
     "react-native-fast-image": "^8.3.2",
     "react-native-gesture-handler": "~1.6.0",
-    "react-native-maps": "0.27.1",
+    "react-native-maps": "^0.27.1",
     "react-native-paper": "^4.0.1",
     "react-native-reanimated": "~1.9.0",
     "react-native-safe-area-context": "~3.0.7",

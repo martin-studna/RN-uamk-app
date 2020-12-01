@@ -307,10 +307,14 @@ const HomeScreen = (props) => {
         <MenuButton navigation={props.navigation} style={styles.menu} />
         <Text style={styles.headerTitle}>ZÍRÁNÍM NEPOMŮŽEŠ</Text>
       </View>
-      <ImageBackground
+      <View
         style={styles.backgroundImage}
-        source={require("../assets/backgroundimage_zoom.png")}
       >
+      <ImageWrapper 
+        
+        source={require("../assets/backgroundimage_zoom.png")}
+        style={{position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}
+      />
         <FlatList
           style={styles.feed}
           data={posts}
@@ -334,7 +338,7 @@ const HomeScreen = (props) => {
             }
           }}
         />
-      </ImageBackground>
+      </View>
       <View style={styles.menuButtonContainer}>
         <TouchableOpacity
           style={styles.fabButton}

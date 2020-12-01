@@ -67,23 +67,24 @@ const CardActivationScreen = (props) => {
     <View style={styles.container}>
       <ProgressDialog 
         visible={progressCard}
-        title='Aktivace karty'
+        title='Aktivace asistenční karty'
         text='Prosím, čekejte, tohle může chvíli trvat...'
       />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Ionicons name="md-arrow-back" size={32} color={colors.uamkBlue} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Aktivace karty</Text>
+        <Text style={styles.headerTitle}>Aktivace asistenční karty</Text>
       </View>
       <ScrollView style={{ flex: 1, width: "100%" }}>
         <View style={styles.content}>
           <ImageWrapper
             source={require("../assets/uamk_logo.png")}
             style={{ width: 110, height: 110 }}
+            resizeMode="stretch"
           />
-          <Text style={{ marginTop: 20, fontSize: 18 }}>
-            Zadejte číslo karty
+          <Text style={{ marginTop: 20, fontSize: 18, textAlign: "center", color: "black", marginHorizontal: 30 }}>
+            Zadejte číslo karty, která Vám byla zaslána poštou.
           </Text>
           <TextInput
             placeholder="9220000000"
@@ -109,32 +110,9 @@ const CardActivationScreen = (props) => {
               resizeMode: "stretch",
               marginBottom: 15,
             }}
+            resizeMode="stretch"
             source={require("../assets/uamk_card.jpg")}
           />
-          <Text
-            style={{
-              fontSize: 18,
-              textAlign: "center",
-              width: 200,
-              marginBottom: 5,
-            }}
-          >
-            Kartu si vyzvednete na kterékoli čerpací stanici MOL ČR
-          </Text>
-          <Text
-            style={{
-              fontWeight: "bold",
-              color: "red",
-              fontSize: 17,
-              width: 200,
-              textAlign: "center",
-            }}
-          >
-            proti předložení této obrazovky
-          </Text>
-          <Text style={{ marginTop: 10, color: "#c2c2c2", marginBottom: 30 }}>
-            nejpozději do xx.xx.xxxx
-          </Text>
         </View>
       </ScrollView>
     </View>

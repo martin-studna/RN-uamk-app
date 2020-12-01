@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Alert } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import colors from "../colors";
 import firebase from "firebase";
@@ -7,7 +7,7 @@ import Fire from "../Fire";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import ProgressDialog from "../components/ProgressDialog";
-import Camera from '../Camera'
+import Camera from "../Camera";
 import ImageWrapper from "../components/ImageWrapper";
 
 const ProfileSettingsScreen = (props) => {
@@ -18,6 +18,8 @@ const ProfileSettingsScreen = (props) => {
   const [progressUpdate, setProgressUpdate] = useState(false);
   const [progressSignOut, setProgressSignOut] = useState(false);
 
+  const usersRef = Fire.shared.getUsersRef();
+
   useEffect(() => {
     Fire.shared
       .getUserByIdAsync(firebase.auth().currentUser.uid)
@@ -27,9 +29,9 @@ const ProfileSettingsScreen = (props) => {
         setImage(user.data().image);
         setLoading(false);
       })
-      .catch(err => {
-        setLoading(false)
-      })
+      .catch((err) => {
+        setLoading(false);
+      });
 
     firebase.auth().onAuthStateChanged((user) => {
       setProgressSignOut(false);
@@ -46,7 +48,6 @@ const ProfileSettingsScreen = (props) => {
     }
   };
 
-  
   const choosePhotoFromLibrary = async () => {
     let result = await Camera.shared.choosePhotoFromLibraryAsync();
     console.log(result);
@@ -61,6 +62,32 @@ const ProfileSettingsScreen = (props) => {
     let uri = null;
 
     if (image !== null) uri = await Fire.shared.uploadPhotoAsync(image);
+
+    if (username !== "") {
+      const snapshot = await usersRef
+        .orderBy("username")
+        .startAt(username)
+        .endAt(username)
+        .get();
+
+      if (!snapshot.empty) {
+        const filter = snapshot.docs.filter(
+          (user) => user.id === firebase.auth().currentUser.uid
+        );
+
+        if (filter.length === 0) {
+          Alert.alert(
+            "Bohužel toto uživatelské jméno je už zabrané.",
+            null,
+            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+            { cancelable: false }
+          );
+
+          setProgressUpdate(false);
+          return;
+        }
+      }
+    }
 
     const updates = {
       image: uri,
@@ -102,7 +129,10 @@ const ProfileSettingsScreen = (props) => {
         source={image ? { uri: image } : require("../assets/profile_image.png")}
         style={styles.image}
       />
-      <TouchableOpacity style={styles.changeImage} onPress={() => choosePhotoFromLibrary()}>
+      <TouchableOpacity
+        style={styles.changeImage}
+        onPress={() => choosePhotoFromLibrary()}
+      >
         <Text
           style={{ fontWeight: "bold", color: colors.uamkBlue, fontSize: 16 }}
         >

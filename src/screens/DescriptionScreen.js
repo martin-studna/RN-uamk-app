@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: 'white',
     padding: 20,
-    marginTop: 40,
     fontSize: 18,
+    marginTop: 30,
     borderRadius: 30,
     width: '100%',
-    height: '70%',
+    height: '40%',
     textAlignVertical: 'top'
   },
   buttonsContainer: {

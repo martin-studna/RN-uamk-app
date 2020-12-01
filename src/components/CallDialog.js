@@ -72,7 +72,7 @@ const CallDialog = (props) => {
                   style={[styles.callButton, { backgroundColor: "#fe0100" }]}
                   onPress={() => Linking.openURL(`tel:155`)}
                 >
-                  <ImageWrapper source={require("../assets/icon_ambulance.png")} style={{width: 30, height: 30, resizeMode: 'stretch'}} />
+                  <ImageWrapper source={require("../assets/icon_ambulance.png")} resizeMode="stretch" style={{width: 30, height: 30, resizeMode: 'stretch'}} />
                 </TouchableOpacity>
                 <Text style={{ textAlign: "center", color: 'black' }}>Záchranná služba</Text>
               </View>
@@ -88,7 +88,7 @@ const CallDialog = (props) => {
                   style={[styles.callButton, { backgroundColor: "#01C2FF" }]}
                   onPress={() => Linking.openURL('tel:158')}
                 >
-                  <ImageWrapper source={require("../assets/police_icon.png")} style={{width: 30, height: 30, resizeMode: 'stretch'}} />
+                  <ImageWrapper source={require("../assets/police_icon.png")} resizeMode="stretch" style={{width: 30, height: 30, resizeMode: 'stretch'}} />
                 </TouchableOpacity>
                 <Text style={{ textAlign: "center", color: 'black' }}>Policie</Text>
               </View>
@@ -101,6 +101,7 @@ const CallDialog = (props) => {
                 >
                   <ImageWrapper 
                   style={{width: 30, height: 30}}
+                  resizeMode="stretch"
                   source={require("../assets/icon_firefighter.png")} />
 
                 </TouchableOpacity>
@@ -116,6 +117,7 @@ const CallDialog = (props) => {
                   onPress={() => Linking.openURL('tel:+420 261 104 333')}
                 >
                   <ImageWrapper
+                  resizeMode="stretch"
                     style={{width: 30, height: 15, resizeMode: 'stretch'}} 
                     source={require("../assets/icon_uamk.png")} />
 

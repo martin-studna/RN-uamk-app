@@ -11,7 +11,10 @@ const AboutFirstScreen = (props) => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>O projektu</Text>
       </View>
-      <ScrollView style={{flex: 1, width: '100%'}} contentContainerStyle={{display: "flex", alignItems: "center"}}>
+      <ScrollView
+        style={{ flex: 1, width: "100%" }}
+        contentContainerStyle={{ display: "flex", alignItems: "center" }}
+      >
         <View style={styles.content}>
           <Text style={styles.paragraph}>
             Autorem projektu{" "}
@@ -39,40 +42,66 @@ const AboutFirstScreen = (props) => {
             Projekt Zíráním nepomůžeš je financován z fondu zábrany škod České
             kanceláře pojistitelů.
           </Text>
+          <Text style={styles.paragraph}>
+            Zapojte se formou hlášení dopravních informací do soutěže o hodnotné
+            ceny!
+          </Text>
+          <Text
+            style={{
+              color: "blue",
+              fontSize: 16,
+              textAlign: "center",
+              marginBottom: 10,
+            }}
+            onPress={() =>
+              Linking.openURL("https://ziranimnepomuzes.cz/soutez")
+            }
+          >
+            ziranimnepomuzes.cz/soutez
+          </Text>
         </View>
 
         <View style={styles.imagesContainer}>
-        <TouchableOpacity
-          onPress={() => Linking.openURL("https://www.uamk.cz")}
-        >
-          <ImageWrapper
-            source={require("../assets/uamk_logo.png")}
-            style={styles.uamkLogo}
-          />
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://www.uamk.cz")}
+          >
+            <ImageWrapper
+              source={require("../assets/uamk_logo.png")}
+              style={styles.uamkLogo}
+              resizeMode="stretch"
+            />
+          </TouchableOpacity>
 
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://www.iprima.cz/")}
+          >
+            <ImageWrapper
+              source={require("../assets/prima.png")}
+              style={styles.primaLogo}
+              resizeMode="stretch"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL("https://prima.iprima.cz/porady/modry-kod")
+            }
+          >
+            <ImageWrapper
+              source={require("../assets/modry_kod_img.png")}
+              style={styles.bluecodeLogo}
+              resizeMode="stretch"
+            />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity
-          onPress={() => Linking.openURL("https://www.iprima.cz/")}
+          style={styles.button}
+          onPress={() => props.navigation.navigate("Home")}
         >
-          <ImageWrapper
-            source={require("../assets/prima.png")}
-            style={styles.primaLogo}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() =>
-            Linking.openURL("https://prima.iprima.cz/porady/modry-kod")
-          }
-        >
-          <ImageWrapper
-            source={require("../assets/modry_kod_img.png")}
-            style={styles.bluecodeLogo}
-            resizeMode="stretch"
-          />
-        </TouchableOpacity>
-      </View>
-        <TouchableOpacity style={styles.button} onPress={() => props.navigation.navigate('Home')}>
-          <Text style={{ fontWeight: 'bold', color: colors.uamkBlue, fontSize: 16}}>Pokračovat</Text>
+          <Text
+            style={{ fontWeight: "bold", color: colors.uamkBlue, fontSize: 16 }}
+          >
+            Pokračovat
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -85,13 +114,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: Platform.OS === 'android' ? 60 : 100,
+    height: Platform.OS === "android" ? 60 : 100,
     paddingLeft: 16,
     backgroundColor: colors.primary,
     alignItems: "center",
-    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    paddingTop: Platform.OS === "ios" ? 40 : 0,
     flexDirection: "row",
-    width: '100%'
+    width: "100%",
   },
   headerTitle: {
     marginLeft: 15,
@@ -105,7 +134,7 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     marginBottom: 9,
-    color: 'black'
+    color: "black",
   },
   uamkLogo: {
     width: 120,

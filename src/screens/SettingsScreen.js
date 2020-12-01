@@ -16,8 +16,12 @@ const SettingsScreen = (props) => {
         <Text style={styles.headerTitle}>Nastavení</Text>
       </View>
 
-      <View style={{ marginTop: 100, display: "flex", alignItems: "center" }}>
-        <Text style={{ textAlign: "center", marginBottom: 10, fontSize: 30 }}>
+      <View style={{ marginTop: 40, display: "flex", alignItems: "center" }}>
+        <Text style={{ textAlign: "center", marginBottom: 40, fontSize: 20, color: "black" }}>
+          Zvolte okruh zobrazovaných informací vzhledem k Vaší poloze
+        </Text>
+
+        <Text style={{ textAlign: "center", marginBottom: 10, fontSize: 30, color: "black" }}>
           {Global.radius} km
         </Text>
 
@@ -26,10 +30,10 @@ const SettingsScreen = (props) => {
           style={{ width: 300 }}
           value={Global.radius}
           thumbTintColor={colors.primary}
-          onValueChange={val => {
-            setDistance(val)
-            Global.radius = val
-            }}
+          onValueChange={(val) => {
+            setDistance(val);
+            Global.radius = val;
+          }}
           step={10}
         ></Slider>
       </View>
@@ -43,13 +47,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    height: Platform.OS === 'android' ? 60 : 100,
+    height: Platform.OS === "android" ? 60 : 100,
     paddingLeft: 16,
     backgroundColor: colors.primary,
     alignItems: "center",
-    paddingTop: Platform.OS === 'ios' ? 40 : 0,
+    paddingTop: Platform.OS === "ios" ? 40 : 0,
     flexDirection: "row",
-    width: '100%'
+    width: "100%",
   },
   headerTitle: {
     marginLeft: 15,
