@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "915639373994",
+    "firebase_url": "https://ziranim-nepomuzes.firebaseio.com",
+    "project_id": "ziranim-nepomuzes",
+    "storage_bucket": "ziranim-nepomuzes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915639373994:android:f44dbc90dbd930685000d3",
+        "android_client_info": {
+          "package_name": "com.acresia.nezirej"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915639373994-dbeb6kagm7o7vp2pce6rj5g7ieatp77h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSJTFtNf05PUooIZEhIcWaFahkzQe0vTk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915639373994-dbeb6kagm7o7vp2pce6rj5g7ieatp77h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "915639373994-p6lrhavr72rkaq3vcamfpcdq3jcai47r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.acresia.ziranimnepomuzes2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915639373994:android:b97e3a22b3a2f95f5000d3",
+        "android_client_info": {
+          "package_name": "com.acresia.ziranimnepomuzes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915639373994-dbeb6kagm7o7vp2pce6rj5g7ieatp77h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSJTFtNf05PUooIZEhIcWaFahkzQe0vTk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915639373994-dbeb6kagm7o7vp2pce6rj5g7ieatp77h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "915639373994-p6lrhavr72rkaq3vcamfpcdq3jcai47r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.acresia.ziranimnepomuzes2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

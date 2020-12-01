@@ -60,7 +60,7 @@ const NotificationCard = (props) => {
               <Text style={styles.timestamp}>{getDate(props.timestamp)}</Text>
             </View>
             <View>
-              <Text style={{ fontWeight: "bold", marginLeft: 10 }}>UAMK</Text>
+              <Text style={{ fontWeight: "bold", marginLeft: 10, color: "black" }}>UAMK</Text>
             </View>
           </View>
         </View>
@@ -90,12 +90,13 @@ const styles = StyleSheet.create({
     marginRight: 16,
     fontSize: 14,
     marginBottom: 15,
+    color: "black"
   },
   timestamp: {
     marginTop: 8,
     marginLeft: 2,
     fontWeight: "bold",
-    color: "#838899",
+    color: "black",
     fontSize: 12,
     textAlign: "center",
   },

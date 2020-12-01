@@ -235,6 +235,8 @@ const HomeScreen = (props) => {
   };
 
   const validPost = (post) => {
+    if (post.publisher === "uWEfTYfZ6Dti9GSizFaP")
+      return true
     let distance = getDistance(
       {
         longitude: location.coords.longitude,
@@ -248,10 +250,11 @@ const HomeScreen = (props) => {
     if (!post.text && !post.image) return false;
 
     for (let i = 0; i < followings.length; i++) {
+      console.log(post.publisher);
       if (
         post.publisher === followings[i].id ||
         post.publisher === firebase.auth().currentUser.uid ||
-        post.publisher === "UAMK"
+        post.publisher === "uWEfTYfZ6Dti9GSizFaP"
       ) {
         return true;
       } else return false;

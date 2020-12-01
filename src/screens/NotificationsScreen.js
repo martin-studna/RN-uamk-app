@@ -52,7 +52,7 @@ const NotificationsScreen = props => {
 
       for (let i = 0; i < snapshot.docs.length; i++) {
         
-        if (snapshot.docs[i].data().publisher !== 'UAMK')
+        if (snapshot.docs[i].data().publisher !== 'uWEfTYfZ6Dti9GSizFaP')
           continue
         
         if (!snapshot.docs[i].data().text) continue;
@@ -84,7 +84,12 @@ const NotificationsScreen = props => {
       setIsMoreLoading(true);
 
       setTimeout(async () => {
+        let timeRange = new Date();
+        timeRange.setHours(timeRange.getHours() - 6);
+
+
         let snapshot = await postsRef
+          .where("timestamp", ">=", timeRange.getTime())
           .orderBy("timestamp", "desc")
           .startAfter(lastDoc.data().timestamp)
           .limit(5)
@@ -98,7 +103,7 @@ const NotificationsScreen = props => {
           for (let i = 0; i < snapshot.docs.length; i++) {
             if (!snapshot.docs[i].data().text) continue;
 
-            if (snapshot.docs[i].data().publisher !== 'UAMK')
+            if (snapshot.docs[i].data().publisher !== 'uWEfTYfZ6Dti9GSizFaP')
               continue
 
             let time = getTime(snapshot.docs[i].data().timestamp);
