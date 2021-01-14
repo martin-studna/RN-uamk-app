@@ -77,6 +77,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915639373994:android:1bf2b7b5945cd36c5000d3",
+        "android_client_info": {
+          "package_name": "com.acresia.ziranimnepomuzes2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915639373994-dbeb6kagm7o7vp2pce6rj5g7ieatp77h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSJTFtNf05PUooIZEhIcWaFahkzQe0vTk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915639373994-dbeb6kagm7o7vp2pce6rj5g7ieatp77h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "915639373994-p6lrhavr72rkaq3vcamfpcdq3jcai47r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.acresia.ziranimnepomuzes2"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

@@ -1,9 +1,9 @@
 {
-  "name": "RN-uamk-app",
-  "displayName": "RN-uamk-app",
+  "name": "ZíránímNepomůžeš",
+  "displayName": "ZíránímNepomůžeš",
   "expo": {
-    "name": "RN-uamk-app",
-    "slug": "RN-uamk-app",
+    "name": "ZíránímNepomůžeš",
+    "slug": "ZíránímNepomůžeš",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
@@ -17,7 +17,7 @@
       }
     },
     "ios": {
-        "bundleIdentifier": "com.acresia.ziranimnepomuzes",
+        "bundleIdentifier": "com.acresia.ziranimnepomuzes2",
         "config": {
             "googleMapsApiKey": "AIzaSyDXXWY9udhqHLU3CvNgrWEdpoGhPayRe88"
         }

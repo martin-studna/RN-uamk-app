@@ -9,8 +9,6 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Constants from "expo-constants";
-import * as Permissions from "expo-permissions";
 import Fire from "../Fire.js";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../colors";

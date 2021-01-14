@@ -1,80 +1,80 @@
 import firebase from "firebase";
 import firebaseConfig from "./config.js";
-import * as Permissions from 'expo-permissions'
-import * as Location from 'expo-location'
+import * as Permissions from "expo-permissions";
+import * as Location from "expo-location";
 
 class Fire {
   constructor() {
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    } else {
+      firebase.app();
+    }
   }
-
 
   getLocationAsync = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION)
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
 
-    if (status !== 'granted') {
-      console.log('PERMISSION NOT GRANTED!');
-      return null
+    if (status !== "granted") {
+      console.log("PERMISSION NOT GRANTED!");
+      return null;
     }
 
-    return Location.getCurrentPositionAsync(); 
-  }
+    return Location.getCurrentPositionAsync();
+  };
 
   getPostsByUserIdAsync = async (id) => {
-    return new Promise( async(res, rej) => {
-      const postsRef = await this.firestore.collection('posts').get()
+    return new Promise(async (res, rej) => {
+      const postsRef = await this.firestore.collection("posts").get();
 
       if (postsRef.empty) {
-        rej('Array is empty')
-        return
+        rej("Array is empty");
+        return;
       }
 
-      let posts = []
+      let posts = [];
 
       for (let i = 0; i < postsRef.docs.length; i++) {
-      
         if (postsRef.docs[i].data().publisher === id) {
-          posts.push(postsRef.docs[i].data())
+          posts.push(postsRef.docs[i].data());
         }
       }
 
-      res(posts)
-    })
-  }
+      res(posts);
+    });
+  };
 
   getFollowersByUserIdAsync = async (id) => {
-    return new Promise((res,rej) => {
-
+    return new Promise((res, rej) => {
       this.firestore
-        .collection('follow')
+        .collection("follow")
         .doc(id)
-        .collection('followers')
+        .collection("followers")
         .get()
-        .then(result => {
-          res(result)
+        .then((result) => {
+          res(result);
         })
-        .catch(err => {
-          rej(err)
-        })
-    })
-  }
+        .catch((err) => {
+          rej(err);
+        });
+    });
+  };
 
   getFollowingByUserIdAsync = async (id) => {
-    return new Promise((res,rej) => {
-
+    return new Promise((res, rej) => {
       this.firestore
-        .collection('follow')
+        .collection("follow")
         .doc(id)
-        .collection('following')
+        .collection("following")
         .get()
-        .then(result => res(result))
-        .catch(err => rej(err))
-    })
-  }
+        .then((result) => res(result))
+        .catch((err) => rej(err));
+    });
+  };
 
   addPostAsync = async ({ difficulty, type, text, localUri }) => {
     const remoteUri = localUri ? await this.uploadPhotoAsync(localUri) : null;
-    const location = await this.getLocationAsync()
+    const location = await this.getLocationAsync();
 
     return new Promise((res, rej) => {
       this.firestore
@@ -84,9 +84,9 @@ class Fire {
           timestamp: this.timestamp,
           difficulty,
           type,
-          location: { 
+          location: {
             latitude: location.coords.latitude,
-            longitude: location.coords.longitude
+            longitude: location.coords.longitude,
           },
           text,
           image: remoteUri,
@@ -101,31 +101,25 @@ class Fire {
   };
 
   addPoints = async (points) => {
-
-    return new Promise((res,rej) => {
+    return new Promise((res, rej) => {
       this.firestore
-        .collection('users')
+        .collection("users")
         .doc(this.uid)
         .update({
-          points: firebase.firestore.FieldValue.increment(points)
+          points: firebase.firestore.FieldValue.increment(points),
         })
-        .then(result => res(result))
-        .catch(err => rej(err))
-    })
-  }
+        .then((result) => res(result))
+        .catch((err) => rej(err));
+    });
+  };
 
-  addUserAsync = async ({
-    uid,
-    username,
-    mail,
-    password,
-  }) => {
+  addUserAsync = async ({ uid, username, mail, password }) => {
     return new Promise((res, rej) => {
       this.firestore
         .collection("users")
         .doc(uid)
         .set({
-          fullname: '',
+          fullname: "",
           username,
           mail,
           password,
@@ -133,13 +127,14 @@ class Fire {
           points: 10,
           cardId: null,
           cardActivationCode: null,
+          fcmToken: "",
         })
-        .then(ref => {
+        .then((ref) => {
           this.firestore
-            .collection('follow')
+            .collection("follow")
             .doc(uid)
-            .set({ following: uid})
-            .then(() => res(ref))
+            .set({ following: uid })
+            .then(() => res(ref));
         })
         .catch((err) => {
           rej(err);
@@ -148,24 +143,24 @@ class Fire {
   };
 
   addCardAsync = async (uid, activationCode) => {
-    return new Promise((res,rej) => {
+    return new Promise((res, rej) => {
       this.firestore
-      .collection('cards')
-      .add({
-        uid,
-        activationCode,
-        active: true
-      })
-      .then(result => {
-        console.log(result.id)
-        res(result)
-      })
-      .catch(err => {
-        console.error(err)
-        rej(err)
-      })
-    }) 
-  }
+        .collection("cards")
+        .add({
+          uid,
+          activationCode,
+          active: true,
+        })
+        .then((result) => {
+          console.log(result.id);
+          res(result);
+        })
+        .catch((err) => {
+          console.error(err);
+          rej(err);
+        });
+    });
+  };
 
   getUserByIdAsync = async (id) => {
     return new Promise((res, rej) => {
@@ -173,50 +168,46 @@ class Fire {
         .collection("users")
         .doc(id)
         .get()
-        .then(user => res(user))
-        .catch(err => rej(err))
-        });
+        .then((user) => res(user))
+        .catch((err) => rej(err));
+    });
   };
 
   followUserByIdAsync = async (id) => {
-
     const following = this.firestore
-      .collection('follow')
+      .collection("follow")
       .doc(this.uid)
-      .collection('following')
+      .collection("following")
       .doc(id)
-      .set({exist: true})
-
+      .set({ exist: true });
 
     const followers = this.firestore
-      .collection('follow')
+      .collection("follow")
       .doc(id)
-      .collection('followers')
+      .collection("followers")
       .doc(this.uid)
-      .set({exist: true})
+      .set({ exist: true });
 
+    return Promise.all([following, followers]);
+  };
 
-    return Promise.all([following, followers])
-  }
-
-  unfollowUserByIdAsync = async id => {
-
+  unfollowUserByIdAsync = async (id) => {
     const following = this.firestore
-    .collection('follow')
-    .doc(this.uid)
-    .collection('following')
-    .doc(id)
-    .delete()
+      .collection("follow")
+      .doc(this.uid)
+      .collection("following")
+      .doc(id)
+      .delete();
 
-    const followers =  this.firestore
-    .collection('follow')
-    .doc(id)
-    .collection('followers')
-    .doc(this.uid)
-    .delete()
+    const followers = this.firestore
+      .collection("follow")
+      .doc(id)
+      .collection("followers")
+      .doc(this.uid)
+      .delete();
 
-    return Promise.all([following, followers])
-  }
+    return Promise.all([following, followers]);
+  };
 
   updateUserByIdAsync = async (id, fields) => {
     return new Promise((res, rej) => {
@@ -224,21 +215,20 @@ class Fire {
         .collection("users")
         .doc(id)
         .update(fields)
-        .then(ref => {
-          console.log(ref)
-          res(ref)
+        .then((ref) => {
+          console.log(ref);
+          res(ref);
         })
         .catch((err) => {
-          rej(err)
+          rej(err);
         });
     });
   };
 
   uploadPhotoAsync = async (uri) => {
-    
     const path = `photos/${this.uid}/${Date.now()}.jpg`;
 
-    console.log('LOCAL PHOTO URI: ', path);
+    console.log("LOCAL PHOTO URI: ", path);
 
     return new Promise(async (res, rej) => {
       const response = await fetch(uri);
@@ -254,7 +244,7 @@ class Fire {
         },
         async () => {
           const url = await upload.snapshot.ref.getDownloadURL();
-          console.log('REMOTE PHOTO URI: ', url);
+          console.log("REMOTE PHOTO URI: ", url);
           res(url);
         }
       );
@@ -263,11 +253,11 @@ class Fire {
 
   getPostsRef = () => {
     return this.firestore.collection("posts");
-  }
+  };
 
   getUsersRef = () => {
     return this.firestore.collection("users");
-  }
+  };
 
   get firestore() {
     return firebase.firestore();
@@ -282,7 +272,7 @@ class Fire {
   }
 
   set location(location) {
-    this.location = location
+    this.location = location;
   }
 }
 
