@@ -175,9 +175,9 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
 
-            firebaseCrashlytics {
-                nativeSymbolUploadEnabled true
-            }
+            // firebaseCrashlytics {
+            //     nativeSymbolUploadEnabled true
+            // }
         }
     }
 
