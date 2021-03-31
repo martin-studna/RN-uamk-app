@@ -6,6 +6,9 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import io.sentry.react.RNSentryPackage;
+import io.sentry.react.RNSentryPackage;
+import io.sentry.react.RNSentryPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;

@@ -99,6 +99,8 @@ target 'RNuamkapp' do
   
   pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'RNSentry', :path => '../node_modules/@sentry/react-native'
+
   post_install do |installer| 
     flipper_post_install(installer)
     installer.pods_project.targets.each do |t|

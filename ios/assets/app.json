@@ -1,0 +1,26 @@
+{
+  "name": "ZíránímNepomůžeš",
+  "displayName": "ZíránímNepomůžeš",
+  "expo": {
+    "name": "ZíránímNepomůžeš",
+    "slug": "ZíránímNepomůžeš",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "package": "com.acresia.ziranimnepomuzes",
+      "config": {
+          "googleMaps": {
+              "apiKey": "AIzaSyDXXWY9udhqHLU3CvNgrWEdpoGhPayRe88"
+          }
+      }
+    },
+    "ios": {
+        "bundleIdentifier": "com.acresia.ziranimnepomuzes2",
+        "config": {
+            "googleMapsApiKey": "AIzaSyDXXWY9udhqHLU3CvNgrWEdpoGhPayRe88"
+        }
+    }
+  }
+}
