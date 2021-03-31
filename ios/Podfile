@@ -65,6 +65,7 @@ target 'RNuamkapp' do
   pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text'
   pod 'React-RCTVibration', :path => '../node_modules/react-native/Libraries/Vibration'
   pod 'React-Core/RCTWebSocket', :path => '../node_modules/react-native/'
+  # pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
   pod 'React-cxxreact', :path => '../node_modules/react-native/ReactCommon/cxxreact'
   pod 'React-jsi', :path => '../node_modules/react-native/ReactCommon/jsi'
@@ -96,6 +97,8 @@ target 'RNuamkapp' do
   add_flipper_pods!('Flipper' => '0.74.0')
 
   
+  pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'
+
   post_install do |installer| 
     flipper_post_install(installer)
     installer.pods_project.targets.each do |t|
